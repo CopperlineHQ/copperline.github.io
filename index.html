@@ -45,6 +45,7 @@
     <a href="#status">Status</a>
     <a href="#download">Download</a>
     <a href="#faq">FAQ</a>
+    <a href="#community">Community</a>
     <a href="try/">Try</a>
     <a href="docs/">Docs</a>
     <a href="news/">News</a>
@@ -87,10 +88,10 @@
         </a>
       </div>
       <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-12-0.html">0.12.0 is out &middot; read what's new</a>
+        <a href="news/copperline-0-13-0.html">0.13.0 is out &middot; read what's new</a>
       </p>
       <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
-        <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li>
+        <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
         <li>A1000 - A4000</li><li>CDTV</li><li>CD32</li><li>HAM8</li>
       </ul>
     </div>
@@ -188,9 +189,10 @@
         <span class="card__tag">storage</span>
         <h3>Disks, drives &amp; expansion</h3>
         <p>Up to four floppies (ADF / ADZ / DMS / SCP, plain or zipped) with multi-disk
-           swap playlists, Gayle and A4000 IDE, A2091 / A4091 / A3000 SCSI carrying hard
-           disks and CD-ROM drives, CDTV and CD32 CD, Zorro II / III autoconfig, and host
-           directories mounted as writable AmigaDOS volumes - bootable ones included.</p>
+           swap playlists and a configurable drive speed, Gayle and A4000 IDE,
+           A2091 / A4091 / A3000 SCSI carrying hard disks and CD-ROM drives, CDTV and
+           CD32 CD, Zorro II / III autoconfig, and host directories mounted as writable
+           AmigaDOS volumes - bootable ones included.</p>
       </article>
 
       <article class="card">
@@ -198,8 +200,28 @@
         <h3>Pluggable Zorro boards</h3>
         <p>Functional Zorro boards sit behind a clean device boundary, so external WASM
            plugin boards can add deterministic read / write / tick / interrupt behaviour,
-           with optional DMA, file resources and networking. A built-in Commodore A2065
-           Ethernet board (Am7990 LANCE) ships with a loopback backend.</p>
+           with optional DMA, file resources and networking. The built-in Commodore A2065
+           Ethernet board (Am7990 LANCE) and the Z3660 RTG card sit behind the same
+           boundary.</p>
+      </article>
+
+      <article class="card">
+        <span class="card__tag">networking</span>
+        <h3>Ethernet with nothing to set up</h3>
+        <p>The A2065 board's user-mode NAT backend gives the guest outbound IPv4 with no
+           privileges, no host drivers and no configuration, the same on Linux, macOS and
+           Windows - a built-in DHCP server hands the Amiga its address. Paula's serial
+           port dials a telnet BBS, from the desktop app or the browser build.</p>
+      </article>
+
+      <article class="card">
+        <span class="card__tag">rtg</span>
+        <h3>RTG graphics</h3>
+        <p>The Z3660 board's RTG core, emulated as a Zorro III autoconfig card with a
+           128 MB window and driven by the unmodified open-source Z3660.card Picasso96
+           driver: Workbench in 8, 16 and 32-bit modes, blitter operations and
+           planar-to-chunky blits, and hardware-sprite compositing. Fitted by default on
+           any machine with a 32-bit address bus.</p>
       </article>
 
       <article class="card">
@@ -575,6 +597,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <li>030 / 040 / 060 MMU</li>
       <li>HOSTFS volumes</li>
       <li>Zorro II / III autoconfig</li>
+      <li>Z3660 RTG</li>
       <li>A2065 Ethernet</li>
       <li>WASM Zorro plugins</li>
       <li>OCS sprites</li>
@@ -634,21 +657,27 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <ul>
           <li>Developed and tested on macOS. The Linux and Windows builds are produced
               by CI and get far less real-world exercise.</li>
-          <li>The A3000 and A4000 profiles are new this release and still incomplete.
-              Both boot AmigaOS from their onboard SCSI / IDE, but expect gaps.</li>
-          <li>The browser build is new this release too: the same core, with far
-              less real-world mileage than the desktop app.</li>
-          <li>A2065 Ethernet ships with a loopback backend only - real host networking
-              backends are still on the list.</li>
+          <li>The A3000 and A4000 profiles are still incomplete. Both boot AmigaOS
+              from their onboard SCSI / IDE and now fill in their memory maps, but
+              expect gaps.</li>
+          <li>RTG is new this release, and the Z3660 is the only card: Workbench and
+              Picasso96 applications work, but there is one board's worth of mileage
+              behind it.</li>
+          <li>The A2065's user-mode NAT backend is new too. It gives the guest
+              outbound IPv4 with no setup; inbound connections and bridged host
+              networking are not there.</li>
+          <li>The browser build has far less real-world mileage than the desktop app,
+              and runs single-threaded.</li>
         </ul>
       </div>
 
       <div class="status-col status-col--gap">
         <h3>Not there yet</h3>
         <ul>
-          <li>No fullscreen in the desktop app yet - the browser build got there
-              first. Still near the top of the list.</li>
-          <li>Save states have a single slot with no quick-save hotkeys.</li>
+          <li>Linux/m68k reaches a login prompt on the A4000 profile, but that is
+              where it stops being tested - treat it as a demo, not a platform.</li>
+          <li>Desktop save states have a single slot with no quick-save hotkeys;
+              only the browser build has a quick slot.</li>
           <li>No IPF (CAPS) protected-disk images - deliberately out of scope for the
               built-in loader for now.</li>
           <li>No HD (1.76 MB) or PC / CrossDOS floppies.</li>
@@ -660,7 +689,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
     <div class="status-next">
       <span class="card__tag">// main vs the release</span>
       <p>Development happens in the open, and <code>main</code> usually runs well ahead
-         of the release you can download. Right now it doesn't: 0.12.0 has just shipped,
+         of the release you can download. Right now it doesn't: 0.13.0 has just shipped,
          so for once the release and main are the same machine.</p>
       <p>Every release gets a write-up on the <a href="news/">news page</a> when it
          ships. If you want to follow development commit by commit,
@@ -704,7 +733,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
           <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.12.0</span>-macos-universal.dmg and drag</span>
+            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.13.0</span>-macos-universal.dmg and drag</span>
 <span class="c-comment"># Copperline.app into your Applications folder, then launch it</span>
 
 <span class="c-comment"># the build is not notarized, so macOS blocks the first launch.</span>
@@ -727,14 +756,14 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
           <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
             <pre><code><span class="c-comment"># grab the .AppImage from the latest release, then make it executable</span>
-chmod +x Copperline-<span class="relver">0.12.0</span>-x86_64.AppImage
+chmod +x Copperline-<span class="relver">0.13.0</span>-x86_64.AppImage
 
 <span class="c-comment"># run it - the bundled AROS ROM means no Kickstart is required</span>
-./Copperline-<span class="relver">0.12.0</span>-x86_64.AppImage
+./Copperline-<span class="relver">0.13.0</span>-x86_64.AppImage
 
 <span class="c-comment"># or boot your own Kickstart ROM, or a config file</span>
-./Copperline-<span class="relver">0.12.0</span>-x86_64.AppImage path/to/kickstart.rom
-./Copperline-<span class="relver">0.12.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
+./Copperline-<span class="relver">0.13.0</span>-x86_64.AppImage path/to/kickstart.rom
+./Copperline-<span class="relver">0.13.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
           </div>
 
           <div class="codeblock" role="group" aria-label="Install with Homebrew on Linux">
@@ -751,7 +780,7 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="codeblock" role="group" aria-label="Run the Windows build">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.12.0</span>-win-x64.zip, then from a terminal</span>
+            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.13.0</span>-win-x64.zip, then from a terminal</span>
 <span class="c-comment"># with no ROM it boots the bundled AROS Kickstart replacement</span>
 copperline.exe
 copperline.exe path\to\kickstart.rom
@@ -807,6 +836,9 @@ cargo build <span class="c-flag">--release</span>
              the first launch under Privacy &amp; Security - once, then never again.</p>
           <p>If you'd rather not click through that at all, the Homebrew tap builds from
              source on your machine, so Gatekeeper never gets involved.</p>
+          <p>Paying for the Apple and Windows signing subscriptions is the first thing
+             <a href="#community">recurring support</a> would go towards, if that is
+             something you care about.</p>
         </div>
       </details>
 
@@ -863,6 +895,58 @@ cargo build <span class="c-flag">--release</span>
 
   <hr class="copperline">
 
+  <!-- ===================== COMMUNITY ===================== -->
+  <section id="community" class="section">
+    <div class="section__head">
+      <span class="kicker">// community</span>
+      <h2>Where Copperline happens</h2>
+      <p>Development runs in the open on GitHub, and there is now a Discord to talk
+         about it in.</p>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <span class="card__tag">chat</span>
+        <h3>Discord</h3>
+        <p>Development, bug hunting and general Amiga talk. If you are chasing a timing
+           bug, trying to get something to boot, or just want to see what is being
+           worked on this week, that is where it happens.</p>
+        <a class="card__link" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">join the server &gt;</a>
+      </article>
+
+      <article class="card">
+        <span class="card__tag">support</span>
+        <h3>Patreon</h3>
+        <p>Copperline is GPL and freely available, and stays that way - nothing here
+           buys a feature or a place in the queue. What monthly support buys is
+           development time, real hardware to measure the emulator against, and the
+           Apple and Windows code-signing subscriptions that would let the downloads
+           open without a Gatekeeper or SmartScreen warning.</p>
+        <a class="card__link" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">become a patron &gt;</a>
+      </article>
+
+      <article class="card">
+        <span class="card__tag">contribute</span>
+        <h3>Issues and patches</h3>
+        <p>Bug reports and feature requests are best filed as GitHub issues, where they
+           don't scroll away - and a <code>.clscript</code> recording attached to one
+           replays byte-identically, so I can step the machine backwards from the moment
+           it went wrong. CONTRIBUTING.md covers the rest, including the hardware-first
+           rule that patches follow.</p>
+        <a class="card__link" href="https://github.com/CopperlineHQ/Copperline/issues" target="_blank" rel="noopener">open an issue &gt;</a>
+      </article>
+    </div>
+
+    <p class="community-note">One-off contributions go through
+       <a href="https://github.com/sponsors/linuxjedi" target="_blank" rel="noopener">GitHub Sponsors</a>,
+       <a href="https://ko-fi.com/linuxjedi" target="_blank" rel="noopener">Ko-fi</a> or
+       <a href="https://paypal.me/linuxjedi" target="_blank" rel="noopener">PayPal</a>.
+       Those are personal links covering all my open-source work; Patreon is the one
+       that is Copperline's own.</p>
+  </section>
+
+  <hr class="copperline">
+
   <!-- ===================== ABOUT ===================== -->
   <section id="about" class="section">
     <div class="about">
@@ -912,6 +996,8 @@ cargo build <span class="c-flag">--release</span>
       <a href="news/">News</a>
       <a href="news/feed.xml">RSS</a>
       <a href="projects/">Projects</a>
+      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
       <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
       <a href="https://github.com/CopperlineHQ/Copperline/releases/latest" target="_blank" rel="noopener">Releases</a>
       <a href="https://github.com/CopperlineHQ/Copperline/tree/main/docs" target="_blank" rel="noopener">Docs</a>

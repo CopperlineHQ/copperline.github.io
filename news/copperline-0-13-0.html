@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 0.13.0: RTG, Ethernet and a Linux login prompt - Copperline News</title>
+<meta name="description" content="Copperline 0.13.0 adds RTG graphics through the Z3660 Zorro III board, fills in the big-box memory maps, puts a user-mode NAT Ethernet backend on the bus, dials a telnet BBS over emulated serial, and boots Debian Linux/m68k to a login prompt.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 0.13.0: RTG, Ethernet and a Linux login prompt">
+<meta property="og:description" content="RTG graphics through the Z3660 Zorro III board, Ramsey and accelerator RAM for the big boxes, Ethernet with a user-mode NAT backend that needs no setup, a telnet BBS over emulated serial, and Debian Linux/m68k booting to a login prompt.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-0-13-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="../style.css">
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
+    <span>Copperline</span>
+  </a>
+  <nav class="nav__links">
+    <a href="../">Home</a>
+    <a href="./">News</a>
+    <a href="feed.xml">RSS</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../#download">Download</a>
+    <a class="nav__gh" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="section">
+    <article class="post">
+      <a class="post__back" href="./">&lt; all news</a>
+      <span class="post__date">25 July 2026 &middot; release</span>
+      <h1>Copperline 0.13.0: RTG, Ethernet and a Linux login prompt</h1>
+
+      <p>This is the release where the emulated machine grows past the classic
+         chipset. It gains RTG graphics through the Z3660 Zorro III board, so
+         Workbench opens on high-colour, high-resolution Picasso96 screens; it
+         fills in the big-box memory maps with Ramsey motherboard fast RAM and
+         CPU-slot accelerator RAM; it puts a real Ethernet card on the bus with
+         a user-mode NAT backend that needs no privileges and no setup; and it
+         dials a telnet BBS from the browser over emulated serial.</p>
+
+      <p>A deep pass on 68040 / 68030 exception dispatch under the MMU, together
+         with a corrected 31 kHz programmable-scan display path, is enough to
+         boot Debian Linux/m68k to a pixel-sharp login prompt. As always it is a
+         hardware-behaviour release: when something doesn't run, the fix models
+         the underlying Amiga subsystem rather than special-casing the title.</p>
+
+      <h2>RTG graphics</h2>
+
+      <p>The Z3660 accelerator's FPGA RTG core is emulated as a Zorro III
+         autoconfig board with a 128 MB window, driven by the unmodified
+         open-source <code>Z3660.card</code> Picasso96 driver: Workbench in 8,
+         16 and 32-bit RTG modes, blitter operations, DRAWLINE, planar-to-chunky
+         and planar-to-direct blits, hardware-sprite compositing including wide
+         and doubled sprites, native-resolution presentation with chipset
+         fallback, and pixel-centre screenshot downscaling.</p>
+
+      <p>The card is selected with <code>[rtg] card</code> or the launcher's
+         System tab, and it comes fitted by default wherever the machine can
+         host one - any profile whose CPU has a 32-bit address bus. This is the
+         project's first RTG card and the single largest contribution of the
+         cycle, from Bernie Innocenti
+         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>).</p>
+
+      <h2>Linux/m68k boots</h2>
+
+      <p>A pass over the 68040 / 68030 core takes exception dispatch through the
+         MMU the way real silicon does, and fixes the MOVES fault frame,
+         writeback data, invalid-fetch faults, autovector handling, and
+         <code>FSAVE</code> / <code>FRESTORE</code> across all control
+         addressing modes. Together with the display work below, Debian 3.1 for
+         m68k goes from dying in a Line-F handler to running a console at a
+         login prompt on an A4000/68040.</p>
+
+      <h2>The 31 kHz programmable-scan display</h2>
+
+      <p>The Denise H counter restarts at 0, DIW-relative placement scales
+         properly in super-hi-res, and presentation anchors at the HSYNC pulse
+         like a real multisync monitor - the Linux <code>amifb</code> console
+         was losing about 22 characters off every line. Super-hi-res colour
+         output is fixed too: each 35 ns sample now resolves through the full
+         palette instead of a two-bit pair encoding, which is what turned Tux
+         green and fringed text red and cyan, and a double-width 35 ns canvas
+         makes programmable SHRES pixel-sharp.</p>
+
+      <h2>The big-box memory maps</h2>
+
+      <p>Ramsey-controlled motherboard fast RAM sits in 32-bit local space on
+         the A3000 and A4000, sized by Kickstart's own probe
+         (<code>[memory] motherboard</code>, 1M-4M in 1M steps, or 8M / 12M /
+         16M). The A4000 gains its <code>$04000000-$06FFFFFF</code> motherboard
+         expansion space up to 64 MB, and any 32-bit-CPU profile - including an
+         accelerated A1200 - gains CPU-slot accelerator fast RAM up to 128 MB
+         (<code>[memory] accelerator</code>).</p>
+
+      <h2>Ethernet that just works</h2>
+
+      <p>The A2065 gains a slirp-style user-mode NAT backend
+         (<code>[a2065] net = "nat"</code>, <code>--a2065-net nat</code>, or the
+         launcher's I/O Ports tab): outbound IPv4 for the guest with no
+         privileges, no host drivers and no setup, identically on Linux, macOS
+         and Windows. The guest sees 10.0.2.15/24 with a built-in BOOTP/DHCP
+         server. The Am7990 LANCE model was hardened until a real SANA-II
+         <code>a2065.device</code> works end to end.</p>
+
+      <h2>Telnet BBS over emulated serial</h2>
+
+      <p>A browser WebSocket bridge with a full telnet NVT layer runs a BBS from
+         the browser build through plain <code>serial.device</code>, and the
+         desktop dials out natively with <code>[serial] mode =
+         "tcp-connect"</code> / <code>--serial-connect HOST:PORT</code>.
+         Dialling is gated on the guest asserting DTR and going quiet, so boot
+         chatter cannot leak into a session as phantom keypresses.</p>
+
+      <h2>Floppy speed and drive sounds</h2>
+
+      <p><code>[floppy] speed</code> / <code>--floppy-speed</code> runs drives
+         at 100 (the default), 200, 400 or 800 percent, or <code>0</code> for
+         turbo. The percentage modes stay bit-identical per cell and turbo still
+         runs through the ordinary bit engine; drive mechanics - spin-up,
+         stepping, settle - always stay real-time, so the acceleration cannot
+         break loaders that time the mechanism.</p>
+
+      <p>The drive sounds were re-synthesized against spectra measured from real
+         A500 and A600 mechanisms: a step clack with its rebound cluster, seek
+         buzz as a measured harmonic comb, and revolution-locked spin texture.
+         No sample data ships; it is all synthesis. They do sound different from
+         0.12.0 - the read-gated hiss layer is gone, because the real drives
+         don't do that.</p>
+
+      <h2>The browser build became a real frontend</h2>
+
+      <p><a href="../try/">copperline.dev/try</a> gained a machine model select
+         (A500 or AGA A1200, live-switchable, carrying the ROM and disks across
+         the rebuild), save states as downloadable <code>.clstate</code> files
+         interchangeable with the desktop builds plus an IndexedDB quick slot
+         that survives a page reload, gamepads in both ports for two-player,
+         pause and screenshot-to-clipboard, a front-panel status strip with LEDs
+         and a track counter, a <code>copperline.json</code> site config file, a
+         Kickstart list select for site-served ROMs, mono audio, and fullscreen
+         that keeps 4:3 on any page shell.</p>
+
+      <h2>Hardware accuracy fixes</h2>
+
+      <ul>
+        <li>Alien Breed II's horizontal scroll jump is fixed by modelling how
+            Agnus masks an off-grid DDFSTRT to the fetch grid on wide FMODE,
+            folding BPLCON1 scroll taps into the early masked fetch start - the
+            band map was corroborated against FS-UAE. The FMODE SSCAN2 high-bit
+            mask is modelled in the rendered, manual and collision sprite paths,
+            so sprite HSTART <code>$165</code> correctly aliases
+            <code>$065</code>.</li>
+        <li>The MC68020 model now follows the datasheet Cache Case and Worst
+            Case tables, requiring the whole instruction stream including
+            extension words to be cached before it can claim the Cache Case, and
+            models the A1200 Alice data-return phase. A1200 SysInfo moves from
+            1.61x to 1.10x CPU and 5.52x to 3.55x chip against reference: the
+            old profile was simply too fast.</li>
+        <li>The <code>$DC0000</code> page's byte lanes are modelled - the
+            MSM6242 is a 4-bit part on the low lane, and the unfitted odd lane
+            reads <code>$40</code> as measured on real A500 hardware - so
+            Kickstart 1.3 stops inventing a date out of DMA noise, and machines
+            with no battery clock correctly report they have none.</li>
+        <li>ROMs stored in EPROM-programmer byte order are detected from the
+            header and swapped on load, so they boot like their conventional
+            twins. Hi/lo split chip pairs remain unsupported.</li>
+        <li>CD32 NVRAM saves are no longer silently lost when the backing-file
+            write fails: the dirty bit clears only after a successful write, so
+            the flush retries on the next I2C STOP.</li>
+        <li>Machine profiles built directly rather than through the config
+            pipeline now derive their Agnus and Denise revisions and
+            CPU-implied FPU and cache defaults - which is why the browser A1200
+            was detecting only half its chip RAM.</li>
+        <li>Zorro bus-master DMA reaches motherboard and accelerator RAM, so an
+            A4091 finds its SCSI units on the A4000 profile, and the
+            host-filesystem services board decodes the new RAM banks.</li>
+      </ul>
+
+      <h2>Desktop, tooling and platform</h2>
+
+      <ul>
+        <li>Borderless fullscreen toggles with <code>Cmd+F</code> /
+            <code>Alt+F</code>, and the status bar hides with
+            <code>Cmd+Shift+F</code> / <code>Alt+Shift+F</code>, the display
+            scaling up into the reclaimed space. The desktop app has caught up
+            with the browser build here.</li>
+        <li>Headless capture needs no display server:
+            <code>--screenshot-after</code> and <code>--dump-frames</code> drive
+            a windowless loop with no winit event loop and no window at all, so
+            capture runs work over SSH, in sandboxes, and from agent sessions
+            where creating a window would abort or hang. Screenshots are
+            byte-identical to the old path, and a run whose machine halts early
+            now errors instead of hanging.</li>
+        <li>Panics write a <code>copperline-crash.txt</code> report next to the
+            executable with version, host, timestamp, message and a forced
+            backtrace - Windows double-click launches previously lost the panic
+            entirely.</li>
+        <li>Pressing Run on the configuration screen no longer crashes Windows
+            builds; the main thread is linked with an 8 MiB stack instead of the
+            1 MiB Windows reserves by default. This was the known issue that
+            shipped with 0.12.0.</li>
+        <li>In the launcher, Serial and Parallel merge into one I/O Ports tab,
+            the printer becomes a selectable device with an output-file browser,
+            Host Mounts moves under Hard Disk, the A2065 gains a picker, and a
+            config's unreadable ROM keeps its underlying cause in the status
+            line instead of reading like progress.</li>
+        <li><code>anyhow</code>, <code>memmap2</code> and <code>quick-xml</code>
+            move for RUSTSEC advisories, and the WASM plugin host moves from an
+            unmaintained wasmtime pin to the 36 LTS tip.</li>
+        <li>The bundled AROS ROM is refreshed to upstream master, picking up
+            m68k boot-time optimizations, the boot-animation rendering fix,
+            Workbench and console speedups, and a fix for the Boot Options menu
+            crashing on machines with RDB drives on an A4091.</li>
+      </ul>
+
+      <h2>Contributed this cycle</h2>
+
+      <p>Bernie Innocenti
+         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>)
+         contributed the Z3660 RTG video board, including the <code>[rtg]
+         card</code> selection, the launcher RTG picker, and bulk CLUT palette
+         upload so 8-bit RTG screens work with current Z3660.card firmware. He
+         also fixed Zorro bus-master DMA reaching motherboard and accelerator
+         RAM, and made host-directory file handles writable so Workbench can
+         snapshot icons on a HOSTFS volume.</p>
+
+      <p>Lee Hobson
+         (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>)
+         fixed the Windows configuration-screen crash, built the merged I/O
+         Ports launcher tab with the printer device and the Host Mounts
+         sub-page, added the hide-status-bar shortcut and menu item, fixed
+         fullscreen scaling when going fullscreen before pressing Run, and made
+         the launcher keep the underlying cause when a config's ROM cannot be
+         read.</p>
+
+      <h2>Compatibility notes</h2>
+
+      <p><strong>Save states from 0.12.0 do not load in 0.13.0.</strong> The
+         serialized machine shape changed repeatedly this cycle - the RTG board,
+         motherboard and accelerator RAM, the Ricoh battery clock and its
+         battery RAM, the rebuilt drive-sound engine - so the state format
+         version moves from 32 to 40. Re-create snapshots after upgrading.</p>
+
+      <p>No config file changes are required: no TOML key or CLI flag was
+         removed or renamed, and 0.12.0 configs continue to parse. Several
+         <em>defaults</em> changed, though, which is what to check if a machine
+         behaves differently:</p>
+
+      <ul>
+        <li>An RTG card is fitted by default on any machine whose CPU has a
+            32-bit address bus - the stock A3000 and A4000, or any profile given
+            a 68020+ full-bus CPU. A Zorro III board joins the autoconfig chain;
+            <code>[rtg] card = "none"</code> removes it.</li>
+        <li>A3000 and A4000 profiles come with 4 MB of Ramsey motherboard fast
+            RAM fitted. <code>[memory] motherboard = "0"</code> removes it.</li>
+        <li>A3000 and A4000 now default to the Ricoh RP5C01 battery clock rather
+            than the OKI MSM6242. AmigaOS probes for either part so the
+            difference was invisible, but Linux/m68k hard-assumes the Ricoh on
+            big boxes. <code>[machine] rtc_chip</code> overrides.</li>
+        <li>A <code>battmem.nvram</code> file is created in the working
+            directory on any machine with an RP5C01 fitted, so the clock's
+            battery RAM persists across runs. <code>[machine] battmem =
+            ""</code> keeps it session-only.</li>
+        <li>The 68020 and A1200 profiles run at a different, more accurate
+            speed. Anything calibrated against the old, too-fast A1200 will
+            behave differently.</li>
+        <li>Machines with no battery clock now correctly report that they have
+            none, so affected guests say <code>Battery Backed up Clock not
+            found</code> - which is what the real machine says.</li>
+        <li>Drive sounds sound different, rebuilt from measurements of real
+            mechanisms.</li>
+      </ul>
+
+      <h2>Get it</h2>
+
+      <p>Builds for macOS, Linux and Windows are on the
+         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.13.0" target="_blank" rel="noopener">release page</a>,
+         and the Homebrew tap is updated. Or skip the download entirely:
+         <a href="../try/">copperline.dev/try</a> is the same emulator.</p>
+
+      <p>The Discord promised in the
+         <a href="copperline-github-org.html">organisation note</a> is open too:
+         <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">discord.gg/HDTjt3tYAC</a>
+         is where development, bug hunting and general Amiga talk happen. Bug
+         reports still belong in GitHub issues, where they don't scroll away.</p>
+
+      <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
+         <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
+        no CDNs - even the fonts are served from here.
+      </p>
+    </div>
+    <nav class="footer__links">
+      <a href="./">News</a>
+      <a href="feed.xml">RSS</a>
+      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

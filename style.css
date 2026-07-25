@@ -293,6 +293,11 @@ img { max-width: 100%; height: auto; display: block; }
   margin: 0.5rem 0 0.6rem;
 }
 .card p { color: var(--ink-soft); font-size: 0.96rem; }
+.card__link {
+  display: inline-block; margin-top: 0.9rem;
+  font-family: var(--font-mono); font-size: 0.86rem;
+}
+.community-note { margin-top: 1.6rem; color: var(--ink-mute); font-size: 0.92rem; max-width: 68ch; }
 
 /* =============================== SCREENSHOTS ========================== */
 .shot { margin: 0; }
