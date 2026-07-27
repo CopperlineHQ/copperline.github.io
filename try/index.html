@@ -6,6 +6,11 @@
 <title>Try it in your browser - Copperline</title>
 <meta name="description" content="Copperline, a cycle-driven Amiga emulator written in Rust, compiled to WebAssembly and running in your browser. Boots the open-source AROS ROM; bring your own Kickstart and disks.">
 <meta name="theme-color" content="#0a0d16">
+<link rel="manifest" href="./manifest.webmanifest">
+<!-- Pre-16.4 iOS ignores the manifest's display mode; these keep
+     save-to-homescreen installs opening without browser chrome there. -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Copperline in your browser">
@@ -240,7 +245,7 @@
         <button class="btn btn--ghost" id="quicksave">Quick save</button>
         <button class="btn btn--ghost" id="quickload">Quick load</button>
         <label class="btn btn--ghost">Insert DF0&hellip;
-          <input id="df0" type="file" accept=".adf,.adz,.dms,.gz,.zip,.ipf,.scp" hidden></label>
+          <input id="df0" type="file" accept=".adf,.adz,.dms,.gz,.zip,.scp" hidden></label>
         <button class="btn btn--ghost" id="df0url">DF0 from URL&hellip;</button>
         <button class="btn btn--ghost" id="eject">Eject</button>
         <label class="btn btn--ghost">Load Kickstart&hellip;
@@ -248,14 +253,18 @@
         <button class="btn btn--ghost" id="reset">Reset</button>
         <button class="btn btn--ghost" id="joy">Joystick: off</button>
         <button class="btn btn--ghost" id="fullscreen">Fullscreen</button>
+        <button class="btn btn--ghost" id="savedstates">Saved states&hellip;</button>
       </div>
 
       <div class="try-settings">
-        <!-- Left empty on purpose: try.js fills the options from the wasm
-             module's model list once it is ready, so this page never has to
-             track which machines the build offers. -->
+        <!-- The machine, video, view and screen selects are left empty on
+             purpose: try.js fills their options from the wasm module once
+             it is ready, so this page never has to track which machines,
+             standards or modes the build offers. -->
         <label class="try-check">Machine
           <select id="machine"></select></label>
+        <label class="try-check">Video
+          <select id="video"></select></label>
         <label class="try-check">Floppy speed
           <select id="floppy-speed">
             <option value="100">100%</option>
@@ -264,6 +273,10 @@
             <option value="800">800%</option>
             <option value="0">Turbo</option>
           </select></label>
+        <label class="try-check">View
+          <select id="overscan"></select></label>
+        <label class="try-check">Screen
+          <select id="tint"></select></label>
         <label class="try-check"><input id="floppy-sounds" type="checkbox" checked> Drive sounds</label>
         <input id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
         <span id="stat"></span>
@@ -273,10 +286,15 @@
         The same cycle-driven core as the desktop builds, running
         single-threaded in your browser. It starts as an Amiga 500 with 512K of
         chip RAM plus a 512K trapdoor expansion; the Machine control switches
-        it to an AGA A1200, carrying the ROM and the disk in the drive across
-        the rebuild. It boots the bundled open-source
+        it to an AGA A1200, and the Video control to an NTSC machine, each
+        carrying the ROM and the disk in the drive across the rebuild
+        (NTSC needs a real Kickstart - the AROS ROM only boots PAL).
+        It boots the bundled open-source
         AROS ROM out of the box - no Kickstart needed - and you can load your
-        own Kickstart image and disk files with the buttons above. A disk can
+        own Kickstart image and disk files with the buttons above. A loaded
+        Kickstart is remembered by your browser, so your next visit boots it
+        without the picker (the Saved states panel shows what is remembered,
+        with a Forget button). A disk can
         also come from a link: paste an address into DF0 from URL, or append
         <code>?df0=&lt;url&gt;</code> to this page's address to share a
         bootable link (the host must allow cross-origin requests). Everything
@@ -290,12 +308,30 @@
         where you left it. <b>Quick save</b> keeps a snapshot inside your
         browser and <b>Quick load</b> brings it back, even after you close
         the tab and come back tomorrow; you can quick load straight from a
-        cold page, without booting first. <b>Save state</b> downloads the
+        cold page, without booting first. <b>Saved states&hellip;</b> opens
+        a panel of everything your browser holds - name a state to keep
+        several games parked at once, load or delete any of them, and export
+        one as a file. <b>Save state</b> downloads the
         snapshot as a <code>.clstate</code> file instead, and
         <b>Load state</b> (or dropping the file onto the page) restores it.
         That file is the same format the desktop builds read and write, so a
         state started here can be finished on your desktop and the other way
         round.
+      </p>
+
+      <p class="try-note">
+        The page works offline once it has loaded, and installs as an app:
+        <b>Install</b> from the browser menu on desktop Chrome and Edge, or
+        <b>Add to Home Screen</b> in Safari on an iPhone or iPad - the
+        emulator then opens in its own window, no address bar, and boots
+        AROS (or your remembered Kickstart) with no network at all. The
+        <b>View</b> control chooses between the TV picture (deep overscan
+        hidden behind the bezel, as a real set would) and the full overscan
+        field the chipset produces; <b>Screen</b> tints the picture like a
+        monochrome monitor - green or amber phosphor, black &amp; white, or
+        sepia - and screenshots keep the tint. Both are remembered by your
+        browser. While the machine runs, the page also holds your screen
+        awake, so a demo can play out with no keyboard nudging.
       </p>
 
       <p class="try-note">
@@ -347,5 +383,15 @@
 </footer>
 
 <script type="module" src="./try.js"></script>
+<script>
+  // Installability and offline: the service worker precaches the page, the
+  // wasm bundle and the AROS ROMs. Registered after load so its precache
+  // pass never competes with the emulator's own startup downloads.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+</script>
 </body>
 </html>
