@@ -320,9 +320,9 @@ export class WebEmu {
     }
     /**
      * Width of the presentation buffer in pixels. The captured TV aperture
-     * for standard PAL displays, the full framebuffer width otherwise; it
-     * can change between frames, so JS must size the canvas from it each
-     * frame alongside `present_rows`.
+     * for standard 15 kHz displays (PAL and NTSC alike), the full
+     * framebuffer width otherwise; it can change between frames, so JS must
+     * size the canvas from it each frame alongside `present_rows`.
      * @returns {number}
      */
     present_width() {
@@ -528,7 +528,7 @@ export class WebEmu {
     /**
      * Presentation overscan, the desktop's `[display] overscan` knob:
      * "tv" (the default) masks the deep horizontal overscan margins like a
-     * CRT bezel and presents standard PAL screens as the captured TV
+     * CRT bezel and presents standard screens as the captured TV
      * aperture; "full" presents the whole overscan field the renderer
      * produces. Unknown names are ignored, like `set_port_device`. The
      * last completed frame is re-presented under the new aperture, so a
