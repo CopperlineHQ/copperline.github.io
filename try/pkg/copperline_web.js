@@ -267,12 +267,20 @@ export class WebEmu {
      * desktop flag takes is accepted here, but the ones outside that list
      * may need pieces a browser page cannot supply (CDTV/CD32 want an
      * extended ROM and a CD). An unknown name throws.
+     *
+     * `video` picks the video standard ("PAL" or "NTSC", the desktop's
+     * `[chipset] video` key) on top of whatever the profile chose; omitted
+     * or empty keeps the profile's own standard (PAL for every offered
+     * profile). An unknown name throws, like an unknown model.
      * @param {string | null} [model]
+     * @param {string | null} [video]
      */
-    constructor(model) {
+    constructor(model, video) {
         var ptr0 = isLikeNone(model) ? 0 : passStringToWasm0(model, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
-        const ret = wasm.webemu_new(ptr0, len0);
+        var ptr1 = isLikeNone(video) ? 0 : passStringToWasm0(video, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_new(ptr0, len0, ptr1, len1);
         if (ret[2]) {
             throw takeFromExternrefTable0(ret[1]);
         }
@@ -281,9 +289,10 @@ export class WebEmu {
         return this;
     }
     /**
-     * Power LED, following CIA-A's /LED output like the desktop status
-     * bar's LED block. The front-panel getters below are cheap enough to
-     * poll once per animation frame.
+     * Power LED: true while Paula's analogue filter is engaged (CIA-A's /LED
+     * output), which the desktop status bar shows as the PWR LED brightness.
+     * The front-panel getters below are cheap enough to poll once per
+     * animation frame.
      * @returns {boolean}
      */
     power_led() {
@@ -517,6 +526,21 @@ export class WebEmu {
         wasm.webemu_set_mono_audio(this.__wbg_ptr, enabled);
     }
     /**
+     * Presentation overscan, the desktop's `[display] overscan` knob:
+     * "tv" (the default) masks the deep horizontal overscan margins like a
+     * CRT bezel and presents standard PAL screens as the captured TV
+     * aperture; "full" presents the whole overscan field the renderer
+     * produces. Unknown names are ignored, like `set_port_device`. The
+     * last completed frame is re-presented under the new aperture, so a
+     * paused page repaints without stepping the machine.
+     * @param {string} mode
+     */
+    set_overscan(mode) {
+        const ptr0 = passStringToWasm0(mode, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.webemu_set_overscan(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
      * Plug a device into a port: "mouse", "joystick", "cd32", "analogue",
      * or "none". Unplugging releases every line the old device drove, so a
      * page whose gamepad goes away restores the mouse on port 1 with
@@ -545,6 +569,39 @@ export class WebEmu {
     take_audio() {
         const ret = wasm.webemu_take_audio(this.__wbg_ptr);
         var v1 = getArrayF32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * The running machine's video standard ("PAL" or "NTSC"). Follows
+     * `load_state` like `machine_model`, so a page can re-point its video
+     * select at what a state brought back. This is the machine's fitted
+     * standard (the Agnus crystal), not the live BEAMCON0 PAL bit ECS
+     * software can flip at runtime.
+     * @returns {string}
+     */
+    video_standard() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.webemu_video_standard(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * The video standards the constructor's `video` argument accepts, in
+     * menu order. Like `models`, the page builds its select from this list
+     * and its presence doubles as the feature test: older bundles have no
+     * `video_standards` and the control stays hidden.
+     * @returns {string[]}
+     */
+    static video_standards() {
+        const ret = wasm.webemu_video_standards();
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
     }
