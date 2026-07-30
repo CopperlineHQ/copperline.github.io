@@ -289,10 +289,11 @@ export class WebEmu {
         return this;
     }
     /**
-     * Power LED: true while Paula's analogue filter is engaged (CIA-A's /LED
-     * output), which the desktop status bar shows as the PWR LED brightness.
-     * The front-panel getters below are cheap enough to poll once per
-     * animation frame.
+     * Power LED brightness: true while the guest holds CIA-A's /LED line
+     * engaged (full brightness, Paula's filter on), false once it releases
+     * it -- the page then shows the dimmed A500 rev 6+ level, never an
+     * unlit LED, as a running machine is always powered. The front-panel
+     * getters below are cheap enough to poll once per animation frame.
      * @returns {boolean}
      */
     power_led() {
