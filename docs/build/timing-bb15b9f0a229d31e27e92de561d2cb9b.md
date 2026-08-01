@@ -50,19 +50,36 @@ lines fetch on alternating rasters with the picture sitting linearly left
 of the standard grid (its early words run through the left border). The
 renderer honours this through the captured run geometry: a below-$18 run
 origin keeps its raw fetch grid, and a line without a captured fetch
-paints nothing (vAmigaTS Agnus/DDF/DDF/oldhwstop3/4 A500 photos). The
-per-line fetch table is rebuilt when DDFSTRT/DDFSTOP/BPLCON0/DMACON/DIW
-writes land (DDF writes commit to the comparators four colour clocks after
-the write slot; an old DDFSTOP still fires on its commit clock, an old
-DDFSTRT does not - vAmiga's sequencer semantics, hardware-verified in
-aggregate by the vAmigaTS Agnus/DDF/DDF/oldhwstop1-4 A500 photos). A
+paints nothing (vAmigaTS Agnus/DDF/DDF/oldhwstop3/4 A500 photos). For a
+line with no mid-line sequencer writes, the walked fetch plan is keyed on
+the complete carried flop state, masked DDF registers, line geometry,
+chip revision and hard-stop mode. An identical key reuses the preceding
+line's immutable slots and end state; the ordinary static walk is
+allocation-free. DDFSTRT/DDFSTOP/BPLCON0/DMACON/DIW writes invalidate that
+plan and rebuild the affected line (DDF writes commit to the comparators
+four colour clocks after the write slot; an old DDFSTOP still fires on its
+commit clock, an old DDFSTRT does not - vAmiga's sequencer semantics,
+hardware-verified in aggregate by the vAmigaTS
+Agnus/DDF/DDF/oldhwstop1-4 A500 photos). Because the complete initial state
+is in the key, a run carried across horizontal blanking or a vertical-window
+transition cannot accidentally reuse an ordinary interior line. A
 mid-row BPLCON0 change switches the fetch-unit slot layout from its commit
 clock; word addressing is unit-based, so late-enabled planes keep their
 word positions and earlier words stay zero.
 Wide-FMODE (quantum > 1) fetches keep the memoized value-window plan: the
 effective DDF window, fetch cadence, and per-plane fetch-order mask live in
 a `BitplaneSlotPlan` keyed on the register inputs (`BitplaneSlotKey`,
-`src/bus.rs`).
+`src/bus.rs`). On a line without a fetch-affecting write, that plan is
+published as a complete per-line slot mask and is also shared with the DMA
+capture path for its stable cadence and row width. The colour-clock arbiter
+therefore performs a bit test, while capture does not re-derive the same DDF
+geometry on every quantum. A mid-line DDF, BPLCON0, DMACON, DIW or FMODE write
+invalidates the publication and selects the existing block-delay-aware
+calculation for the rest of that line. If a delayed BPLCON0 or DMACON change
+crosses the line boundary, the following line also remains dynamic until the
+delayed value has taken effect. A restored save state likewise keeps the
+remainder of its partial line dynamic, then republishes from the next
+unchanged line.
 Wide-FMODE lo-res slots are packed into the first eight CCKs of each
 16/32-CCK fetch unit; the rest of the unit remains available to later
 arbitration priorities.
@@ -223,6 +240,17 @@ check is applied by `Copper::step_eligible_slot`, the single primitive
 shared by the live bus path and the blitter-deadline predictor's cloned
 simulation, so prediction and execution cannot drift apart.
 
+When the 68k is halted in STOP, its idle fast-forward path may encounter a
+Copper in the steady comparator phase of WAIT. It computes that WAIT's exact
+beam/blitter deadline once and leaves the comparator dormant strictly before
+the deadline while the ordinary DMA arbiter continues to own every colour
+clock. The shortcut is capped at the field wrap because the vertical-blank
+COP1LC strobe supersedes a wait that would otherwise extend into the next
+field. Instruction-tail and wake-up cycles remain individually stepped.
+Ordinary CPU-driven advances do not calculate this deadline: their spans are
+only a few colour clocks, so doing the prediction repeatedly would cost more
+than the comparator calls it replaces.
+
 Register writes take effect a fixed number of colour clocks after the
 chip-bus slot that carried them, and the delay is a property of the
 register pipeline, not of the bus master. Denise-boundary registers apply
@@ -267,6 +295,25 @@ COLORxx replay. Tests:
 `copper_move_writes_visible_registers_on_second_dma_slot`,
 `copper_move_spends_four_color_clocks_leaving_alternate_cycles_free`,
 `color_register_writes_use_final_output_position`.
+
+BPLCON0's HAM select rides that same colour-selection phase: it does not
+feed the bitplane shifter, it picks how the already-serialised index
+becomes a colour. A HAM change and a `COLORxx` write carried by the same
+chip-bus slot therefore reach the picture at the same pixel, so the
+renderer samples the HAM bit `DENISE_HAM_SELECT_PIPELINE_FB` framebuffer
+pixels left of the generic register domain the rest of BPLCON0 (plane
+count, resolution -- the fetch/serialiser side) is sampled in. vAmiga
+models the same relation from the other end: `Denise::setBPLCON0` records
+the change one colour clock after the bus slot and then backs it up by one
+colour clock, landing on the `pos.pixel()` that `Denise::pokeCOLORxx`
+uses. A saturated segment position (a write recorded past the display
+window) keeps the register-domain position so it cannot be dragged back
+into the visible line. Regression example: Hollywood Poker Pro draws a HAM
+photo and an ordinary 6-bitplane scoreboard on the same scanlines and
+clears HAM at `WAIT hp=$A2`; in the generic domain the switch landed 26
+lo-res pixels late and the scoreboard's left 24 columns decoded as HAM
+modify-blue. Tests: `ham_select_lands_in_the_colour_write_domain`, and the
+vAmiga-verified `hamprobe-select` golden render.
 
 ### WAIT/SKIP edge cases
 
@@ -571,7 +618,7 @@ mechanisms sit between the two events, and Copperline models both:
 Together these reproduce the raise-to-handler-entry positions measured
 against vAmiga (and the vAmigaTS real-A500 photos) across VERTB and
 copper-poked INTREQ sources under a range of foreground loops; the residual
-is 0..+7 CCK of per-instruction IPL poll-point detail the vendored core does
+is 0..+7 CCK of per-instruction IPL poll-point detail the m68k core does
 not model. An earlier revision used a blanket 65 CCK "recognition latency"
 calibrated against timing-test row 19 with a mis-decoded VHPOSR (the low
 byte is the CCK position, not CCK/2); that delivered every interrupt ~50 CCK
@@ -602,9 +649,8 @@ debits a per-frame instruction budget one of two ways, selected by
   through every CPU cycle as it executes -- internal cycles, bus-cycle
   tails, chip-bus grants and contention waits -- so the slice's elapsed bus
   CCK is the true hardware cost (`real_slice_accounting` in
-  `src/emulator.rs`). Because the vendored core's 68000 cycle totals are
-  exact across the SingleStepTests corpus
-  (`crates/m68k/CYCLE_TIMING_GAP.md`),
+  `src/emulator.rs`). Because the m68k core's 68000 cycle totals are exact
+  across its [SingleStepTests validation corpus](https://github.com/benletchford/m68k-rs/tree/m68k-v0.3.1#validation--testing),
   this matches a stock PAL 68000.
 - `instructions`: a flat cycles-per-instruction quota
   (`COPPERLINE_REAL_CPU_CPI`, default 4.0), debited by retired

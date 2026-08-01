@@ -186,7 +186,11 @@ in-memory FFS volume behind a virtual drive. The guest side is a tiny
 handler (see `guest/services/`) mapped into the Copperline services board
 with a mount table and a hand-built DiagArea; at expansion init it builds
 one DeviceNode per mount and `AddBootNode`s it (at the mount's configured
-boot priority), so DOS mounts the devices at boot. The handler forwards
+boot priority), so DOS mounts the devices at boot. The handler probes the
+library versions at runtime and falls back to the 1.3-era calls
+(`AddDosNode`, a Forbid-protected DosList splice) on Kickstart 1.3, which
+mounts but cannot boot from the volumes -- the bootpri vote needs the
+2.0+ BootNode strap. The handler forwards
 every DosPacket to the host through a doorbell register in the board's
 MMIO window: writing the packet APTR to `REG_DOSPKT` services the packet
 synchronously inside the register write, so `dp_Res1`/`dp_Res2` and the
@@ -210,6 +214,15 @@ DiagPoint culls the ROM's `scsi.device` resident tag (`romtags.rs`),
 which is why setting the flag instantiates the services board even with
 no `[[filesys]]` mounts configured.
 
+These longword registers are written with a single `move.l` in the guest
+ROM/handler, but on a 68000/68010 that compiles to two word-sized bus
+cycles (high word, then low word -- a real 16-bit-bus artifact the CPU
+core reproduces). The board fires each doorbell (`DIAG_DOORBELL`,
+`REG_DOSPKT`, `REG_MSGPORT`) on whichever write actually completes the
+value -- a single 4-byte access on a 32-bit bus, or the low word of a
+split pair on a 16-bit one -- reading the result back out of the already-
+latched window image rather than trusting the write that triggered it.
+
 Amiga attributes a host filesystem cannot hold live in UAE-style `.uaem`
 sidecar files (read when present, written back on change, hidden from
 guest listings); the delete-protection bit is honoured on
@@ -221,7 +234,7 @@ guest could construct on its own (`..`, embedded separators) are
 blocked. A `readonly`
 mount refuses writes with the standard write-protection error.
 
-## A2065 Ethernet (`a2065.rs`, `net.rs`)
+## A2065 Ethernet (`a2065.rs`, `net/`)
 
 The `[a2065]` option fits a Commodore A2065: a Zorro II board carrying an
 Am7990 LANCE and 32 KiB of on-board RAM, driven by the AmigaOS SANA-II
@@ -249,6 +262,17 @@ breaks byte-identical replay while traffic flows; save states record only
 the chosen backend and bring up a fresh one on load (flows die; the
 guest's TCP retransmits). The board and backend story, including the WASM
 plugin `net` capability, is covered in [](../zorro).
+
+The `bridge` backend (`net/bridge/`, `net-bridge` build feature) uses the
+same bounded worker boundary but carries unmodified Ethernet frames to a
+selected physical adapter: AF_PACKET on Linux, system libpcap/BPF on macOS,
+and runtime-loaded Npcap on Windows. A platform filter and a second software
+guard admit only the guest station address and multicast/broadcast, while
+guest-source capture echo is discarded. The LANCE's init-block PADR updates
+that filter. Linux's companion process owns only `CAP_NET_RAW`, validates an
+interface request, and passes a bound descriptor with `SCM_RIGHTS`; it never
+handles a frame. Backend construction is fallible so bridge errors abort
+machine startup or state restoration rather than changing connectivity.
 
 ## CDTV (`cdtv.rs`, `cdrom.rs`)
 

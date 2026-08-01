@@ -40,6 +40,7 @@ range checks as the equivalent TOML fields:
 | `--cpu MODEL` | `[cpu] model` | `68000`, `68010`, `68EC020`, `68020`, `68030`, `68040`, `68060` |
 | `--cpu-clock MHZ` | `[cpu] clock_mhz` | a number of MHz |
 | `--fpu` / `--no-fpu` | `[cpu] fpu` | fit / omit a 68881/68882 |
+| `--jit` / `--no-jit` | `[cpu] jit` | experimental fast batch/trace-JIT CPU execution (68020+; not cycle-exact) |
 | `--chip SIZE` | `[memory] chip` | `512K`, `1M`, `2M`, ... |
 | `--fast SIZE` | `[memory] fast` | `0`, `1M`, `4M`, `8M`, ... |
 | `--slow SIZE` | `[memory] slow` | `0`, up to `512K` |
@@ -47,9 +48,22 @@ range checks as the equivalent TOML fields:
 | `--accelerator SIZE` | `[memory] accelerator` | CPU-slot RAM at `$08000000` (32-bit CPUs): `0` to `128M` |
 | `--floppy-drives COUNT` | `[floppy] drives` | `1` to `4` wired drives (`DF0:` plus external drives) |
 | `--floppy-speed PERCENT` | `[floppy] speed` | `100` (real), `200`, `400`, `800`, or `0` (turbo) |
+| `--floppy-bridge DFN NAME` | `[floppy.dfN] bridge` | drive a physical floppy drive: `drawbridge`, `greaseweazle`, `supercardpro`, `off` |
+| `--floppy-bridge-port DFN PORT` | `[floppy.dfN] bridge_port` | that interface's serial port (default: auto-detect) |
+| `--floppy-bridge-cable DFN SEL` | `[floppy.dfN] bridge_cable` | drive select: `a`/`b` (IBM PC cable) or `0`-`3` (Shugart) |
+| `--floppy-bridge-mode DFN MODE` | `[floppy.dfN] bridge_mode` | how tracks are captured: `normal`, `compatible`, `stalling` |
+| `--floppy-bridge-density DFN D` | `[floppy.dfN] bridge_density` | force a density: `auto`, `dd`, `hd` |
+| `--floppy-bridge-speed DFN PCT` | `[floppy.dfN] bridge_speed` | serve captured tracks at `100`, `125`, `150`, `175`, or `200` percent of real speed |
+| `--floppy-bridge-auto-cache DFN` | `[floppy.dfN] bridge_auto_cache = true` | cache disk data while the drive is idle |
+| `--floppy-bridge-writable DFN` | `[floppy.dfN] write_protected = false` | allow writing to the real disk |
 | `--joystick MODE` | `[input] joystick` | `gamepad` (default), `keyboard` |
+| `--mouse-sensitivity N` | `[input] mouse_sensitivity` | `0`-`100` host mouse speed (`50` default = 1:1) |
+| `--mouse-capture MODE` | `[input] mouse_capture` | When the host mouse is grabbed: `click` (default), `auto`, `manual` |
 | `--port1 DEVICE` | `[input] port1` | `mouse` (default), `joystick`, `cd32`, `analogue`, `none` |
 | `--port2 DEVICE` | `[input] port2` | same devices; default `joystick` (`cd32` on the CD32 profile) |
+| `--autofire HZ` | `[input] autofire_hz` | `0` (off, the default) to `30` |
+| `--full-screen` / `--windowed` | `[display] full_screen` | open fullscreen or windowed at start (default windowed) |
+| `--show-status-bar` / `--hide-status-bar` | `[display] status_bar` | status bar at start (default shown) |
 
 For example, to boot a stock A1200 profile but with 8 MB of fast RAM and a
 faster CPU, with no config file at all:
@@ -64,10 +78,12 @@ explicit `[cpu]`/`[chipset]`/`[memory]` sections override a `[machine]`
 profile in a config file.
 
 The audio, serial, parallel, and network surface has matching per-run flags
-too -- `--audio-device`, `--audio-channel-mode`, `--audio-stereo-separation`,
-`--serial`, `--midi-in`, `--midi-out`, `--parallel`, `--sampler-audio-input`,
-`--sampler-input-gain`, `--a2065-net` -- described with their `[audio]`,
-`[serial]`, `[parallel]`, and `[a2065]` keys below.
+too -- `--audio-device`, `--audio-channel-mode`, `--audio-filter`,
+`--audio-stereo-separation`, `--serial`, `--midi-in`, `--midi-out`,
+`--parallel`, `--sampler-audio-input`, `--sampler-input-gain`, `--a2065-net`,
+`--a2065-interface` --
+described with their `[audio]`, `[serial]`, `[parallel]`, and `[a2065]` keys
+below.
 
 ## Top level
 
@@ -256,6 +272,9 @@ power_on = true            # false = start powered off at the test screen
 pacing_budget = "cycles"   # "cycles" (hardware-accurate) or "instructions"
 realtime_priority = false  # true = raise the pacer/audio thread priority
 warp_speed = "max"         # turbo limit: "2x", "4x", "8x", "16x", or "max"
+rewind = false             # true = record rewind history from power-on
+rewind_budget_mb = 256     # host memory the rewind history may hold
+rewind_interval_frames = 25 # emulated frames per rewind step
 ```
 
 The deterministic cycle-driven core is the only emulation timing. It is
@@ -299,6 +318,18 @@ carried no information.)
   out and still presents at vsync. Adjust it live from the **Warp Limit**
   menu item or `Cmd+Shift+W` / `Alt+Shift+W` (see [The window and its
   controls](ui.md)).
+- `rewind = true` records rewind history from power-on, so `Cmd+Z` / `Alt+Z`
+  and the **Rewind** menu item can step the whole machine backward through
+  it. It rides the same deterministic snapshot ring as the debugger's reverse
+  controls (see [](../debugger/reverse)) and is off by default because it is
+  not free: `rewind_budget_mb` (default 256) of host memory holds the
+  snapshots, and one whole-machine serialize happens every
+  `rewind_interval_frames` (default 25, half a second of PAL). One rewind
+  step goes back exactly one interval; oldest snapshots are evicted first, so
+  how much emulated time the budget buys scales with the machine's RAM size.
+  Turning the menu item off releases the retained snapshots. The same
+  determinism preconditions as reverse debugging apply -- a real-time clock
+  and host disk writes are not rolled back.
 
 ## `[cpu]`
 
@@ -314,6 +345,8 @@ clock_mhz = 14.0    # optional; defaults to the model's stock speed
 # unimplemented = "trap"  # 68060 only: "trap" (faithful; the OS needs
 #                   # 68060.library) or "native" (execute the removed
 #                   # instructions directly)
+# jit = true        # experimental: fast batch/trace-JIT CPU execution
+#                   # (68020+; not cycle-exact)
 ```
 
 - `model`: the 68010 models the vector base register, the format-stacking
@@ -350,6 +383,25 @@ clock_mhz = 14.0    # optional; defaults to the model's stock speed
   animation may pace correctly only with the cache modelled. The data cache
   caches expansion RAM/ROM only, since chip and slow RAM are DMA-visible and
   cache-inhibited as on real Amigas.
+- `jit` (experimental, also `--jit`/`--no-jit`) runs the CPU through the
+  m68k core's batch/trace-JIT path instead of the cycle-exact
+  per-instruction model: hot code compiles to native traces and fast-RAM
+  accesses run through a zero-cost direct-memory window. The machine
+  behaves like an ideal accelerator running at `clock_mhz`: one
+  instruction per CPU clock with zero-wait fast RAM and ROM, so a 50 MHz
+  68040 delivers on the order of 50 MIPS (raise `clock_mhz` for more).
+  Interrupts are recognized at batch boundaries, so chip-level races and
+  cycle-counted effects no longer line up; leave it off for anything
+  timing-sensitive (games, demos). Chip and slow RAM still arbitrate onto
+  the shared chip bus in order, and the on-chip cache models stay active
+  (as on a real accelerator, they are what lets chip-RAM-resident code
+  run at CPU speed), so displays, blits, and device I/O work normally. Requires a 68020
+  or later: the 68000/68010 share one bus with the chipset and their
+  floating-bus and prefetch semantics need the precise core, so
+  `jit = true` on those models logs a note and stays precise (the
+  launcher greys the toggle). Known issue: the bundled AROS ROM's boot
+  screen may stay grey under JIT on some 020+ configurations (the guest
+  still runs; Kickstart ROMs are unaffected).
 
 ## `[memory]`
 
@@ -425,19 +477,35 @@ recorded in [](../internals/chipset)).
 
 ```toml
 [display]
-overscan = "tv"      # "tv" (default) or "full"
-pixel_aspect = "tv"  # "tv" (default, 4:3 CRT) or "square" (exact 2x2 lo-res)
-phosphor = 0.0       # CRT persistence fraction, 0.0 (off) to 0.95
+overscan = "tv"       # "tv" (default) or "full"
+pixel_aspect = "tv"   # "tv" (default, 4:3 CRT) or "square" (exact 2x2 lo-res)
+deinterlace = true    # motion-adaptive interlace weaving (default true)
+phosphor = 0.0        # CRT persistence fraction, 0.0 (off) to 0.95
+shader = "none"       # "none" (default), "scanlines", "mask", "crt", or a .wgsl file
+shader_strength = 1.0 # how strongly the shader is mixed in, 0.0-1.0
+tint = "none"         # "none" (default), "bw", "green", "amber", or "sepia"
+full_screen = false   # open fullscreen at start (default false)
+status_bar = true     # show the status bar at start (default true)
 ```
 
 The emulated framebuffer always carries the full overscan field Denise
 produces. `"tv"` masks the deep horizontal overscan margins in black like a
-CRT bezel, presenting the standard PAL window plus 24 lo-res pixels per side
+CRT bezel, presenting the standard window plus 24 lo-res pixels per side
 of TV-style overscan while preserving vertical border colour changes. PNG
-screenshots and `--dump-frames` crop standard PAL TV output to a 692x540
-aperture for reference-emulator comparison. `"full"` shows everything, which
+screenshots and `--dump-frames` crop standard TV output to a 692x540
+aperture for reference-emulator comparison; PAL and NTSC scans share the
+one shape because both apertures fill the same 4:3 glass -- an NTSC scan's
+shorter crop (the 200-line standard window plus the same overscan margin)
+is scaled onto the same output rows. The live window shows a slightly
+narrower cut of the same aperture, clipped to the columns the framebuffer
+actually captures, so the picture sits exactly centred on screen with no
+one-sided black margin. `"full"` shows everything, which
 is useful when debugging display alignment. `COPPERLINE_OVERSCAN=full|tv`
-overrides this for a single run.
+overrides this for a single run. In both modes the presentation geometry
+holds steady across the blank frames a screen change produces: a frame
+showing only border colour keeps the previous frame's aperture and
+centring instead of snapping to the full framebuffer, so the picture does
+not jump sideways at Kickstart screen changes.
 
 `pixel_aspect` selects how emulated scanlines map to host rows. The default
 `"tv"` presents the field with the non-square pixel aspect of a 4:3 CRT:
@@ -451,6 +519,14 @@ comparison with square-pixel emulators. The menu's *Pixel Aspect* item
 flips the mode live without touching the config, and
 `COPPERLINE_PIXEL_ASPECT=tv|square` overrides it for a single run.
 
+`deinterlace` controls how interlaced (LACE) displays are presented. On
+(the default), a motion-adaptive deinterlacer weaves the two fields into a
+full-height picture where the content is static and interpolates where it
+moves, recovering the full vertical resolution without combing. Off, every
+field is simply line-doubled as it arrives, which shows interlace bob and
+flicker much as a TV without persistence would. `COPPERLINE_DEINTERLACE=0`
+overrides the config for a single run.
+
 `phosphor` blends each presented frame with a fraction of the previous
 one, approximating the exponential decay of CRT phosphor. Software that
 relies on the tube to fuse field-rate flicker -- alternate-field dither
@@ -459,6 +535,209 @@ around `0.3`-`0.5`,
 at the cost of a slight motion trail. Off by default so screenshots and
 frame dumps stay frame-exact. `COPPERLINE_PHOSPHOR=0.4` overrides the
 config for a single run.
+
+`shader` runs a GPU shader pass over the window's picture, for the tube
+look a phosphor trail on its own cannot give. Three presets are built in:
+
+- `"scanlines"` -- the line structure a 15 kHz set leaves between beam
+  passes: a raised-cosine gap at the pitch of the emulated lines, with the
+  brightness the gaps cost compensated back so the picture dims only
+  slightly rather than by half.
+- `"mask"` -- a shadow mask. The picture is modulated through staggered RGB
+  phosphor triads keyed to physical window pixels, so the mask keeps its
+  size whatever the Amiga resolution behind it, again
+  brightness-compensated.
+- `"crt"` -- the lot, in the spirit of the 1084 the Amiga shipped with: a
+  bowed tube face, scanlines that follow the bow, an aperture grille, and a
+  corner vignette, all faded in together.
+
+`"none"` (the default; `"off"` is accepted for the same thing) presents the
+picture untouched, and any value ending in `.wgsl` is the path of a shader
+of your own -- see [Custom WGSL shaders](#custom-wgsl-shaders) below.
+
+The scanline gaps are drawn at the pitch of the emulated field lines the
+window is actually showing: 270 in the default TV-overscan presentation
+(214 on an NTSC scan) and 285 in `"full"`, so the line structure follows
+the picture rather than the window size. TV overscan with `pixel_aspect = "square"` is 285 as well --
+that canvas is taller than the TV aperture and pads it with bezel rows, so
+the same 270 lines are rescaled to keep their pitch across the whole
+window. Interlaced content is deliberately drawn at field-line pitch
+over the woven frame, which is what a 15 kHz set fed an interlaced signal
+looks like, rather than one gap per woven row.
+
+`shader_strength` (0.0 to 1.0, default 1.0) is how strongly the effect is
+mixed in, so a preset can be dialled back without editing shaders. At `0.0`
+the shader arithmetic is an exact no-op, but the pass still resamples the
+picture through a plain bilinear sampler, which is a shade softer than the
+texel-snapped pass-through the window otherwise uses at magnification.
+`"none"` skips the pass altogether and is the only truly zero-cost setting.
+
+The menu's *CRT Shader* item cycles the presets live for the rest of the
+session without touching the config file; the launcher's *A/V & Emu* tab
+(*Video* category) has *CRT shader* and *Shader strength* rows that do
+write it.
+`COPPERLINE_SHADER=crt|scanlines|mask|none|PATH.wgsl` and
+`COPPERLINE_SHADER_STRENGTH=0.0..1.0` override the config for a single run.
+There is no command-line flag.
+
+The pass is presentation and nothing else. Screenshots
+(`--screenshot-after`), frame dumps (`--dump-frames`), video recordings, the
+[control protocol](../debugger/control.md)'s capture methods and the web
+frontend all read the CPU presentation buffer, which the shader never
+touches, so captures stay comparable whatever is selected here. Individual
+frames also skip the pass in three cases: while a menu or overlay panel is
+open (a phosphor mask and a curved face make overlay text unreadable), for
+frames coming from an RTG board's scanout (see `[rtg]` below), and for
+programmable multisync scan modes -- a 31 kHz scanout has no 15 kHz line
+structure to reproduce.
+
+`bezel` (default `false`) frames the window's picture with a monitor-style
+front bezel, also in the spirit of the 1084: the picture scales down into
+the rounded opening of a procedurally drawn plastic face -- warm-grey
+moulding, a dark recess around the tube face, rounded case corners, and the
+wider bottom band carrying the power LED and a printed Copperline logotype
+in the spot the 1084 kept its Commodore badge. The frame is drawn at the window's
+resolution, so it stays sharp at any size, and the picture keeps its aspect
+inside the opening. It is independent of `shader` and composes with any
+preset: with `"crt"` the bowed tube face sits inside the opening for the
+full monitor look. Cmd+M (macOS) / Alt+M toggles it live for the rest of
+the session without touching the config; the launcher's *Monitor bezel* row
+(*A/V & Emu*, *Video*) writes it, and `COPPERLINE_BEZEL=1|0` overrides the
+config for a single run.
+
+Like the shader pass, the bezel is presentation and nothing else: captures
+never include it, and it is skipped while a menu or overlay panel is open
+and for RTG scanout frames. Unlike the shader it does stay on for
+programmable multisync scans -- a frame has no line structure to get wrong.
+
+`tint` recolours the picture like the phosphor of a monochrome monitor:
+`"bw"` (black and white), `"green"` and `"amber"` (the two classic
+monochrome phosphors), or `"sepia"`; `"none"` (the default; `"off"` is
+accepted) presents full colour. The same five looks the web frontend's
+*Screen* selector offers, produced by the same colour chain, so a tint
+chosen in the browser matches the desktop. It composes with `shader` --
+green phosphor under the `crt` preset makes a convincing monochrome tube.
+Like the shader, the tint is presentation only: screenshots, frame dumps,
+recordings and headless runs stay untinted, the status bar and overlay
+menus keep their colours, and RTG board scanout (the monitor on the
+board's own output, not the Amiga's video output) is never tinted. The
+menu's *Screen Tint* item cycles the tints live for the rest of the
+session without touching the config file; the launcher's *A/V & Emu* tab
+(*Video* category) has a *Screen tint* row that does write it.
+`COPPERLINE_TINT=bw|green|...` overrides the config for a single run.
+
+### Custom WGSL shaders
+
+Pointing `shader` at a `.wgsl` file loads a fragment shader of your own into
+the same pass. The quickest start is to copy one of the presets --
+`src/video/window/shaders/scanlines.wgsl`, `mask.wgsl` or `crt.wgsl` in the
+source tree -- and edit its `fs_main`: everything above the
+`--- end shared contract ---` marker in those files is the contract, and is
+byte-identical in all three.
+
+A shader must declare exactly these bindings and both entry points:
+
+```wgsl
+struct CrtUniforms {
+    // Display sub-rect of src_tex in UV space: xy origin, zw size.
+    src_rect: vec4<f32>,
+    // xy: viewport size in physical pixels. zw: source display texels.
+    size: vec4<f32>,
+    // x: strength, 0 (no-op) to 1 (full). y: scanline count across the
+    // display height. zw: preset-internal, do not rely on them.
+    params: vec4<f32>,
+    // Preset-internal and reserved; zero for a custom shader.
+    params2: vec4<f32>,
+};
+
+@group(0) @binding(0) var src_tex: texture_2d<f32>;
+@group(0) @binding(1) var src_samp: sampler;
+@group(0) @binding(2) var<uniform> u: CrtUniforms;
+
+struct VOut {
+    @builtin(position) pos: vec4<f32>,
+    @location(0) uv: vec2<f32>,
+};
+
+@vertex
+fn vs_main(@builtin(vertex_index) idx: u32) -> VOut {
+    // Fullscreen triangle; the viewport restricts it to the display rect.
+    let tc = vec2<f32>(f32((idx << 1u) & 2u), f32(idx & 2u));
+    var out: VOut;
+    out.uv = tc;
+    out.pos = vec4<f32>(tc * vec2<f32>(2.0, -2.0) + vec2<f32>(-1.0, 1.0), 0.0, 1.0);
+    return out;
+}
+
+// Sample the display region only, clamped half a texel inside src_rect so
+// a linear tap on the bottom edge never blends in the status bar's first
+// row underneath it.
+fn sample_display(uv: vec2<f32>) -> vec4<f32> {
+    let half_texel = 0.5 * u.src_rect.zw / max(u.size.zw, vec2<f32>(1.0));
+    let lo = u.src_rect.xy + half_texel;
+    let hi = u.src_rect.xy + u.src_rect.zw - half_texel;
+    let tc = clamp(u.src_rect.xy + uv * u.src_rect.zw, lo, hi);
+    return textureSample(src_tex, src_samp, tc);
+}
+
+@fragment
+fn fs_main(in: VOut) -> @location(0) vec4<f32> {
+    let uv = clamp(in.uv, vec2<f32>(0.0), vec2<f32>(1.0));
+    let base = sample_display(uv);
+    let strength = clamp(u.params.x, 0.0, 1.0);
+
+    // Your own look goes here. This one is a green monochrome monitor with
+    // a gap between beam passes at the emulated line pitch.
+    let lines = max(u.params.y, 1.0);
+    let profile = 0.5 - 0.5 * cos(6.283185307 * uv.y * lines);
+    let luma = dot(base.rgb, vec3<f32>(0.299, 0.587, 0.114));
+    let tube = vec3<f32>(0.2, 1.0, 0.35) * luma * (0.6 + 0.4 * profile);
+
+    // Mixing back toward the untouched sample keeps strength 0 a no-op.
+    return vec4<f32>(mix(base.rgb, tube, strength), 1.0);
+}
+```
+
+Points worth knowing:
+
+- All three bindings are fragment-visibility only. `vs_main` cannot read
+  them, so all the work happens in `fs_main`.
+- Sampling goes through `src_rect`. The pass draws over the display
+  rectangle of a texture that also carries the status bar below it, and the
+  half-texel inset is what keeps the status bar's separator hairline out of
+  the bottom of a magnified picture.
+- Of the uniforms, a custom shader can count on `src_rect`, `size`,
+  `params.x` (strength) and `params.y` (scanline count). `params.z`,
+  `params.w` and `params2` carry the built-in presets' own look parameters,
+  are zero for a custom shader, and are reserved for future use.
+- Making strength `0.0` a visual no-op is a convention, not something the
+  loader enforces, but the *Shader strength* control and
+  `COPPERLINE_SHADER_STRENGTH` are only useful if you honour it.
+
+The file is read and checked when the window is created, when the launcher
+starts a machine, and every time the menu's *CRT Shader* item cycles onto
+**custom** -- which re-reads it from disk. That is the live-reload story:
+leave the emulator running, edit the shader, then cycle the menu item away
+from custom and back to see the new version.
+
+Checking is a parse, a full validation, and a look for the two entry points,
+all before any GPU pipeline is built, so a mistake is reported as WGSL with
+its line and column rather than as a driver error. Files over 1 MiB are
+refused unread, on the grounds that a shader that big is a mistyped path.
+Whatever goes wrong -- a missing file, a syntax error, a missing `fs_main` --
+the full diagnostic goes to the log, a one-line summary appears in the
+window's on-screen message, and the shader falls back to off. A bad custom
+shader never fails the config, and never stops the machine from running.
+
+`full_screen` opens the window fullscreen at start (borderless), and
+`status_bar` chooses whether the status bar starts visible. Both are start-up
+preferences; the runtime toggles -- `Cmd+F` / `Alt+F` for fullscreen and
+`Cmd+Shift+F` / `Alt+Shift+F` for the status bar, plus their menu items --
+still flip either live without changing the saved value. On the command line
+`--full-screen` / `--windowed` set the fullscreen state and `--show-status-bar` /
+`--hide-status-bar` set the status bar; the launcher's A/V & Emu page (Video
+category) has *Start fullscreen* and *Status bar* toggles for the same. Left
+unset they keep the defaults: windowed, status bar shown.
 
 Rendering completed frames uses a worker thread by default so emulation can
 advance while the previous frame is painted. The worker is an implementation
@@ -476,6 +755,7 @@ floppy_sounds_volume = 100  # 0-100, relative to Paula's output
 # output_enabled = true     # false = no sound (GUI "Disabled"); --audio/--noaudio still win
 channel_mode = "stereo"     # "stereo" (default) or "mono"
 stereo_separation = 100     # 0-100; 100 = hardware panning, 0 = mono
+audio_filter = "auto"       # Paula filter: "auto" (guest-driven), "on", or "off"
 ```
 
 The drive sounds are generated from scratch: motor hum with spin-up/down
@@ -503,6 +783,18 @@ not change the emulated audio and are not stored in save states. The equivalent
 CLI flags are `--audio-device`, `--audio-channel-mode`, `--audio-stereo-separation`
 and `--list-audio-devices`.
 
+`audio_filter` controls Paula's analogue low-pass filter, the one a
+post-A1000 Amiga switches with the same CIA-A line that drives the power
+LED. `"auto"` (the default) lets the guest engage or bypass it as the
+software asks, matching real hardware; `"on"` and `"off"` force it either
+way as a listener override. Unlike the host-output settings above it is
+part of the emulated audio path, so it also affects WAV capture. Also on
+`--audio-filter`, the runtime **Audio Filter** menu item, and Cmd/Alt+A.
+The status-bar PWR LED is lit whenever the machine is powered and follows
+the guest's /LED line itself -- full brightness while engaged, dimmed like
+an A500 rev 6+ board while released -- so this override changes what you
+hear, never the LED.
+
 On Linux with PipeWire/PulseAudio, individual sinks are not ALSA devices, so
 only the `default`/`pipewire` route is offered; pick the output in the desktop
 sound settings (or route Copperline in `pavucontrol`) and it follows. macOS and
@@ -512,9 +804,12 @@ Windows select each device directly.
 
 ```toml
 [input]
-port1 = "mouse"        # mouse | joystick | cd32 | analogue | none
-port2 = "joystick"     # same values; default "cd32" on the CD32 profile
-joystick = "gamepad"   # "gamepad" (default) or "keyboard"
+port1 = "mouse"           # mouse | joystick | cd32 | analogue | none
+port2 = "joystick"        # same values; default "cd32" on the CD32 profile
+joystick = "gamepad"      # "gamepad" (default) or "keyboard"
+mouse_sensitivity = 50    # host mouse speed 0-100 (50 default = 1:1)
+mouse_capture = "click"   # when to grab the mouse: click | auto | manual
+autofire_hz = 0           # pulse a held fire button at this rate; 0 = off
 ```
 
 ### Port devices
@@ -578,6 +873,73 @@ keyboard icon next to the volume control), `Cmd+J` / `Alt+J`, the menu's
 without changing the config. `--joystick MODE` overrides this for a single
 run. (`auto` is still accepted here as a backward-compatibility alias for
 `gamepad`; the old auto-detect mode has been removed.)
+
+`mouse_sensitivity` scales how fast the emulated pointer tracks the host
+mouse, 0-100. `50` (the default, shown as *Default* in the GUI) is 1:1 --
+exactly the previous behaviour -- `0` is a quarter speed and `100` quadruple,
+on an exponential scale so each step is an even ratio. It is a host-input
+scale applied to live mouse motion only: it never touches the emulated machine
+or scripted `--mouse-after` input, so headless and recorded runs stay
+deterministic. Set it from the launcher's *Input* tab or
+`--mouse-sensitivity N`, and adjust it live with `Cmd+Shift+>` / `Cmd+Shift+<`
+(`Alt+Shift+>` / `Alt+Shift+<` on Linux and Windows), which ramp while held.
+
+### Mouse capture
+
+Capturing the mouse confines the host pointer to the window and hides the
+host cursor, so the Amiga pointer is the only one on screen. `mouse_capture`
+decides when that grab is taken:
+
+- `click` (the default) -- clicking the display grabs it. That click is a
+  window action and is not passed to the Amiga, so the first click the guest
+  sees is the first one aimed at it.
+- `auto` -- grab as soon as the window has the focus, and again whenever it
+  regains it, so no host cursor is ever loose over the display. Entering
+  fullscreen grabs too. This suits a mouse-driven game or a fullscreen
+  session where the host desktop is not wanted.
+- `manual` -- only the shortcut grabs. Clicks on the display go straight to
+  the Amiga and the host cursor is left alone.
+
+`Cmd+G` / `Alt+G` releases and re-takes the grab by hand in every mode, and
+an explicit release is never undone automatically. Opening a panel or tool
+window borrows the cursor and hands the capture back when the last one
+closes.
+
+Uncaptured, host cursor motion over the display still drives the emulated
+mouse in every mode; this setting only decides when the grab is taken, not
+whether motion reaches the machine. Set it from the launcher's *Input* tab
+or `--mouse-capture MODE`.
+
+### Autofire
+
+`autofire_hz` turns a *held* fire button into a pulse train at that many
+presses per second; `0` (the default) leaves the button alone. It applies to
+live input only -- the gamepad and the keyboard mapping -- and never to
+scripted input (`--joy-after`, `--script`, the control protocol's
+`input.joy`), which must replay exactly the events it was given.
+
+The phase comes from emulated time, so the rate is the same under warp and
+on PAL or NTSC. Nothing about the emulated machine changes: the port sees an
+ordinary button being pressed and released on `/FIRx`. Only the fire button
+is pulsed; directions and the second button pass through untouched.
+
+`--autofire HZ` sets it for one run, and the menu's **Autofire** item cycles
+off / 3 / 5 / 8 / 12 / 16 Hz live. The maximum is 30 Hz -- above that the
+assert window is shorter than the frame the guest samples the port on.
+
+### Remapping the keyboard controller
+
+The keyboard-to-controller bindings are a host preference, not part of the
+emulated machine, so they live beside the gamepad calibration rather than in
+a machine config: the menu's **Input Mapping...** item edits them and Save
+writes `keymap.toml` next to `gamepads.toml` (see
+[Gamepad calibration](ui.md#gamepad-calibration) for the per-platform
+location). Any control may take several keys -- fire ships with four aliases
+so compact keyboards without the right-hand modifiers still work -- and
+binding a key removes it from wherever it was before, including from the
+other mapping, so the two controllers can never fight over one key. Deleting
+the file restores the built-in layouts, as does the panel's **Defaults**
+button.
 
 ## `[serial]` -- serial port and MIDI
 
@@ -706,7 +1068,8 @@ Faster-than-real speeds are a compatibility trade-off, exactly as in other
 emulators: the operating system and most loaders tolerate them, but
 software that times its own loading against the beam, CIA timers, or music
 playback can break. The setting can be changed live from the runtime menu
-("Floppy Speed") without restarting the machine.
+("Floppy Speed") without restarting the machine. It applies to image-backed
+bays only; a physical drive has its own `bridge_speed`.
 
 Supported image formats: standard 901120-byte DD ADF, gzip-compressed
 images (ADZ), single file ZIP archives, DMS archives, UAE extended ADF, and
@@ -714,16 +1077,43 @@ read-only SCP flux images. DMS, gzip, and SCP images are decoded at load time
 and always treated as write-protected; set `write_protected = false` on a plain
 ADF to allow write-through updates to the image file.
 
-The native loader deliberately rejects IPF/CAPS images. Useful native support
-would require either a direct IPF parser or an optional SPS/CAPS library, with
-its licensing, platform packaging, and dynamic-loading strategy settled before
-it becomes a desktop dependency. (The browser frontend has its own
-write-protected media decoder and does accept IPF.)
+The loader deliberately rejects IPF/CAPS images. Useful support would require
+either a direct IPF parser or an optional SPS/CAPS library, with its licensing,
+platform packaging, and dynamic-loading strategy settled before it becomes a
+dependency. The browser frontend shares this decoder, so it rejects IPF too.
 
 A `paths` playlist lets multi-disk software that only drives DF0: run
 without a second drive: the first entry is the boot disk and the disk-swap
 shortcut (`Cmd+D` on macOS, `Alt+D` on Linux/Windows) or the status-bar
 swap button cycles to the next image, wrapping around.
+
+### A real drive on a bay
+
+A bay can be given a physical 3.5" drive instead of an image, over a
+DrawBridge, Greaseweazle, or Supercard Pro:
+
+```toml
+[floppy.df0]
+bridge = "greaseweazle"      # drawbridge/greaseweazle/supercardpro/off
+write_protected = true       # emulator-level protection, on top of the tab
+# bridge_port = "/dev/ttyACM0"   # omit to auto-detect the interface
+# bridge_cable = "a"             # a/b (IBM PC) or 0..3 (Shugart)
+# bridge_density = "auto"        # auto/dd/hd
+# bridge_mode = "compatible"     # compatible/stalling
+# bridge_speed = 125             # 100, 125, 150, 175, or 200 percent of real speed
+# bridge_auto_cache = false      # read tracks ahead while the drive is idle
+```
+
+A bay takes either a bridge or an image, never both: the disk in the drive
+is its media, and naming a `path` alongside is an error. `bridge = "off"`
+returns the bay to images and keeps the other bridge settings for later.
+
+Nothing needs installing -- Rob Smith's FloppyBridge is built into Copperline
+-- but it changes how the machine runs in several ways -- writes need both the disk's tab and
+`write_protected = false`, the status bar's eject and swap do nothing for
+that bay, and a machine with a physical drive is paced to wall-clock time and is
+not reproducible. [](floppybridge) covers the whole feature: installing the
+library on each platform, what each option does, and what to expect of it.
 
 ## `[ide]` -- IDE hard disks
 
@@ -758,18 +1148,35 @@ exit. Note that the stock A1200/A600 Kickstart `scsi.device` only probes
 the IDE master; a slave drive needs a guest OS or driver that supports
 two units (e.g. Kickstart 3.1.4).
 
-To override the volume name (instead of inheriting the directory name),
-give the drive as a table with `path` and `name`:
+To override the volume name (instead of inheriting the directory name) or
+the boot priority, give the drive as a table with `path` plus `name`
+and/or `bootpri`:
 
 ```toml
 [ide]
 master = { path = "/host/Games", name = "Games" }
+slave = { path = "wb.hdf", bootpri = 6 }
 # slave = "scratch.hdf"        # the bare-string form still works
 ```
 
 The name sets the FFS volume label of a directory mount; AmigaDOS volume
 names hold up to 30 characters and cannot contain `:` or `/`. It has no
 effect on a raw HDF, which carries its own label inside the image.
+
+`bootpri` (-128..127, default 0) is the `de_BootPri` written into the
+**synthesized** RDB's partition, which is what the ROM's strap ranks boot
+candidates by. Kickstart enters DF0: at priority 5, so the default 0 loses
+the tie to a bootable floppy; raise it to 6 to boot the hard disk ahead of
+one, or lower it to sort two hardfiles against each other. The sentinel
+-128 also clears the partition's `PBFB_BOOTABLE` flag, so the volume
+mounts but is never offered for boot. It has **no effect on an image that
+carries its own RDB** -- those priorities live inside the image, where
+HDToolBox put them -- and Copperline logs a warning if you set it on one.
+
+The configuration screen edits `bootpri` on the *Storage* tab's **Boot
+Priority** sub-page, one row per drive (see [](ui.md)): a Priority number and a
+Bootable box, the cleared box being this -128 sentinel. A drive left at 0 with
+no cascade default writes no `bootpri` key.
 
 The drive responds to ATA IDENTIFY with the Gayle byte order real hardware
 uses, so both Kickstart 3.1 variants boot from it. An HDD activity LED
@@ -826,9 +1233,10 @@ A2091 is Commodore product 3, with its DiagArea vector at `$2000`).
 Each `unitN` accepts everything `[ide]` paths do: RDB images, bare
 partition hardfiles (a synthesized RDB advertises a bootable `DHn`
 partition, named after the SCSI ID), and host directories built into
-in-memory FFS volumes -- including the `{ path = "...", name = "..." }`
-table form that overrides a directory mount's volume name. The HDD
-activity LED covers SCSI traffic too.
+in-memory FFS volumes -- including the
+`{ path = "...", name = "...", bootpri = N }` table form that overrides a
+directory mount's volume name and the synthesized partition's boot
+priority. The HDD activity LED covers SCSI traffic too.
 
 A `unitN` path ending in `.cue` or `.iso` attaches a **SCSI CD-ROM
 drive** at that ID instead of a hard disk: a read-only removable SCSI-2
@@ -880,7 +1288,7 @@ write-protected instead -- the guest sees a read-only disk and every write
 fails with the same "disk is write-protected" error a physical
 write-protected disk gives, which is worth setting on anything you would
 rather the Amiga could not damage. The launcher's Host Mounts sub-page (under
-the Hard Disk tab) exposes the same choice as its **Access** field.
+the Storage tab) exposes the same choice as its **Access** field.
 
 Amiga file attributes a host filesystem cannot hold -- protection bits
 such as script/pure/archive, file comments, and exact datestamps -- are
@@ -899,6 +1307,13 @@ model as the UAE family.
 the default -128 means mounted but never booted from): hard-disk boot
 partitions typically sit at priority 0 and DF0: at 5, so a bootable
 Workbench directory with `bootpri = 6` boots ahead of both.
+
+Kickstart 2.0 or newer gets the full feature set. Kickstart 1.3 mounts
+and serves the volumes too (1.3 introduced the expansion-ROM init the
+service rides on), but cannot boot from them: the `bootpri` vote rides
+on the 2.0 boot-node mechanism, so under 1.3 the setting is ignored and
+the machine boots from floppy or another device. Kickstart 1.2 and older
+lack the expansion-ROM hook entirely and never see the mounts.
 
 ## `[cd]` -- CDTV and CD32
 
@@ -942,7 +1357,8 @@ assigns addresses.
 
 ```toml
 [a2065]
-net = "nat"   # or "loopback"; "none" for an isolated NIC
+net = "nat"   # or "bridge", "loopback"; "none" for an isolated NIC
+# interface = "en0"  # required for "bridge"
 ```
 
 Fits a Commodore A2065 Ethernet board (Am7990 LANCE) on the Zorro chain;
@@ -955,6 +1371,16 @@ host network backend:
   macOS, and Windows. Configure the guest's TCP/IP stack with IP
   `10.0.2.15`, netmask `255.255.255.0`, gateway `10.0.2.2`, DNS `10.0.2.3`
   (or let it BOOTP/DHCP). Outbound only, IPv4 only.
+- `"bridge"` -- attaches complete Ethernet frames directly to `interface`, so
+  the Amiga is a separate station on the physical LAN and can accept inbound
+  connections from LAN peers. Use `copperline --list-net-interfaces` for exact
+  identifiers, or `--a2065-interface NAME` (which implies the bridge backend).
+  Configure the guest by DHCP from the real LAN or with an address appropriate
+  to that LAN. The guest can reach peers and the router; communication with the
+  host's own IP is adapter/OS-dependent and is not guaranteed. Frames keep the
+  Amiga's source MAC, so Wi-Fi is best-effort: many access points reject a
+  second source MAC behind one wireless station. Copperline reports adapter,
+  driver, and permission failures at startup instead of falling back to NAT.
 - `"loopback"` -- echoes transmitted frames back (self-contained, useful
   for driver bring-up).
 - `"none"` -- the NIC is fitted but isolated.
@@ -962,28 +1388,41 @@ host network backend:
 Omit the section entirely for no board. Note that host networking is
 inherently non-deterministic: inbound frames arrive on the host's
 schedule, not the emulated clock, so a NIC board breaks byte-identical
-replay and save-state determinism while traffic flows. See [](../zorro)
-for the board details and the NAT's limitations.
+replay and save-state determinism while traffic flows. A save state stores the
+bridge adapter identifier and must be restored on a host where that adapter can
+be opened. See [](../zorro) for board details, platform bridge setup, and the
+NAT's limitations.
 
 ## `[rtg]` -- RTG graphics card
 
 ```toml
 [rtg]
-card = "z3660"
+card = "picasso2"
+vram = "2M"
 ```
 
-`card` is `"z3660"` or `"none"`; a machine takes at most one. The Z3660 is a
-Zorro III board, so it comes fitted by default on machines whose CPU has a
-32-bit address bus (the A3000 and A4000) and is unavailable on the rest --
-asking for it there is an error, as it is for Zorro III RAM. It gives the
-guest high-resolution,
-high-colour screens through Picasso96. It needs the
-open-source Z3660.card driver installed in the guest (with its monitor in
-`DEVS:Monitors`); with that in place, Z3660 screen modes appear in
-ScreenMode, and the window shows the board's output when a screen is
-opened, switching back to the native Amiga display when it closes.
+`card` is `"picasso2"`, `"picasso2plus"`, `"z3660"`, or `"none"`; a machine
+takes at most one. All three boards give the guest high-resolution,
+high-colour screens through Picasso96.
 
-The board's stock monitor ships with the `DISPLAYCHAIN=NO` tooltype, which
+`"picasso2"` fits a Village Tronic Picasso II with a CL-GD5426 graphics
+controller. `"picasso2plus"` fits the later CL-GD5428 revision, reports its
+distinct autoconfig serial number, and wires vertical blank to INT2. Both are
+Zorro II boards, so they work with 68000/68010 and 24-bit 68EC020 machines as
+well as 32-bit CPUs. `vram` selects either real board's `"1M"` or `"2M"`
+memory configuration and defaults to `"2M"`; it is ignored for other cards.
+Install the Picasso96 `PicassoII.card` driver and its monitor file in the
+guest. The board starts on native Amiga pass-through and switches the
+Copperline display to RTG only while the guest enables a valid Picasso screen.
+
+`"z3660"` is a Zorro III board. It comes fitted by default on machines whose
+CPU has a 32-bit address bus (the A3000 and A4000) and is unavailable on the
+rest; asking for it there is an error, as it is for Zorro III RAM. It needs the
+open-source Z3660.card driver installed in the guest (with its monitor in
+`DEVS:Monitors`). With that in place, Z3660 screen modes appear in ScreenMode,
+and the window shows the board's output when a screen is opened.
+
+The Z3660 board's stock monitor ships with the `DISPLAYCHAIN=NO` tooltype, which
 models the real hardware's separate RTG monitor and never hands the display
 back to the native screen. On a single-window emulator you usually want
 `DISPLAYCHAIN=YES`, so the one window follows whichever screen is active.
@@ -993,6 +1432,8 @@ back to the native screen. On a single-window emulator you usually want
 ```toml
 [debug]
 log_unmapped = "DD0000-DEFFFF"
+validate_chipset = true
+detect_smc = true
 ```
 
 `log_unmapped` logs every CPU read and write inside the given range that no
@@ -1011,3 +1452,44 @@ followed by a long run of status reads that never come back ready.
 A booting Kickstart probes enough empty address space that `all` produces on
 the order of a million lines per boot, so prefer a range once you know roughly
 where to look.
+
+`validate_chipset` arms the custom-register access validator: a running
+report of software using the chipset in ways the hardware quietly ignores.
+It flags writes to registers the fitted Agnus/Denise does not have, bits a
+register does not define, writes to read-only registers and reads of
+write-only ones, byte or odd-address access to word registers, access
+through an address mirror, and DMA pointers aimed past the chip RAM Agnus
+can address. It also covers the engines behind those registers, where
+misuse hangs rather than glitches: a blit started while the previous one
+is still running (there is no register-file interlock, so the running
+blit is drained and the replacement starts from whatever pointer state it
+left) or with its DMA switched off (BBUSY is set and the blit stays
+pending until BLTEN and DMAEN are enabled), disk DMA armed against a
+drive that could not serve it at that moment -- no media, or the motor
+still off, the class behind the classic loader dead-spins -- and a
+keyboard handshake pulse too narrow to count as one while the MCU was
+waiting for it, which costs a key and stalls input until the keyboard
+resynchronises after 143 ms. Each finding names the PC (or Copper address) that made the
+access and the beam position, is deduplicated by (kind, register, writer)
+with a repeat count, and is logged the first time it is seen. It also arms
+a per-register last-writer table, which answers "what set BPLCON3, and
+from where?" without a bisect. Read both over the control protocol with
+`chipset.report` and `custom.writer` (see
+[the control protocol](../debugger/control.md)), which can also arm and
+disarm the validator live. Off by default; an unarmed machine pays nothing
+for it.
+
+`detect_smc` reports writes that land on memory the CPU has already
+executed. Self-modification is legitimate on a 68000 -- decrunchers,
+trackers and Copper-list patchers all do it -- but it is also where a
+prefetch-related bug hides, since the CPU has already fetched the word
+ahead of the one it is executing, and neither a patch applied too late
+nor one applied to the wrong address leaves a trace at the moment it
+happens. Each report names the written address, the instruction that
+wrote it, and the distance between them, calling out a patch close enough
+to sit inside the prefetch. An address counts as code once an instruction
+there has retired, so an instruction patching its own extension words on
+its only execution is not reported; every repeating pattern is caught on
+the pass after the first. Read it with `smc.report` over the control
+protocol, which can also arm and disarm the detector live. Off by
+default; it costs a 1 MiB execution map while armed.
