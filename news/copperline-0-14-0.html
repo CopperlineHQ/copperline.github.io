@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 0.14.0: real drives, real networks, and a 1084 on your desk - Copperline News</title>
+<meta name="description" content="Copperline 0.14.0 drives real 3.5&quot; floppy drives through DrawBridge, Greaseweazle and SupercardPro, bridges the A2065 onto the real LAN, brings Picasso II / II+ RTG to the 24-bit machines, and dresses the window in CRT shaders, screen tints and a 1084-style bezel - plus rewind, quick-save slots, autofire and an experimental JIT CPU mode.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 0.14.0: real drives, real networks, and a 1084 on your desk">
+<meta property="og:description" content="Real 3.5&quot; floppy drives on the emulated bus, the A2065 bridged onto the real LAN, Picasso II / II+ RTG for the 24-bit machines, CRT shaders and a 1084-style bezel, rewind, quick-save slots and an experimental JIT.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-0-14-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
+    <span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu">
+    <a href="../">Home</a>
+    <a href="./">News</a>
+    <a href="feed.xml">RSS</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../#download">Download</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
+    </a>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
+      <span class="nav__burger" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <article class="post">
+      <a class="post__back" href="./">&lt; all news</a>
+      <span class="post__date">1 August 2026 &middot; release</span>
+      <h1>Copperline 0.14.0: real drives, real networks, and a 1084 on your desk</h1>
+
+      <p>This is the release where the emulator reaches out of the host machine.
+         It drives real 3.5" floppy drives through DrawBridge, Greaseweazle and
+         SupercardPro controllers, so the machine in the window reads the disks
+         on your desk; it attaches the guest's Ethernet card straight to a host
+         network adapter, so the Amiga sits on the real LAN; and it brings RTG
+         to the 24-bit machines with the Zorro II Picasso II and Picasso II+,
+         so an A2000-class machine gets high-colour Workbench too.</p>
+
+      <p>Around the machine, the window learns to look like the monitor it
+         deserves - CRT shaders, screen tints and a 1084-style front bezel -
+         and picks up rewind, quick-save slots, autofire and input remapping.
+         Underneath, an experimental JIT CPU mode runs accelerator-class
+         speeds, and a WinUAE-inspired debugging suite lands. As always it is
+         a hardware-behaviour release: compatibility fixes model the underlying
+         Amiga subsystems rather than individual titles.</p>
+
+      <h2>Real floppy drives</h2>
+
+      <p>Any drive bay can host a real 3.5" mechanism through Rob Smith's
+         FloppyBridge, which is built into Copperline by cargo - nothing to
+         install. <code>[floppy.df1] bridge = "greaseweazle"</code> (or
+         <code>"drawbridge"</code>, <code>"supercardpro"</code>) puts the
+         physical drive on the emulated bus: the guest reads, writes and steps
+         the real disk, drive mechanics stay real-time, and the port
+         auto-detects, with <code>bridge_port</code>, <code>bridge_cable</code>
+         and <code>bridge_density</code> as overrides. A per-bay launcher page
+         configures it, and the bridge serving speeds were tuned so loading
+         from a real drive is as quick as the mechanism allows.</p>
+
+      <p>This is the headline feature of the cycle, contributed by Lee Hobson
+         (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>).</p>
+
+      <h2>RTG for the 24-bit machines</h2>
+
+      <p>The Village Tronic Picasso II (CL-GD5426) and Picasso II+ (CL-GD5428)
+         are emulated as Zorro II autoconfig boards driven by the unmodified
+         Picasso96 <code>PicassoII.card</code> driver. Because they are
+         Zorro II cards they work with 24-bit CPUs, so RTG Workbench is no
+         longer reserved for the big boxes - a stock-CPU machine with Zorro
+         slots gets high-colour screens too. <code>[rtg] card =
+         "picasso2plus"</code> selects one, <code>vram = "1M"</code> or
+         <code>"2M"</code> sizes it, and the Z3660 remains the default
+         Zorro III card on 32-bit-bus machines.</p>
+
+      <h2>Bridged Ethernet</h2>
+
+      <p>The A2065 gains <code>[a2065] net = "bridge"</code>, which attaches
+         the guest's complete Ethernet frames directly to a named host adapter
+         (<code>interface = "en0"</code>; list the candidates with
+         <code>--list-net-interfaces</code>). The Amiga becomes a first-class
+         citizen of the LAN - DHCP from your router, static addressing, local
+         servers - on Linux, macOS and Windows, with Wi-Fi supported
+         best-effort. The user-mode NAT backend from 0.13.0 stays the
+         zero-setup default.</p>
+
+      <h2>The window becomes a monitor</h2>
+
+      <p>A GPU shader pass over the display offers three built-in CRT presets -
+         <code>scanlines</code>, <code>mask</code> and <code>crt</code> - or
+         loads your own WGSL file, mixed in by <code>shader_strength</code>.
+         <code>[display] bezel</code> (toggle live with <code>Cmd+M</code> /
+         <code>Alt+M</code>) frames the picture in a 1084-style monitor front,
+         with a Copperline badge and a power LED that follows the guest's /LED
+         line and burns brighter while the audio filter is engaged; a HDD LED
+         lights on host-folder filesystem access. <code>[display] tint</code>
+         filters the screen through black-and-white, green or amber monochrome
+         phosphor, or sepia.</p>
+
+      <p>All of it is window-only: screenshots, frame dumps and headless
+         captures are never shader-processed, tinted or framed.</p>
+
+      <h2>Rewind and quick-save slots</h2>
+
+      <p><code>[emulation] rewind</code> (or the Rewind menu item) records the
+         whole machine at an interval into a bounded memory budget, and
+         <code>Cmd+Z</code> / <code>Alt+Z</code> steps it back - a 512K A500
+         buys minutes of history. Ten numbered quick-save slots sit alongside:
+         <code>Cmd/Alt</code> plus a digit saves,
+         <code>Cmd/Alt+Shift</code> plus a digit loads - no dialog, no file to
+         name.</p>
+
+      <h2>Input quality-of-life</h2>
+
+      <p>Autofire pulses a held fire button at 3 to 30 Hz on emulated time -
+         scripted input is never gated, so replays stay exact. The new Input
+         Mapping window edits the keyboard-joystick and shortcut maps with
+         one-meaning-per-key validation. Host mouse sensitivity is adjustable
+         from quarter to quadruple speed, and a mouse-capture policy chooses
+         between click-to-grab, grab-on-focus and manual-only
+         (<code>Cmd+G</code> / <code>Alt+G</code>), fixing three capture
+         defects along the way.</p>
+
+      <h2>An experimental JIT</h2>
+
+      <p><code>[cpu] jit = true</code> switches a 68020 or later to the m68k
+         core's batch/trace-JIT path: the machine behaves like an ideal
+         accelerator at <code>clock_mhz</code>, one instruction per CPU clock
+         with zero-wait fast RAM - a 50 MHz 68040 runs on the order of
+         50 MIPS, and the launcher's clock presets now reach 100 and 200 MHz.
+         The on-chip cache models stay active and chip / slow RAM keep their
+         shared-bus arbitration, as on a real accelerator; cycle-counted
+         chip-level effects no longer line up, which is why it is off by
+         default.</p>
+
+      <h2>A debugging suite</h2>
+
+      <p>The headless debugger and the debugger GUI gain a WinUAE-inspired
+         set: a custom-register access validator that reports chipset misuse
+         with the PC that caused it (<code>[debug] validate_chipset</code>)
+         backed by a last-writer table, a self-modifying-code detector
+         (<code>detect_smc</code>), bus-error injection, per-DMA-channel and
+         PC-qualified watchpoints, blitter / floppy / keyboard hardware-misuse
+         checks, and a memory heat map tab in the Frame Analyzer showing where
+         the frame's traffic lands. The console dumps ExecBase scheduler state
+         and <code>struct Task</code>.</p>
+
+      <p>Scripting gains absolute pointer positioning -
+         <code>--mouse-to-after SECS X Y</code> steers the pointer to a screen
+         pixel via a sprite-0 servo - and the control protocol adds
+         <code>capture.region_digest</code>, a run-until-stable-frame target,
+         watch qualifiers in <code>break.list</code>, and scheduled input that
+         survives session reconnects.</p>
+
+      <h2>Host volumes under Kickstart 1.3</h2>
+
+      <p>Host-directory volumes now mount under Kickstart 1.3, so a plain 1.3
+         machine can read and write a folder on the host. Contributed by Simon
+         Dick
+         (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>).</p>
+
+      <h2>The browser build</h2>
+
+      <p><a href="../try/">copperline.dev/try</a> gains PAL / NTSC machine
+         selection with overscan and tint display controls, remembers the
+         Kickstart across visits, names its save states alongside the quick
+         slot, and holds a screen wake lock so a long demo does not dim the
+         phone. The hosted page installs as a PWA and boots offline.</p>
+
+      <h2>Performance</h2>
+
+      <p>A four-part optimisation pass over the render and chipset hot paths -
+         DDF arbitration, planar row conversion, caching of stable display and
+         DMA line work, and idle / repeated-frame presentation - cuts host CPU
+         cost across the board, and an idle launcher no longer spins a busy
+         redraw loop.</p>
+
+      <h2>Hardware accuracy fixes</h2>
+
+      <ul>
+        <li>A mid-line write that flips HAM lands in Denise's colour-selection
+            phase, not the bitplane phase, matching measured hardware - fixing
+            stale colours in HAM demos that switch mid-screen.</li>
+        <li>CPU- and Copper-written BPLxDAT batches snap to the serialiser's
+            word-load grid, fixing displays that hand-feed the serialiser -
+            the Hamazing Hexagon's left edge.</li>
+        <li>The 68020 charges its pipeline refill on taken branches per the
+            datasheet tables, with the DBcc refill folded into its table
+            entry - Cubic Dream's 020 timing.</li>
+        <li>A DMA sprite line disarmed by a CTL write before its HSTART is
+            cancelled, as on real Denise - the Hybris status panel.</li>
+        <li>A 68000 word write split across the services board's MMIO doorbell
+            fires the doorbell correctly (Simon Dick).</li>
+        <li>Z3660 planar blits honour their minterm, and P2D NOTSRC looks up
+            the complemented pen (Bernie Innocenti).</li>
+        <li>Presentation geometry latches across border-only frames - no more
+            one-frame jumps when a loader blanks the screen - the live TV view
+            centres on the captured aperture, and the NTSC TV-aperture crop
+            extends to standard 60 Hz scans.</li>
+      </ul>
+
+      <h2>Desktop, tooling and platform</h2>
+
+      <ul>
+        <li>In the launcher, CD folds into a Storage tab with footer sub-page
+            navigation, hard disks gain a Boot Priority sub-page, unavailable
+            settings dim in place instead of vanishing, and a pass of cosmetic
+            tidy-ups lands across the tabs. In the config, a hard drive can be
+            a table - <code>unit0 = { path = "wb.hdf", bootpri = 6 }</code> -
+            to set boot priority and directory-mount volume names.</li>
+        <li><code>[audio] audio_filter = "auto" | "on" | "off"</code> (and
+            <code>Cmd+A</code> / <code>Alt+A</code>) forces Paula's low-pass
+            filter regardless of the guest, with the power LED reflecting it
+            as on the real machine (Lee Hobson).</li>
+        <li>Fullscreen and status-bar visibility persist in the config, manual
+            resizes survive status-bar toggles, tool windows resize correctly,
+            Wayland resizes apply synchronously (Bernie Innocenti), and cursor
+            hits map correctly under fractional display scaling.</li>
+        <li>The 68k core is now the published <code>m68k</code> crate: the
+            vendored fork moved to crates.io as
+            <a href="https://crates.io/crates/m68k" target="_blank" rel="noopener">m68k 0.3</a>,
+            so Copperline builds against the published package, and the
+            Flatpak moves to Freedesktop SDK 25.08 (both Ben Letchford).</li>
+        <li>The bundled AROS ROM is refreshed to upstream, picking up an NTSC
+            boot fix and an input-event buffering fix - NTSC configurations
+            now boot the bundled ROM without the previous warning.</li>
+        <li>Functional boot smokes now run in CI on Linux, macOS and Windows -
+            including against the released artifacts - A2065 networking is
+            exercised in CI, and the Windows checks fan out from a shared
+            build.</li>
+      </ul>
+
+      <h2>Contributed this cycle</h2>
+
+      <p>Lee Hobson
+         (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>)
+         contributed real floppy drive support through FloppyBridge - the
+         headline feature of the cycle - plus the faster bridge serving speeds
+         and a round of bridge-mode fixes, the Paula audio-filter override
+         with the power-LED rework, adjustable mouse sensitivity, persisted
+         window state, the status-bar resize fixes, and a series of launcher
+         improvements: the Storage tab, the Boot Priority sub-page, dimmed
+         unavailable settings and cosmetic tidy-ups.</p>
+
+      <p>Bernie Innocenti
+         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>)
+         fixed the Z3660's planar-blit minterms and P2D NOTSRC lookup, made
+         Wayland window resizes apply synchronously, improved the console's
+         task-state reporting, and let the OS helpers follow exec structures
+         into A3000 / A4000 motherboard RAM.</p>
+
+      <p>Simon Dick
+         (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>)
+         made host-directory volumes mount under Kickstart 1.3 and fixed MMIO
+         doorbells for the 68000's split word writes.</p>
+
+      <p>Nicolas Ramz
+         (<a href="https://github.com/warpdesign" target="_blank" rel="noopener">@warpdesign</a>)
+         lit the HDD LED on host-folder filesystem access and redesigned the
+         reset button glyph.</p>
+
+      <p>Ben Letchford
+         (<a href="https://github.com/benletchford" target="_blank" rel="noopener">@benletchford</a>)
+         moved the 68k core to the published crates.io <code>m68k</code> crate
+         and updated the Flatpak to Freedesktop SDK 25.08.</p>
+
+      <h2>Compatibility notes</h2>
+
+      <p><strong>Save states from 0.13.0 do not load in 0.14.0.</strong> The
+         serialized machine shape changed several times this cycle, so the
+         state format version moves from 40 to 44. Re-create snapshots after
+         upgrading.</p>
+
+      <p>No config file changes are required: no TOML key or CLI flag was
+         removed or renamed, the new keys are all additive, and no existing
+         default changed. Two behavioural notes:</p>
+
+      <ul>
+        <li>The bundled AROS boot ROM was refreshed, so machines booting the
+            bundled ROM behave slightly differently out of the box - NTSC
+            configurations now boot without the previous warning.</li>
+        <li>A machine with a bridged (real) floppy drive is paced to
+            wall-clock time - a real mechanism cannot warp - so headless runs
+            against a bridge are no longer unthrottled. Image-backed machines
+            are unaffected.</li>
+      </ul>
+
+      <h2>Get it</h2>
+
+      <p>Builds for macOS, Linux and Windows are on the
+         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.14.0" target="_blank" rel="noopener">release page</a>,
+         and the Homebrew tap is updated. Or skip the download entirely:
+         <a href="../try/">copperline.dev/try</a> is the same emulator.</p>
+
+      <p>Copperline also has a
+         <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
+         now. Nothing there buys a feature or a place in the queue - monthly
+         support goes towards development time, real hardware to measure the
+         emulator against, and the code-signing subscriptions that would let
+         the downloads open without a warning.</p>
+
+      <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
+         <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
+        no CDNs - even the fonts are served from here.
+      </p>
+    </div>
+    <nav class="footer__links">
+      <a href="./">News</a>
+      <a href="feed.xml">RSS</a>
+      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

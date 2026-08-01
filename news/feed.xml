@@ -8,6 +8,14 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.14.0: real drives, real networks, and a 1084 on your desk</title>
+    <link>https://copperline.dev/news/copperline-0-14-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-14-0.html</guid>
+    <pubDate>Sat, 01 Aug 2026 08:06:49 +0000</pubDate>
+    <description>Real 3.5" floppy drives on the emulated bus through DrawBridge, Greaseweazle and SupercardPro, the A2065 bridged onto the real LAN, Picasso II / II+ RTG for the 24-bit machines, CRT shaders, screen tints and a 1084-style bezel, rewind and quick-save slots, autofire and input remapping, an experimental JIT CPU mode, and a WinUAE-inspired debugging suite.</description>
+  </item>
+
+  <item>
     <title>Copperline 0.13.0: RTG, Ethernet and a Linux login prompt</title>
     <link>https://copperline.dev/news/copperline-0-13-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-13-0.html</guid>
