@@ -39,6 +39,17 @@ export class WebEmu {
         }
     }
     /**
+     * The Caps Lock LED, owned by the keyboard MCU: pressing the key
+     * toggles it, and the up code is what unlocking sends. A page lighting
+     * a virtual Caps Lock key must read this rather than mirror its own
+     * taps, or a save-state load leaves the two disagreeing.
+     * @returns {boolean}
+     */
+    caps_lock_led() {
+        const ret = wasm.webemu_caps_lock_led(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
      * CD activity LED, or undefined on machines without a CD drive.
      * @returns {boolean | undefined}
      */
@@ -152,6 +163,19 @@ export class WebEmu {
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.webemu_key_event(this.__wbg_ptr, ptr0, len0, pressed);
         return ret !== 0;
+    }
+    /**
+     * Forward an Amiga raw key transition straight to the keyboard MCU.
+     * The page's on-screen keyboard draws Amiga keys, so its keys already
+     * are rawkeys and a `KeyboardEvent.code` round trip would be a lossy
+     * detour: $2B, the key beside Return on an ISO Amiga keyboard, has no
+     * positional code a browser reports on every host layout, and the
+     * reverse table would have to be duplicated in the page glue.
+     * @param {number} rawkey
+     * @param {boolean} pressed
+     */
+    key_raw(rawkey, pressed) {
+        wasm.webemu_key_raw(this.__wbg_ptr, rawkey, pressed);
     }
     /**
      * Fit a Kickstart/AROS ROM (and optional extended ROM) from bytes and
