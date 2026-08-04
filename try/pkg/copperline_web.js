@@ -325,6 +325,20 @@ export class WebEmu {
         return ret !== 0;
     }
     /**
+     * Emulated field lines the presentation buffer shows, for a page-side
+     * CRT shader pass to key its scanline pitch: 270 on the standard 50 Hz
+     * TV aperture, 214 on a 60 Hz scan, half the presented rows in full
+     * overscan. 0 means the pass has nothing to draw -- no frame yet, or a
+     * programmable scan, whose lines are not a 15 kHz raster (the desktop
+     * suspends its CRT preset there too). Tracks the presentation, so it
+     * can change between frames like `present_width`.
+     * @returns {number}
+     */
+    present_crt_lines() {
+        const ret = wasm.webemu_present_crt_lines(this.__wbg_ptr);
+        return ret;
+    }
+    /**
      * Presentation buffer: RGBA bytes in memory order, `present_width() x
      * present_rows()` pixels, directly viewable as canvas ImageData. The
      * pointer is only valid until the next `run` call (the buffer may
