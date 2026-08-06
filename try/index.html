@@ -51,19 +51,46 @@
     margin-bottom: 0;
   }
   .try-wrap {
+    /* Wide enough for the monitor's own 1600px cap plus the open sidebar
+       and its gap, so an ultrawide or 5K fullscreen still reaches a
+       full-size monitor with the sidebar showing. */
+    max-width: 1880px;
+    margin: 0 auto;
+  }
+  /* Monitor column plus a collapsible sidebar holding everything but the
+     handful of while-playing buttons. On wide viewports the sidebar is a
+     fixed-width column beside the monitor; under 900px it becomes a
+     slide-in drawer over the page (rules further down). The head script
+     stamps html[data-sidebar] before first paint. */
+  .try-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1.1rem;
+  }
+  .try-main {
+    flex: 1 1 auto;
+    min-width: 0;
     /* Two height-derived curves, and the wider one wins. The first is the
-       laptop fit this page has always had (nav + header + wrapped control
-       rows eat ~275px before the rows start folding, capped at 920px). The
-       second drops the cap for tall viewports, where the control rows plus
-       chrome and the booted machine's LED strip measure ~380px; it
-       overtakes the first at ~1070px of viewport height and lets a Studio
-       Display or 4K screen fill with monitor instead of margin. */
+       laptop fit this page has always had (capped at 920px, 275px
+       reserve), kept verbatim so the monitor never shrinks on the screens
+       the old two-row layout was tuned for. The second drops the cap for
+       tall viewports; its reserve was re-measured 2026-08-06 for the
+       single quick row with a booted machine (LED strip up): nav 59 +
+       section padding <=32 + header 101 + LED strip 31 + quick row 50 is
+       ~273px with the stat on the row, ~301px when a row under ~1055px
+       wraps the stat onto its own line, and the padding clamp sits below
+       its 32px maximum wherever the wrap case can occur, so 300 covers
+       both. It overtakes the first curve at ~990px of viewport height and
+       lets a Studio Display or 4K screen fill with monitor instead of
+       margin. */
     max-width: min(1600px,
       max(420px,
         min(920px, calc((100vh - 275px) * 4 / 3)),
-        calc((100vh - 380px) * 4 / 3)));
-    margin: 0 auto;
+        calc((100vh - 300px) * 4 / 3)));
   }
+  html[data-sidebar="closed"] .try-sidebar { display: none; }
+  .try-scrim { display: none; }
   .try-shell {
     position: relative;
     background: #000;
@@ -141,16 +168,8 @@
      keys off touch screens). .btn and .try-check set display, which would
      out-rank the hidden attribute's user-agent rule, so honour it here. */
   .try-controls .btn[hidden] { display: none; }
+  .try-sidebar .btn[hidden] { display: none; }
   .try-check:has(> select[hidden]) { display: none; }
-  .try-settings {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.9rem;
-    row-gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-  .try-settings input[type="range"] { accent-color: var(--copper); width: 110px; }
   .try-check {
     display: inline-flex;
     align-items: center;
@@ -173,11 +192,108 @@
   }
   #stat {
     margin-left: auto;
+    align-self: center;
     color: var(--ink-mute);
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 0.82rem;
     white-space: nowrap;
   }
+  .try-sidebar {
+    flex: 0 0 252px;
+    width: 252px;
+    background: rgba(10, 13, 22, 0.6);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.9rem;
+    position: sticky;
+    top: 70px;
+    max-height: calc(100vh - 84px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* Drawer-only header (title + close); hidden beside the monitor. */
+  .try-side-head {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.7rem;
+  }
+  .try-side-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+  }
+  .try-side-close {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0.25rem 0.6rem;
+    cursor: pointer;
+  }
+  .try-side-close:hover { color: var(--copper-hi); border-color: var(--copper); }
+  .try-side-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .try-side-section + .try-side-section {
+    margin-top: 0.95rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+  .try-side-section h3 {
+    margin: 0 0 0.15rem;
+    font: 600 0.72rem "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .try-side-row { display: flex; gap: 0.45rem; }
+  .try-side-row .btn { flex: 1 1 0; min-width: 0; }
+  .try-sidebar .btn {
+    cursor: pointer;
+    justify-content: center;
+    font-size: 0.88rem;
+    padding: 0.5rem 0.6rem;
+    white-space: nowrap;
+  }
+  .try-sidebar .btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .try-sidebar .btn:disabled:hover {
+    transform: none;
+    border-color: var(--line);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .try-sidebar .try-check { display: flex; width: 100%; }
+  .try-sidebar .try-check > select {
+    margin-left: auto;
+    max-width: 60%;
+  }
+  .try-sidebar .try-check > input[type="range"] {
+    margin-left: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 150px;
+    accent-color: var(--copper);
+  }
+  .try-side-build {
+    margin: 0.95rem 0 0;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+    font: 500 0.72rem "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+    overflow-wrap: anywhere;
+  }
+  .try-side-build:empty { display: none; }
+  .try-side-build a { color: inherit; text-decoration: underline; }
+  .try-side-build a:hover { color: var(--copper-hi); }
   .try-note {
     /* The monitor may grow well past the article measure; the prose
        below it should not. */
@@ -185,6 +301,44 @@
     margin: 1.2rem auto 0;
     color: var(--ink-mute);
     font-size: 0.92rem;
+  }
+  /* Narrow viewports: the sidebar leaves the flex row and becomes a
+     fixed drawer sliding in from the right, with a scrim behind it. It
+     stays display:block while "closed" so the transform can animate. */
+  @media (max-width: 900px) {
+    html[data-sidebar="closed"] .try-sidebar { display: block; }
+    .try-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 200;
+      width: min(320px, 86vw);
+      max-height: none;
+      border: none;
+      border-left: 1px solid var(--line);
+      border-radius: 0;
+      background: #0b0f1b;
+      padding-bottom: calc(0.9rem + env(safe-area-inset-bottom));
+      transform: translateX(102%);
+      transition: transform 0.22s ease;
+    }
+    html[data-sidebar="open"] .try-sidebar { transform: none; }
+    .try-scrim {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 190;
+      background: rgba(4, 6, 10, 0.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+    html[data-sidebar="open"] .try-scrim { opacity: 1; pointer-events: auto; }
+    .try-side-head { display: flex; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .try-sidebar, .try-scrim { transition: none; }
   }
   /* Phones: the free-wrapping button row turns ragged and can overflow, so
      switch to an even two-column grid (an odd last button spans the row).
@@ -199,14 +353,25 @@
       font-size: 0.9rem;
       padding: 0.6rem 0.5rem;
     }
-    .try-controls .btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
-    .try-settings input[type="range"] {
-      flex: 1;
-      min-width: 120px;
-    }
-    #stat { margin-left: 0; width: 100%; }
+    #stat { margin-left: 0; width: 100%; grid-column: 1 / -1; }
   }
 </style>
+<script>
+  // Stamped before first paint so the sidebar never flashes: wide viewports
+  // open it unless a previous visit closed it; the phone drawer starts
+  // closed. ?sidebar=0 or =1 overrides the initial state, so a shared
+  // bootable link can present a clean monitor. The wiring script at the
+  // bottom of the page toggles it.
+  (function () {
+    var open = !window.matchMedia('(max-width: 900px)').matches;
+    if (open) {
+      try { open = localStorage.getItem('copperline-try-sidebar') !== '0'; } catch (e) {}
+    }
+    var q = new URLSearchParams(window.location.search).get('sidebar');
+    if (q === '0' || q === '1') open = q === '1';
+    document.documentElement.dataset.sidebar = open ? 'open' : 'closed';
+  })();
+</script>
 <script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -249,70 +414,107 @@
     </div>
 
     <div class="try-wrap">
-      <div class="try-shell" id="shell">
-        <canvas id="screen" width="716" height="570"></canvas>
-        <div class="try-overlay" id="overlay">
-          <button class="btn btn--primary btn--big" id="boot" disabled>Boot AROS</button>
-          <p class="try-status" id="load-status">loading emulator&hellip;</p>
-          <a class="try-bug" id="bug-report-err" hidden
-             href="https://github.com/CopperlineHQ/Copperline/issues/new?template=bug_report.yml"
-             target="_blank" rel="noopener">Report this on GitHub</a>
+      <div class="try-layout">
+        <div class="try-main">
+          <div class="try-shell" id="shell">
+            <canvas id="screen" width="716" height="570"></canvas>
+            <div class="try-overlay" id="overlay">
+              <button class="btn btn--primary btn--big" id="boot" disabled>Boot AROS</button>
+              <p class="try-status" id="load-status">loading emulator&hellip;</p>
+              <a class="try-bug" id="bug-report-err" hidden
+                 href="https://github.com/CopperlineHQ/Copperline/issues/new?template=bug_report.yml"
+                 target="_blank" rel="noopener">Report this on GitHub</a>
+            </div>
+          </div>
+
+          <div id="ledbar" class="try-ledbar"></div>
+
+          <!-- The while-playing quick row; everything else lives in the
+               sidebar. try.js finds every control by id, so hosting them
+               there changes nothing for the glue. -->
+          <div class="try-controls">
+            <button class="btn btn--ghost" id="pause">Pause</button>
+            <label class="btn btn--ghost">Insert DF0&hellip;
+              <input id="df0" type="file" accept=".adf,.adz,.dms,.gz,.zip,.scp" hidden></label>
+            <button class="btn btn--ghost" id="joy">Joystick: off</button>
+            <button class="btn btn--ghost" id="keyboard">Keyboard</button>
+            <!-- Ships hidden: only a touch screen wants its device keyboard
+                 raised, and try.js un-hides the button there. -->
+            <button class="btn btn--ghost" id="devkeyboard" hidden>Device keys</button>
+            <button class="btn btn--ghost" id="fullscreen">Fullscreen</button>
+            <button class="btn btn--ghost" id="sidebar-toggle"
+                    aria-controls="sidebar" aria-expanded="false">Controls</button>
+            <span id="stat"></span>
+          </div>
         </div>
-      </div>
 
-      <div id="ledbar" class="try-ledbar"></div>
-
-      <div class="try-controls">
-        <button class="btn btn--ghost" id="pause">Pause</button>
-        <button class="btn btn--ghost" id="screenshot">Screenshot</button>
-        <button class="btn btn--ghost" id="savestate">Save state</button>
-        <button class="btn btn--ghost" id="loadstate">Load state&hellip;</button>
-        <button class="btn btn--ghost" id="quicksave">Quick save</button>
-        <button class="btn btn--ghost" id="quickload">Quick load</button>
-        <label class="btn btn--ghost">Insert DF0&hellip;
-          <input id="df0" type="file" accept=".adf,.adz,.dms,.gz,.zip,.scp" hidden></label>
-        <button class="btn btn--ghost" id="df0url">DF0 from URL&hellip;</button>
-        <button class="btn btn--ghost" id="eject">Eject</button>
-        <label class="btn btn--ghost">Load Kickstart&hellip;
-          <input id="kick" type="file" accept=".rom,.bin" hidden></label>
-        <button class="btn btn--ghost" id="reset">Reset</button>
-        <button class="btn btn--ghost" id="joy">Joystick: off</button>
-        <button class="btn btn--ghost" id="keyboard">Keyboard</button>
-        <!-- Ships hidden: only a touch screen wants its device keyboard
-             raised, and try.js un-hides the button there. -->
-        <button class="btn btn--ghost" id="devkeyboard" hidden>Device keys</button>
-        <button class="btn btn--ghost" id="fullscreen">Fullscreen</button>
-        <button class="btn btn--ghost" id="savedstates">Saved states&hellip;</button>
+        <aside class="try-sidebar" id="sidebar" aria-label="Emulator controls">
+          <div class="try-side-head">
+            <span class="try-side-title">Controls</span>
+            <button class="try-side-close" id="sidebar-close" aria-label="Close controls">&#215;</button>
+          </div>
+          <div class="try-side-section">
+            <h3>Storage</h3>
+            <button class="btn btn--ghost" id="df0url">DF0 from URL&hellip;</button>
+            <button class="btn btn--ghost" id="eject">Eject</button>
+            <label class="btn btn--ghost">Load Kickstart&hellip;
+              <input id="kick" type="file" accept=".rom,.bin" hidden></label>
+          </div>
+          <div class="try-side-section">
+            <h3>Save states</h3>
+            <div class="try-side-row">
+              <button class="btn btn--ghost" id="quicksave">Quick save</button>
+              <button class="btn btn--ghost" id="quickload">Quick load</button>
+            </div>
+            <div class="try-side-row">
+              <button class="btn btn--ghost" id="savestate">Save state</button>
+              <button class="btn btn--ghost" id="loadstate">Load state&hellip;</button>
+            </div>
+            <button class="btn btn--ghost" id="savedstates">Saved states&hellip;</button>
+          </div>
+          <div class="try-side-section">
+            <h3>Machine</h3>
+            <!-- The machine, video, view, screen and monitor selects are
+                 left empty on purpose: try.js fills their options from the
+                 wasm module once it is ready, so this page never has to
+                 track which machines, standards or modes the build offers. -->
+            <label class="try-check">Machine
+              <select id="machine"></select></label>
+            <label class="try-check">Video
+              <select id="video"></select></label>
+            <label class="try-check">Floppy speed
+              <select id="floppy-speed">
+                <option value="100">100%</option>
+                <option value="200">200%</option>
+                <option value="400">400%</option>
+                <option value="800">800%</option>
+                <option value="0">Turbo</option>
+              </select></label>
+            <label class="try-check"><input id="background-run" type="checkbox"> Run in background</label>
+            <button class="btn btn--ghost" id="reset">Reset</button>
+          </div>
+          <div class="try-side-section">
+            <h3>Display</h3>
+            <label class="try-check">View
+              <select id="overscan"></select></label>
+            <label class="try-check">Screen
+              <select id="tint"></select></label>
+            <label class="try-check">Monitor
+              <select id="monitor"></select></label>
+            <button class="btn btn--ghost" id="screenshot">Screenshot</button>
+          </div>
+          <div class="try-side-section">
+            <h3>Sound</h3>
+            <label class="try-check"><input id="floppy-sounds" type="checkbox" checked> Drive sounds</label>
+            <label class="try-check">Volume
+              <input id="vol" type="range" min="0" max="100" value="80"></label>
+          </div>
+          <!-- try.js fills this with the wasm bundle's tag and commit once
+               the module loads; until then :empty keeps it collapsed. -->
+          <p class="try-side-build" id="build-info"></p>
+        </aside>
       </div>
-
-      <div class="try-settings">
-        <!-- The machine, video, view, screen and monitor selects are left
-             empty on purpose: try.js fills their options from the wasm
-             module once it is ready, so this page never has to track which
-             machines, standards or modes the build offers. -->
-        <label class="try-check">Machine
-          <select id="machine"></select></label>
-        <label class="try-check">Video
-          <select id="video"></select></label>
-        <label class="try-check">Floppy speed
-          <select id="floppy-speed">
-            <option value="100">100%</option>
-            <option value="200">200%</option>
-            <option value="400">400%</option>
-            <option value="800">800%</option>
-            <option value="0">Turbo</option>
-          </select></label>
-        <label class="try-check">View
-          <select id="overscan"></select></label>
-        <label class="try-check">Screen
-          <select id="tint"></select></label>
-        <label class="try-check">Monitor
-          <select id="monitor"></select></label>
-        <label class="try-check"><input id="floppy-sounds" type="checkbox" checked> Drive sounds</label>
-        <label class="try-check"><input id="background-run" type="checkbox"> Run in background</label>
-        <input id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
-        <span id="stat"></span>
-      </div>
+      <div class="try-scrim" id="sidebar-scrim" aria-hidden="true"></div>
 
       <p class="try-note">
         The same cycle-driven core as the desktop builds, running
@@ -322,7 +524,10 @@
         carrying the ROM and the disk in the drive across the rebuild.
         It boots the bundled open-source
         AROS ROM out of the box - no Kickstart needed - and you can load your
-        own Kickstart image and disk files with the buttons above. A loaded
+        own disk files with the Insert DF0 button. The <b>Controls</b> button
+        opens a panel with the rest of the machine's controls - disks and
+        Kickstarts, save states, machine, display and sound settings - and
+        hides them again when you just want the picture. A loaded
         Kickstart is remembered by your browser, so your next visit boots it
         without the picker (the Saved states panel shows what is remembered,
         with a Forget button). A disk can
@@ -336,7 +541,8 @@
       <p class="try-note">
         Save states snapshot the entire machine - memory, chips, CPU and the
         disk in the drive - so you can put a game down and pick it up exactly
-        where you left it. <b>Quick save</b> keeps a snapshot inside your
+        where you left it; their buttons live in the Controls panel.
+        <b>Quick save</b> keeps a snapshot inside your
         browser and <b>Quick load</b> brings it back, even after you close
         the tab and come back tomorrow; you can quick load straight from a
         cold page, without booting first. <b>Saved states&hellip;</b> opens
@@ -413,6 +619,39 @@
   </div>
 </footer>
 
+<script>
+  // Sidebar toggle wiring. Wide viewports remember the choice across
+  // visits; the narrow-viewport drawer always starts closed and also
+  // closes from its X button or a tap on the scrim. Crossing the 900px
+  // breakpoint (a rotated tablet, a resized window) re-derives the state
+  // so the drawer never springs open on its own.
+  (function () {
+    var KEY = 'copperline-try-sidebar';
+    var drawer = window.matchMedia('(max-width: 900px)');
+    var toggle = document.getElementById('sidebar-toggle');
+    function isOpen() { return document.documentElement.dataset.sidebar === 'open'; }
+    function setOpen(open, persist) {
+      document.documentElement.dataset.sidebar = open ? 'open' : 'closed';
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (persist && !drawer.matches) {
+        try { localStorage.setItem(KEY, open ? '1' : '0'); } catch (e) {}
+      }
+    }
+    toggle.addEventListener('click', function () { setOpen(!isOpen(), true); });
+    document.getElementById('sidebar-close').addEventListener('click', function () { setOpen(false, false); });
+    document.getElementById('sidebar-scrim').addEventListener('click', function () { setOpen(false, false); });
+    drawer.addEventListener('change', function (e) {
+      var open = false;
+      if (!e.matches) {
+        open = true;
+        try { open = localStorage.getItem(KEY) !== '0'; } catch (err) {}
+      }
+      setOpen(open, false);
+    });
+    // Sync the button's aria-expanded with the state the head script set.
+    setOpen(isOpen(), false);
+  })();
+</script>
 <script type="module" src="./try.js"></script>
 <script>
   // Installability and offline: the service worker precaches the page, the
