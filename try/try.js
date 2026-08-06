@@ -63,10 +63,13 @@ let framesThisSecond = 0;
 // cadence, with the machine still stepping in real time.
 let ticksThisSecond = 0;
 let presentsThisSecond = 0;
-// Set when a step renders a frame the canvas has not blitted yet, cleared
+// Set when a step produced a frame the canvas has not shown yet, cleared
 // by the blit that shows it. Steps can happen off the rAF tick (hidden
-// background running, the starved-rAF fallback), so "shown" counts blits
-// of fresh pictures rather than assuming step and blit share a tick.
+// background running, the starved-rAF fallback) with the wasm-side
+// render deferred; the next rendering run repaints before the blit, so
+// the flag still marks a genuinely fresh picture, and "shown" counts
+// blits of fresh pictures rather than assuming step and blit share a
+// tick.
 let presentDirty = false;
 let audioUnderruns = 0;
 let lastStatUpdate = 0;
@@ -521,12 +524,19 @@ async function boot() {
       // unfocused window on a power-saving host), they keep the machine
       // and its audio real time between the rAF ticks that still arrive,
       // each of which blits the newest frame; only the displayed rate
-      // degrades to whatever the compositor manages.
+      // degrades to whatever the compositor manages. Both cases defer
+      // the wasm-side frame render: the blit waits on the next rAF tick
+      // regardless, and rendering per queue report would spend exactly
+      // the headroom a starving host is not giving us.
       if (running && !paused && emu) {
         const nowMs = performance.now();
-        if (keepRunningHidden) stepMachine(nowMs, true);
-        else if (!document.hidden && nowMs - lastRafMs > RAF_STARVED_MS) {
-          stepMachine(nowMs, false);
+        if (
+          keepRunningHidden ||
+          (!document.hidden &&
+            nowMs - lastRafMs > RAF_STARVED_MS &&
+            avgStepMs < STEP_OVERLOAD_MS)
+        ) {
+          stepMachine(nowMs, true);
         }
       }
     };
@@ -578,6 +588,11 @@ async function boot() {
     );
     overlay.style.display = 'none';
     showBugLink(false);
+    // Primed before running flips on: the starvation fallback is gated
+    // on running, so no queue report can read the epoch (or a previous
+    // machine's stamp) as an already-starved rAF before the first
+    // animation frame lands.
+    lastRafMs = performance.now();
     running = true;
     // A reboot from a paused machine must not start the new one paused.
     paused = false;
@@ -592,9 +607,6 @@ async function boot() {
     // is a machine to type into: raised at page load it would cover half
     // the boot overlay with nothing behind it to receive the keys.
     if (HAS_KEY_RAW && storedPref(KB_OPEN_STORAGE_KEY) === 'on') openKeyboard();
-    // Prime the starvation clock: until the first animation frame lands,
-    // the worklet must not read the epoch as an already-starved rAF.
-    lastRafMs = performance.now();
     requestAnimationFrame(tick);
   } catch (e) {
     setLoadStatus(`boot failed: ${e.message ?? e}`);
@@ -628,6 +640,36 @@ let audioGateClosed = false;
 // time (the slow motion and underruns a starved window shows today).
 const RAF_STARVED_MS = 50;
 let lastRafMs = 0;
+
+// Adaptive render stride for hosts that cannot afford a frame render
+// every emulated frame. The wasm-side presentation render is a large
+// share of a step's cost (about 45% on an Ice Lake laptop), and a host
+// saturated by it drops animation frames until the pacer starts
+// forgiving deficits - slow motion, the worst possible degradation.
+// When the moving average of a step's cost nears the 60 Hz frame
+// budget, alternate ticks step with the render deferred (the same
+// run_hidden + stale-repaint path the off-tick clocks use), trading
+// display rate for guaranteed real-time emulation and audio. The
+// hysteresis keeps the mode from flapping on the threshold, and the
+// stride never exceeds every-other-tick, so the picture keeps at least
+// half the tick rate. Old bundles without run_hidden render every
+// step regardless, which simply leaves the behavior they always had.
+const RENDER_SKIP_ENTER_MS = 15;
+const RENDER_SKIP_EXIT_MS = 11;
+// The starved-rAF fallback exists for a THROTTLED host: animation frames
+// withheld from a machine that is cheap to step. On an OVERLOADED host -
+// the machine itself eating more than the worklet's ~29 ms report
+// interval per step - stepping on every report leaves the main thread no
+// idle at all: the page (input, the stat line, devtools) freezes solid
+// while emulated time barely gains, because the wall-paced core cannot
+// exceed the host's throughput however often it is called. Past this
+// step cost the fallback stands down and rAF alone drives the machine,
+// keeping the page usable through the worst stretches (a 68020 decrunch
+// on a slow host) at whatever rate the host can actually sustain.
+const STEP_OVERLOAD_MS = 25;
+let avgStepMs = 0;
+let renderSkipActive = false;
+let renderDeferredLastTick = false;
 
 function maxFramesForQueue() {
   const limit = audioGateClosed ? AUDIO_GATE_OPEN_MS : AUDIO_GATE_CLOSE_MS;
@@ -676,15 +718,25 @@ function presentFrame() {
 // the half of a tick shared by the visible rAF loop and the worklet's
 // off-tick stepping (hidden background running, the starved-rAF
 // fallback). Returns false when the machine crashed and the caller's loop
-// must stop. Hidden stepping skips the wasm-side frame render (nobody can
-// see it); the first visible run repaints unconditionally after that.
-function stepMachine(nowMs, hidden) {
+// must stop. Off-tick steps defer the wasm-side frame render (a hidden
+// page never blits, a starved one not before its next rAF tick); the
+// first rendering run repaints even when it steps nothing itself, so a
+// deferred picture is never blitted stale.
+function stepMachine(nowMs, deferRender) {
   try {
     const max = maxFramesForQueue();
+    const stepStart = performance.now();
     const stepped =
-      hidden && typeof emu.run_hidden === 'function'
+      deferRender && typeof emu.run_hidden === 'function'
         ? emu.run_hidden(nowMs, max)
         : emu.run(nowMs, max);
+    // Rolling cost of a step, the render-stride controller's signal.
+    // Idle steps (nothing to advance) pull it down, which is right:
+    // they mean the host is keeping up.
+    avgStepMs = avgStepMs * 0.9 + (performance.now() - stepStart) * 0.1;
+    renderSkipActive = renderSkipActive
+      ? avgStepMs > RENDER_SKIP_EXIT_MS
+      : avgStepMs > RENDER_SKIP_ENTER_MS;
     framesThisSecond += stepped;
     if (stepped > 0) presentDirty = true;
   } catch (e) {
@@ -715,7 +767,8 @@ function stepMachine(nowMs, hidden) {
       `${framesThisSecond} fps (${presentsThisSecond} shown, ${ticksThisSecond} ticks) | ` +
       `${emu.emulated_seconds().toFixed(1)}s emulated | ` +
       `audio ${queuedMs.toFixed(0)} ms` +
-      (audioUnderruns > 0 ? ` (${audioUnderruns} underruns)` : '');
+      (audioUnderruns > 0 ? ` (${audioUnderruns} underruns)` : '') +
+      (renderSkipActive ? ' | render 1/2' : '');
     framesThisSecond = 0;
     ticksThisSecond = 0;
     presentsThisSecond = 0;
@@ -735,9 +788,18 @@ function tick(nowMs) {
   pumpGamepads();
   syncCapsLed();
   pumpHostKeys();
-  if (!stepMachine(nowMs, false)) return;
+  // Under sustained overload, defer the frame render on alternate ticks
+  // (see the render-stride notes above): the machine keeps real time on
+  // a host that cannot afford a render per frame, and only the shown
+  // rate degrades - never the emulation or its audio.
+  const deferRender = renderSkipActive && !renderDeferredLastTick;
+  if (!stepMachine(nowMs, deferRender)) return;
+  renderDeferredLastTick = deferRender;
   presentFrame();
-  if (presentDirty) {
+  // A deferred tick blits the previous picture again; the flag rides
+  // through to the rendering tick whose blit really shows something
+  // new, so "shown" stays the count of fresh pictures on the canvas.
+  if (presentDirty && !deferRender) {
     presentsThisSecond++;
     presentDirty = false;
   }
@@ -5343,7 +5405,6 @@ async function startup() {
   const bgRunPref = storedPref(BG_RUN_STORAGE_KEY);
   if (bgRunPref !== null) bgRunToggle.checked = bgRunPref === 'on';
   else if (typeof cfg.background_run === 'boolean') bgRunToggle.checked = cfg.background_run;
-
   const fetches = [];
   const linkedDisk =
     pageParams.get('df0') ?? (typeof cfg.df0 === 'string' ? cfg.df0 : null);
