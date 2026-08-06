@@ -406,6 +406,23 @@ export class WebEmu {
         return ret[0] >>> 0;
     }
     /**
+     * `run` for a hidden page: step the machine and queue its audio, but
+     * skip rendering the presentation buffer nobody can see. The first
+     * rendering `run` after hidden stepping repaints even if it stepped
+     * no frames itself, so a tab that kept running in the background
+     * shows the current picture the moment it is visible again.
+     * @param {number} now_ms
+     * @param {number} max_frames
+     * @returns {number}
+     */
+    run_hidden(now_ms, max_frames) {
+        const ret = wasm.webemu_run_hidden(this.__wbg_ptr, now_ms, max_frames);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return ret[0] >>> 0;
+    }
+    /**
      * Snapshot the whole emulated machine (RAM, ROM, chipset, CPU, the
      * floppy images themselves) into a `.clstate` blob, the same format the
      * desktop builds write, so a state saved here loads there and back. The
