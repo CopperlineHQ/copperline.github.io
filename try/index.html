@@ -31,9 +31,12 @@
 <style>
   /* The emulator should be fully on screen without scrolling: trim the
      section's hero-sized padding, keep the header to two compact lines, and
-     derive the 4:3 shell's width from the viewport height (nav + header +
-     controls need ~275px of it). */
+     derive the 4:3 shell's width from the viewport height. The section
+     sheds the site's column cap so a tall display (a Studio Display, a 4K
+     monitor) gets a monitor sized to it rather than to the article
+     measure. */
   .section--try {
+    max-width: none;
     padding-top: clamp(1.2rem, 2.5vh, 2rem);
     padding-bottom: 2.5rem;
   }
@@ -48,7 +51,17 @@
     margin-bottom: 0;
   }
   .try-wrap {
-    max-width: min(920px, max(420px, calc((100vh - 275px) * 4 / 3)));
+    /* Two height-derived curves, and the wider one wins. The first is the
+       laptop fit this page has always had (nav + header + wrapped control
+       rows eat ~275px before the rows start folding, capped at 920px). The
+       second drops the cap for tall viewports, where the control rows plus
+       chrome and the booted machine's LED strip measure ~380px; it
+       overtakes the first at ~1070px of viewport height and lets a Studio
+       Display or 4K screen fill with monitor instead of margin. */
+    max-width: min(1600px,
+      max(420px,
+        min(920px, calc((100vh - 275px) * 4 / 3)),
+        calc((100vh - 380px) * 4 / 3)));
     margin: 0 auto;
   }
   .try-shell {
@@ -123,6 +136,12 @@
     border-color: var(--line);
     background: rgba(255, 255, 255, 0.02);
   }
+  /* try.js hides controls this build or device cannot serve (the monitor
+     select without WebGL2, the keyboard buttons without key_raw, device
+     keys off touch screens). .btn and .try-check set display, which would
+     out-rank the hidden attribute's user-agent rule, so honour it here. */
+  .try-controls .btn[hidden] { display: none; }
+  .try-check:has(> select[hidden]) { display: none; }
   .try-settings {
     display: flex;
     flex-wrap: wrap;
@@ -160,6 +179,9 @@
     white-space: nowrap;
   }
   .try-note {
+    /* The monitor may grow well past the article measure; the prose
+       below it should not. */
+    max-width: 920px;
     margin: 1.2rem auto 0;
     color: var(--ink-mute);
     font-size: 0.92rem;
@@ -255,15 +277,19 @@
           <input id="kick" type="file" accept=".rom,.bin" hidden></label>
         <button class="btn btn--ghost" id="reset">Reset</button>
         <button class="btn btn--ghost" id="joy">Joystick: off</button>
+        <button class="btn btn--ghost" id="keyboard">Keyboard</button>
+        <!-- Ships hidden: only a touch screen wants its device keyboard
+             raised, and try.js un-hides the button there. -->
+        <button class="btn btn--ghost" id="devkeyboard" hidden>Device keys</button>
         <button class="btn btn--ghost" id="fullscreen">Fullscreen</button>
         <button class="btn btn--ghost" id="savedstates">Saved states&hellip;</button>
       </div>
 
       <div class="try-settings">
-        <!-- The machine, video, view and screen selects are left empty on
-             purpose: try.js fills their options from the wasm module once
-             it is ready, so this page never has to track which machines,
-             standards or modes the build offers. -->
+        <!-- The machine, video, view, screen and monitor selects are left
+             empty on purpose: try.js fills their options from the wasm
+             module once it is ready, so this page never has to track which
+             machines, standards or modes the build offers. -->
         <label class="try-check">Machine
           <select id="machine"></select></label>
         <label class="try-check">Video
@@ -280,7 +306,10 @@
           <select id="overscan"></select></label>
         <label class="try-check">Screen
           <select id="tint"></select></label>
+        <label class="try-check">Monitor
+          <select id="monitor"></select></label>
         <label class="try-check"><input id="floppy-sounds" type="checkbox" checked> Drive sounds</label>
+        <label class="try-check"><input id="background-run" type="checkbox"> Run in background</label>
         <input id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
         <span id="stat"></span>
       </div>
