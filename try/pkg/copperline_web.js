@@ -58,6 +58,14 @@ export class WebEmu {
         return ret === 0xFFFFFF ? undefined : ret !== 0;
     }
     /**
+     * Whether motion-adaptive LACE field merging is enabled.
+     * @returns {boolean}
+     */
+    deinterlace_enabled() {
+        const ret = wasm.webemu_deinterlace_enabled(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
      * File name of the image in DFn, or undefined when the drive is
      * empty (so this doubles as the inserted check).
      * @param {number} drive
@@ -176,6 +184,26 @@ export class WebEmu {
      */
     key_raw(rawkey, pressed) {
         wasm.webemu_key_raw(this.__wbg_ptr, rawkey, pressed);
+    }
+    /**
+     * Host milliseconds spent advancing the emulated machine in the most
+     * recent `run`/`run_hidden` call, excluding the Rust presentation
+     * renderer.
+     * @returns {number}
+     */
+    last_run_core_ms() {
+        const ret = wasm.webemu_last_run_core_ms(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * Host milliseconds spent in the Rust presentation renderer in the most
+     * recent `run` call. `run_hidden`, an idle run, and a call that needed no
+     * repaint report zero.
+     * @returns {number}
+     */
+    last_run_render_ms() {
+        const ret = wasm.webemu_last_run_render_ms(this.__wbg_ptr);
+        return ret;
     }
     /**
      * Fit a Kickstart/AROS ROM (and optional extended ROM) from bytes and
@@ -313,6 +341,14 @@ export class WebEmu {
         return this;
     }
     /**
+     * The quantised CRT phosphor-persistence fraction currently in use.
+     * @returns {number}
+     */
+    phosphor() {
+        const ret = wasm.webemu_phosphor(this.__wbg_ptr);
+        return ret;
+    }
+    /**
      * Power LED brightness: true while the guest holds CIA-A's /LED line
      * engaged (full brightness, Paula's filter on), false once it releases
      * it -- the page then shows the dimmed A500 rev 6+ level, never an
@@ -366,6 +402,17 @@ export class WebEmu {
      */
     present_width() {
         const ret = wasm.webemu_present_width(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * Generation of the current presentation buffer. It advances when the
+     * renderer writes a non-reused presentation, not merely because the
+     * emulated machine stepped, so a browser can skip exact-reuse canvas
+     * uploads and draws without comparing the framebuffer itself.
+     * @returns {number}
+     */
+    presentation_revision() {
+        const ret = wasm.webemu_presentation_revision(this.__wbg_ptr);
         return ret >>> 0;
     }
     /**
@@ -515,6 +562,16 @@ export class WebEmu {
         wasm.webemu_set_cd32_buttons_port2(this.__wbg_ptr, play, rwd, ffw, green, yellow);
     }
     /**
+     * Enable motion-adaptive LACE field merging. The browser defaults this
+     * off for throughput, presenting interlaced fields by line doubling;
+     * progressive displays are unchanged either way. Switching live drops
+     * field history and re-presents the last completed frame.
+     * @param {boolean} enabled
+     */
+    set_deinterlace(enabled) {
+        wasm.webemu_set_deinterlace(this.__wbg_ptr, enabled);
+    }
+    /**
      * Enable or mute the synthesized floppy drive sounds (motor hum,
      * head-step clicks, read hiss). On by default, like the desktop's
      * `[audio] floppy_sounds` knob.
@@ -595,6 +652,16 @@ export class WebEmu {
         const ptr0 = passStringToWasm0(mode, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         wasm.webemu_set_overscan(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * Set CRT phosphor persistence as the fraction of the previous
+     * presented frame retained (0.0 = off, at most 0.95). The browser
+     * defaults it off. Switching live seeds a fresh trail and re-presents
+     * the last completed frame.
+     * @param {number} persistence
+     */
+    set_phosphor(persistence) {
+        wasm.webemu_set_phosphor(this.__wbg_ptr, persistence);
     }
     /**
      * Plug a device into a port: "mouse", "joystick", "cd32", "analogue",

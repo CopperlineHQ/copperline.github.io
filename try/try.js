@@ -82,6 +82,20 @@ let presentsThisSecond = 0;
 // blits of fresh pictures rather than assuming step and blit share a
 // tick.
 let presentDirty = false;
+// Presentation generation exported by current wasm bundles. Unlike
+// presentDirty, this advances only when Rust writes a non-reused
+// presentation, so exact-reuse frames need no canvas upload or monitor
+// draw. Null also forces the first frame of a new machine through.
+let lastPresentationRevision = null;
+// Cumulative host work behind the once-per-second stat line. Rust supplies
+// the core/render split; the page measures the buffer upload and monitor
+// shader submission around the browser calls themselves. Dividing by the
+// emulated frames stepped in the interval makes all four figures directly
+// comparable with the PAL/NTSC frame budget.
+let coreMsThisSecond = 0;
+let rustRenderMsThisSecond = 0;
+let uploadMsThisSecond = 0;
+let shaderMsThisSecond = 0;
 let audioUnderruns = 0;
 let lastStatUpdate = 0;
 // Size of the last presented frame in emulated pixels. Under the monitor
@@ -684,6 +698,12 @@ async function boot() {
 
     await buildAudioStack(false);
     presentDirty = false;
+    lastPresentationRevision = null;
+    coreMsThisSecond = 0;
+    rustRenderMsThisSecond = 0;
+    uploadMsThisSecond = 0;
+    shaderMsThisSecond = 0;
+    resetRenderStrideController();
 
     // A fresh machine boots with an empty drive: DF0 holds the pending disk
     // or nothing, never a name left over from before the reboot (a crash
@@ -700,6 +720,8 @@ async function boot() {
     else if (configMonoAudio !== null) machine.set_mono_audio(configMonoAudio);
     if (floppySpeed !== null) machine.set_floppy_speed(floppySpeed);
     if (overscanMode !== null) machine.set_overscan?.(overscanMode);
+    machine.set_deinterlace?.(deinterlaceEnabled);
+    machine.set_phosphor?.(phosphorPersistence);
     emu = machine;
     window.__emu = emu; // for debugging/automation
     lastFddTrack = null; // a new machine starts the track latch over
@@ -774,21 +796,25 @@ let audioGateClosed = false;
 const RAF_STARVED_MS = 50;
 let lastRafMs = 0;
 
-// Adaptive render stride for hosts that cannot afford a frame render
-// every emulated frame. The wasm-side presentation render is a large
-// share of a step's cost (about 45% on an Ice Lake laptop), and a host
-// saturated by it drops animation frames until the pacer starts
-// forgiving deficits - slow motion, the worst possible degradation.
-// When the moving average of a step's cost nears the 60 Hz frame
-// budget, alternate ticks step with the render deferred (the same
-// run_hidden + stale-repaint path the off-tick clocks use), trading
-// display rate for guaranteed real-time emulation and audio. The
-// hysteresis keeps the mode from flapping on the threshold, and the
-// stride never exceeds every-other-tick, so the picture keeps at least
-// half the tick rate. Old bundles without run_hidden render every
-// step regardless, which simply leaves the behavior they always had.
-const RENDER_SKIP_ENTER_MS = 15;
-const RENDER_SKIP_EXIT_MS = 11;
+// Adaptive render stride for hosts that cannot afford a frame render on
+// every visible tick. One browser call can advance several of the core's
+// fixed 60 Hz pacing slices after rAF arrives late; its whole-call duration
+// is therefore not a per-frame cost. Treating a two-slice catch-up as one
+// frame used to trip the fallback on an Ice Lake Mac even while full
+// rendering still held real time.
+//
+// The controller uses cost per stepped pacing slice, requires sustained
+// pressure before changing mode, and keeps a smaller time-based hysteresis
+// for recovery. A genuinely overloaded host still alternates run_hidden
+// with rendering runs, trading display rate for real-time emulation and
+// audio; a catch-up burst no longer leaves it stuck there. Old bundles
+// without run_hidden render every step regardless, preserving their
+// existing behaviour.
+const RENDER_SKIP_ENTER_MS = 16;
+const RENDER_SKIP_EXIT_MS = 14.5;
+const RENDER_SKIP_ENTER_HOLD_MS = 500;
+const RENDER_SKIP_EXIT_HOLD_MS = 2000;
+const RENDER_SKIP_SAMPLE_WEIGHT = 0.2;
 // The starved-rAF fallback exists for a THROTTLED host: animation frames
 // withheld from a machine that is cheap to step. On an OVERLOADED host -
 // the machine itself eating more than the worklet's ~29 ms report
@@ -800,9 +826,58 @@ const RENDER_SKIP_EXIT_MS = 11;
 // keeping the page usable through the worst stretches (a 68020 decrunch
 // on a slow host) at whatever rate the host can actually sustain.
 const STEP_OVERLOAD_MS = 25;
+// Raw whole-call cost remains the correct signal for the starved-rAF
+// fallback: it decides whether another call right now would monopolise the
+// main thread, not whether one emulated pacing slice is affordable.
 let avgStepMs = 0;
+let avgFrameStepMs = 0;
 let renderSkipActive = false;
+let renderSkipTransitionSinceMs = null;
 let renderDeferredLastTick = false;
+
+function cancelRenderStrideTransition() {
+  renderSkipTransitionSinceMs = null;
+}
+
+function resetRenderStrideController() {
+  avgStepMs = 0;
+  avgFrameStepMs = 0;
+  renderSkipActive = false;
+  cancelRenderStrideTransition();
+  renderDeferredLastTick = false;
+}
+
+function updateRenderStrideController(nowMs, stepElapsed, stepped) {
+  avgStepMs = avgStepMs * 0.9 + stepElapsed * 0.1;
+
+  // `run` advances fixed 1/60-second pacing slices, not necessarily one
+  // hardware video field. Normalize catch-up calls by the work completed;
+  // an idle call pulls the average down because it proves the host caught up.
+  const frameStepMs = stepped > 0 ? stepElapsed / stepped : 0;
+  if (avgFrameStepMs === 0 && frameStepMs > 0) {
+    avgFrameStepMs = frameStepMs;
+  } else {
+    avgFrameStepMs =
+      avgFrameStepMs * (1 - RENDER_SKIP_SAMPLE_WEIGHT) +
+      frameStepMs * RENDER_SKIP_SAMPLE_WEIGHT;
+  }
+
+  const threshold = renderSkipActive ? RENDER_SKIP_EXIT_MS : RENDER_SKIP_ENTER_MS;
+  const nextActive = avgFrameStepMs > threshold;
+  if (nextActive === renderSkipActive) {
+    renderSkipTransitionSinceMs = null;
+    return;
+  }
+  if (renderSkipTransitionSinceMs === null) {
+    renderSkipTransitionSinceMs = nowMs;
+    return;
+  }
+  const holdMs = nextActive ? RENDER_SKIP_ENTER_HOLD_MS : RENDER_SKIP_EXIT_HOLD_MS;
+  if (nowMs - renderSkipTransitionSinceMs >= holdMs) {
+    renderSkipActive = nextActive;
+    renderSkipTransitionSinceMs = null;
+  }
+}
 
 function maxFramesForQueue() {
   const limit = audioGateClosed ? AUDIO_GATE_OPEN_MS : AUDIO_GATE_CLOSE_MS;
@@ -821,30 +896,46 @@ function maxFramesForQueue() {
 // tick, and again after a save state is loaded: that repaints the restored
 // screen straight away, so a load into a paused machine shows where it
 // resumes instead of the frame from before the load.
-function presentFrame() {
+function presentFrame(force = false) {
   const rows = emu.present_rows();
-  if (rows === 0) return;
+  if (rows === 0) return false;
+  const hasPresentationRevision = typeof emu.presentation_revision === 'function';
+  const revision = hasPresentationRevision ? emu.presentation_revision() : null;
+  const changed = hasPresentationRevision
+    ? revision !== lastPresentationRevision
+    : presentDirty;
+  // An older cached bundle has no revision to prove that its held
+  // presentation is unchanged. Preserve the old page's unconditional
+  // copy/upload behaviour, including repaint-only load-state and overscan
+  // calls, while `changed` still keeps the "shown" counter meaningful.
+  if (hasPresentationRevision && !changed && !force) return false;
   // The presentation size follows the emulated display (the cropped TV
   // aperture for a standard PAL screen, the full overscan framebuffer
-  // otherwise), so track both dimensions every frame.
+  // otherwise), so track both dimensions whenever the buffer changes or
+  // an external display change forces a redraw.
   const width = emu.present_width();
   presentSize = { width, rows };
   if (monitorGl) {
-    presentFrameMonitor(width, rows);
-    return;
+    presentFrameMonitor(width, rows, changed || !hasPresentationRevision);
+  } else {
+    const uploadStart = performance.now();
+    if (canvas.width !== width || canvas.height !== rows) {
+      canvas.width = width;
+      canvas.height = rows;
+    }
+    // The view must be rebuilt after every changed presentation: wasm memory
+    // may grow and the present buffer may reallocate. A forced 2D redraw
+    // (resize while paused) needs the same copy even when the revision held.
+    const view = new Uint8ClampedArray(
+      wasm.memory.buffer,
+      emu.present_ptr(),
+      width * rows * 4,
+    );
+    ctx2d.putImageData(new ImageData(view, width, rows), 0, 0);
+    uploadMsThisSecond += performance.now() - uploadStart;
   }
-  if (canvas.width !== width || canvas.height !== rows) {
-    canvas.width = width;
-    canvas.height = rows;
-  }
-  // The view must be rebuilt every frame: wasm memory may grow and the
-  // present buffer may reallocate.
-  const view = new Uint8ClampedArray(
-    wasm.memory.buffer,
-    emu.present_ptr(),
-    width * rows * 4,
-  );
-  ctx2d.putImageData(new ImageData(view, width, rows), 0, 0);
+  if (hasPresentationRevision) lastPresentationRevision = revision;
+  return changed;
 }
 
 // Advance the machine to nowMs and ship what it produced (audio, serial):
@@ -863,13 +954,19 @@ function stepMachine(nowMs, deferRender) {
       deferRender && typeof emu.run_hidden === 'function'
         ? emu.run_hidden(nowMs, max)
         : emu.run(nowMs, max);
-    // Rolling cost of a step, the render-stride controller's signal.
-    // Idle steps (nothing to advance) pull it down, which is right:
-    // they mean the host is keeping up.
-    avgStepMs = avgStepMs * 0.9 + (performance.now() - stepStart) * 0.1;
-    renderSkipActive = renderSkipActive
-      ? avgStepMs > RENDER_SKIP_EXIT_MS
-      : avgStepMs > RENDER_SKIP_ENTER_MS;
+    const stepElapsed = performance.now() - stepStart;
+    updateRenderStrideController(nowMs, stepElapsed, stepped);
+    if (
+      typeof emu.last_run_core_ms === 'function' &&
+      typeof emu.last_run_render_ms === 'function'
+    ) {
+      coreMsThisSecond += emu.last_run_core_ms();
+      rustRenderMsThisSecond += emu.last_run_render_ms();
+    } else {
+      // Compatibility with a page served briefly against an older bundle:
+      // preserve a useful total under "core" until the split getters arrive.
+      coreMsThisSecond += stepElapsed;
+    }
     framesThisSecond += stepped;
     if (stepped > 0) presentDirty = true;
   } catch (e) {
@@ -896,15 +993,26 @@ function stepMachine(nowMs, deferRender) {
   pumpSerial();
 
   if (nowMs - lastStatUpdate >= 1000) {
+    const timedFrames = Math.max(1, framesThisSecond);
     statLine.textContent =
       `${framesThisSecond} fps (${presentsThisSecond} shown, ${ticksThisSecond} ticks) | ` +
       `${emu.emulated_seconds().toFixed(1)}s emulated | ` +
       `audio ${queuedMs.toFixed(0)} ms` +
       (audioUnderruns > 0 ? ` (${audioUnderruns} underruns)` : '') +
-      (renderSkipActive ? ' | render 1/2' : '');
+      (renderSkipActive ? ' | render 1/2' : '') +
+      ` | host ${[
+        `core ${(coreMsThisSecond / timedFrames).toFixed(1)}`,
+        `render ${(rustRenderMsThisSecond / timedFrames).toFixed(1)}`,
+        `upload ${(uploadMsThisSecond / timedFrames).toFixed(1)}`,
+        `shader ${(shaderMsThisSecond / timedFrames).toFixed(1)}`,
+      ].join(' + ')} ms/frame`;
     framesThisSecond = 0;
     ticksThisSecond = 0;
     presentsThisSecond = 0;
+    coreMsThisSecond = 0;
+    rustRenderMsThisSecond = 0;
+    uploadMsThisSecond = 0;
+    shaderMsThisSecond = 0;
     lastStatUpdate = nowMs;
     updateStatusDisks();
   }
@@ -928,11 +1036,11 @@ function tick(nowMs) {
   const deferRender = renderSkipActive && !renderDeferredLastTick;
   if (!stepMachine(nowMs, deferRender)) return;
   renderDeferredLastTick = deferRender;
-  presentFrame();
+  const presentedFresh = presentFrame();
   // A deferred tick blits the previous picture again; the flag rides
   // through to the rendering tick whose blit really shows something
   // new, so "shown" stays the count of fresh pictures on the canvas.
-  if (presentDirty && !deferRender) {
+  if (presentedFresh && !deferRender) {
     presentsThisSecond++;
     presentDirty = false;
   }
@@ -1004,6 +1112,11 @@ function recoverAudio() {
 }
 
 document.addEventListener('visibilitychange', () => {
+  // A hide/show boundary is not evidence of sustained pressure or recovery:
+  // discard a pending transition so inactive wall time cannot satisfy its
+  // hold duration. Keep the active stride and averages; background running
+  // still supplies real samples and a foreground return can reassess them.
+  cancelRenderStrideTransition();
   // The browser drops a screen wake lock when the page hides; re-request
   // it when a still-running machine comes back into view.
   syncWakeLock();
@@ -3329,6 +3442,9 @@ function setPauseLabel() {
 function setPaused(next) {
   if (!emu || !running || next === paused) return;
   paused = next;
+  // Paused wall time must not count toward the controller's sustained
+  // enter/exit hold when stepping resumes.
+  cancelRenderStrideTransition();
   setPauseLabel();
   syncWakeLock();
   if (paused) {
@@ -3591,6 +3707,9 @@ function restoreState(bytes, source) {
     setLoadStatus(`${source} failed to load: ${e.message ?? e}`);
     return false;
   }
+  // A timeline jump invalidates both the old workload average and a pending
+  // stride transition. Judge the restored scene on its own sustained cost.
+  resetRenderStrideController();
   // Host-side settings are not part of the machine, so the page's own
   // choices are re-applied over the restored one; the state's idea of them
   // came from whatever session saved it.
@@ -3601,6 +3720,8 @@ function restoreState(bytes, source) {
   else if (configMonoAudio !== null) emu.set_mono_audio(configMonoAudio);
   if (floppySpeed !== null) emu.set_floppy_speed(floppySpeed);
   if (overscanMode !== null) emu.set_overscan?.(overscanMode);
+  emu.set_deinterlace?.(deinterlaceEnabled);
+  emu.set_phosphor?.(phosphorPersistence);
   // Port fittings live on the machine, so the pads plugged into the host go
   // back into the restored one, exactly as after a boot. Port 1 is the
   // mouse socket first: a state saved while a pad occupied it would
@@ -4397,7 +4518,7 @@ videoSel.addEventListener('change', () => {
   }
 });
 
-// --- display: overscan and screen tint -----------------------------------
+// --- display: overscan, deinterlace, phosphor and screen tint -------------
 // Presentation-only choices, so unlike the machine and video standard they
 // are remembered per browser (localStorage) and re-applied on the next
 // visit: nothing the guest can observe changes, only what the glass shows.
@@ -4460,6 +4581,71 @@ function setOverscanMode(mode, remember) {
 }
 overscanSel.addEventListener('change', () => setOverscanMode(overscanSel.value, true));
 
+// Motion-adaptive deinterlacing and phosphor decay both retain and process
+// frame history. They are useful CRT presentation effects, but opt-in in the
+// browser so the default path keeps maximum emulation headroom. Ordinary
+// progressive output is pixel-identical with deinterlacing off; only LACE
+// fields switch from motion-adaptive weaving to inexpensive line doubling.
+const DEINTERLACE_STORAGE_KEY = 'copperline-deinterlace';
+const deinterlaceShellToggle = $('deinterlace');
+const deinterlaceToggle =
+  deinterlaceShellToggle ?? buildToggleControl('deinterlace', 'Deinterlace');
+deinterlaceToggle.checked = false;
+deinterlaceToggle.title =
+  'Motion-adaptive LACE field merging. Off uses faster line doubling.';
+let deinterlaceEnabled = false;
+if (typeof WebEmu.prototype?.set_deinterlace !== 'function') {
+  (deinterlaceShellToggle ?? deinterlaceToggle.parentElement).hidden = true;
+}
+
+function setDeinterlaceEnabled(enabled, remember) {
+  deinterlaceEnabled = Boolean(enabled);
+  deinterlaceToggle.checked = deinterlaceEnabled;
+  if (remember) {
+    storePref(DEINTERLACE_STORAGE_KEY, deinterlaceEnabled ? 'on' : 'off');
+  }
+  if (emu) {
+    emu.set_deinterlace?.(deinterlaceEnabled);
+    if (running && paused) presentFrame();
+  }
+}
+deinterlaceToggle.addEventListener('change', () => {
+  setDeinterlaceEnabled(deinterlaceToggle.checked, true);
+});
+
+const PHOSPHOR_STORAGE_KEY = 'copperline-phosphor';
+const DEFAULT_PHOSPHOR_PERSISTENCE = 0.4;
+const phosphorShellToggle = $('phosphor');
+const phosphorToggle =
+  phosphorShellToggle ?? buildToggleControl('phosphor', 'Phosphor persistence');
+phosphorToggle.checked = false;
+phosphorToggle.title =
+  'Retain 40% of the previous frame for CRT decay. Off avoids the history blend.';
+let phosphorPersistence = 0.0;
+let preferredPhosphorPersistence = DEFAULT_PHOSPHOR_PERSISTENCE;
+if (typeof WebEmu.prototype?.set_phosphor !== 'function') {
+  (phosphorShellToggle ?? phosphorToggle.parentElement).hidden = true;
+}
+
+function setPhosphorPersistence(value, remember) {
+  const persistence = Number(value);
+  if (!Number.isFinite(persistence)) return;
+  phosphorPersistence = Math.min(0.95, Math.max(0, persistence));
+  if (phosphorPersistence > 0) preferredPhosphorPersistence = phosphorPersistence;
+  phosphorToggle.checked = phosphorPersistence > 0;
+  if (remember) storePref(PHOSPHOR_STORAGE_KEY, String(phosphorPersistence));
+  if (emu) {
+    emu.set_phosphor?.(phosphorPersistence);
+    if (running && paused) presentFrame();
+  }
+}
+phosphorToggle.addEventListener('change', () => {
+  setPhosphorPersistence(
+    phosphorToggle.checked ? preferredPhosphorPersistence : 0.0,
+    true,
+  );
+});
+
 const TINT_STORAGE_KEY = 'copperline-tint';
 // Phosphor approximations: grayscale first so the sepia+hue chain works
 // from luminance, saturate to pull the single-hue look together.
@@ -4503,9 +4689,9 @@ function setTintMode(mode, remember) {
   // passes too, so the bezel plastic never turns phosphor-green. A CSS
   // filter on the element would tint frame and all.
   canvas.style.filter = monitorGl ? '' : tintFilter();
-  // A running page picks the shader tint up next tick; a paused one has
-  // no ticking loop to repaint, so repaint here.
-  if (monitorGl && emu && running && paused) presentFrame();
+  // The emulated picture did not change, so the revision-driven tick would
+  // skip it; redraw the held monitor texture with the new uniform now.
+  if (monitorGl && emu && running) presentFrame(true);
 }
 tintSel.addEventListener('change', () => setTintMode(tintSel.value, true));
 
@@ -4928,33 +5114,61 @@ void main() {
     // blank canvas until its next tick. The rebuild reset the cached
     // texture size, so this re-uploads the frame it re-presents. With no
     // machine, the powered-off monitor comes back instead.
-    if (emu && running) presentFrame();
+    if (emu && running) presentFrame(true);
     else if (!emu) presentMonitorOff();
   });
   return renderer;
 }
 
-// Present one frame through the monitor renderer: upload the emulator's
-// presentation buffer and draw it as the selected monitor.
-function presentFrameMonitor(width, rows) {
+// Present one frame through the monitor renderer. A changed Rust
+// presentation uploads new texture bytes; a display-only change (monitor
+// mode, tint, resize, context restoration) redraws the existing texture.
+function presentFrameMonitor(width, rows, changed) {
   const gl = monitorGl.gl;
-  // The view must be rebuilt every frame (wasm memory may grow); the
-  // texture reallocates only when the presentation size changes.
-  const view = new Uint8Array(wasm.memory.buffer, emu.present_ptr(), width * rows * 4);
   gl.bindTexture(gl.TEXTURE_2D, monitorGl.tex);
-  if (monitorGl.texW !== width || monitorGl.texH !== rows) {
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.SRGB8_ALPHA8, width, rows, 0, gl.RGBA, gl.UNSIGNED_BYTE, view);
-    monitorGl.texW = width;
-    monitorGl.texH = rows;
-  } else {
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, rows, gl.RGBA, gl.UNSIGNED_BYTE, view);
+  const resized = monitorGl.texW !== width || monitorGl.texH !== rows;
+  if (changed || resized) {
+    const uploadStart = performance.now();
+    // Rebuild the view only for a real upload: wasm memory may grow and the
+    // presentation Vec may reallocate between revisions.
+    const view = new Uint8Array(wasm.memory.buffer, emu.present_ptr(), width * rows * 4);
+    if (resized) {
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.SRGB8_ALPHA8,
+        width,
+        rows,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        view,
+      );
+      monitorGl.texW = width;
+      monitorGl.texH = rows;
+    } else {
+      gl.texSubImage2D(
+        gl.TEXTURE_2D,
+        0,
+        0,
+        0,
+        width,
+        rows,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        view,
+      );
+    }
+    uploadMsThisSecond += performance.now() - uploadStart;
   }
   // The CRT pass suspends when the scan has no 15 kHz line structure to
   // draw (a programmable scan; 0 from the getter), like the desktop's
   // preset, leaving the bezel - which frames any scan - or the plain
   // blit. An older wasm bundle has no getter; half the presented rows is
   // the standard-scan line count.
+  const shaderStart = performance.now();
   monitorDraw(width, rows, emu.present_crt_lines?.() ?? rows / 2);
+  shaderMsThisSecond += performance.now() - shaderStart;
 }
 
 // Draw the selected monitor with a dark, unlit screen: what the page
@@ -5076,10 +5290,9 @@ function setMonitorMode(mode, remember) {
   monitorSel.value = mode;
   if (remember) storePref(MONITOR_STORAGE_KEY, mode);
   syncShellChrome();
-  // A running page picks the mode up next tick; a paused one has no
-  // ticking loop to repaint, so repaint here, and with no machine at all
-  // the choice previews on the powered-off monitor.
-  if (emu && running && paused) presentFrame();
+  // The emulated picture did not change, so redraw the held texture now;
+  // with no machine at all the choice previews on the powered-off monitor.
+  if (emu && running) presentFrame(true);
   else if (!emu) presentMonitorOff();
 }
 monitorSel.addEventListener('change', () => setMonitorMode(monitorSel.value, true));
@@ -5100,8 +5313,8 @@ function syncShellChrome() {
 // The powered-off monitor fronts the page from the start: drawn now (the
 // module runs with the DOM ready), again on load in case the stylesheet
 // laid the canvas out late, and on resizes while no machine exists. A
-// paused machine repaints on resize too - its loop is not ticking, and
-// the stretched backing store would otherwise blur the frozen picture.
+// running machine redraws its held texture too: repeated emulated frames
+// deliberately skip the ordinary presentation path now.
 syncShellChrome();
 presentMonitorOff();
 window.addEventListener('load', () => {
@@ -5110,7 +5323,7 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', () => {
   if (!monitorGl) return;
   if (!emu) presentMonitorOff();
-  else if (running && paused) presentFrame();
+  else if (running) presentFrame(true);
 });
 
 // --- status bar --------------------------------------------------------
@@ -5442,6 +5655,8 @@ function bugReportHref() {
       `present = "${presentSize.width}x${presentSize.rows}"`,
       `canvas = "${canvas.width}x${canvas.height}"`,
       `monitor = ${toml(monitorGl ? monitorMode : '2d fallback')}`,
+      `deinterlace = ${deinterlaceEnabled}`,
+      `phosphor = ${phosphorPersistence}`,
       `running = ${running}`,
     ].join('\n'),
     logs: `status: ${loadStatus.textContent}\nstats: ${statLine.textContent || '-'}`,
@@ -5575,6 +5790,10 @@ const pageParams = new URLSearchParams(location.search);
 //     "monitor": "plain",            starting monitor presentation
 //                                    (1084|crt|bezel|plain, default 1084);
 //                                    same visitor rule
+//     "deinterlace": true,           motion-adaptive LACE field merging;
+//                                    off by default for throughput
+//     "phosphor": 0.4,               CRT persistence (0.0..0.95); off by
+//                                    default, same visitor rule
 //     "joy": "keys",                 off|keys|cd32|touch
 //     "background_run": true,        starting run-in-background choice;
 //                                    same visitor rule
@@ -5672,6 +5891,22 @@ async function startup() {
     storedPref(MONITOR_STORAGE_KEY) ??
     (typeof cfg.monitor === 'string' ? cfg.monitor.trim() : null);
   if (monitorPref) setMonitorMode(monitorPref, false);
+  // History-dependent display effects are opt-in for browser throughput.
+  // A visitor's saved choice wins over the site's suggested starting point.
+  const deinterlacePref = storedPref(DEINTERLACE_STORAGE_KEY);
+  if (deinterlacePref !== null) {
+    setDeinterlaceEnabled(deinterlacePref === 'on', false);
+  } else if (typeof cfg.deinterlace === 'boolean') {
+    setDeinterlaceEnabled(cfg.deinterlace, false);
+  }
+  const phosphorPref = storedPref(PHOSPHOR_STORAGE_KEY);
+  if (phosphorPref !== null) {
+    setPhosphorPersistence(phosphorPref, false);
+  } else if (typeof cfg.phosphor === 'number') {
+    setPhosphorPersistence(cfg.phosphor, false);
+  } else if (typeof cfg.phosphor === 'boolean') {
+    setPhosphorPersistence(cfg.phosphor ? DEFAULT_PHOSPHOR_PERSISTENCE : 0.0, false);
+  }
   // Which A600 the visitor owns, for the keycap legends. Nothing the guest
   // can observe changes - the rawkeys are the same either way, only what is
   // printed on the caps.
