@@ -124,6 +124,25 @@ export class WebEmu {
         return ret === 0xFFFFFF ? undefined : ret;
     }
     /**
+     * The floppy image file extensions this build can open, without their
+     * dots ("adf", "ipf", ...), straight from the core's own list.
+     *
+     * [`WebEmu::insert_floppy`] decides by signature and never looks at the
+     * name, but a file picker cannot sniff: `<input type="file" accept=...>`
+     * hides everything it does not list, so a filter naming fewer formats
+     * than the core reads locks a visitor out of images this build would
+     * have loaded. The page fills the picker (and the `#df0list` folder
+     * filter) from here so the two cannot drift apart. Like `models`, its
+     * presence is also the feature test for older bundles.
+     * @returns {string[]}
+     */
+    static floppy_formats() {
+        const ret = wasm.webemu_floppy_formats();
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
      * Current floppy drive speed value (percentage, or 0 for turbo).
      * @returns {number}
      */
@@ -141,9 +160,10 @@ export class WebEmu {
         return ret === 0xFFFFFF ? undefined : ret !== 0;
     }
     /**
-     * Insert a floppy image (ADF/ADZ/DMS/extended ADF, optionally
-     * gzip/zip-packed) from bytes. Always write-protected: the browser has
-     * nowhere to write changes back to.
+     * Insert a floppy image from bytes: every format the core reads
+     * (ADF/ADZ, extended ADF, DMS, IPF, SCP, optionally gzip/zip-packed),
+     * recognised by signature rather than by name. Always write-protected:
+     * the browser has nowhere to write changes back to.
      * @param {number} drive
      * @param {Uint8Array} bytes
      * @param {string} name
