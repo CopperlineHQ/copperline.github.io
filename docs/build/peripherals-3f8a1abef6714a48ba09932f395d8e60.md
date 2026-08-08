@@ -184,13 +184,21 @@ activity into it yet.
 from the `dirfs.rs` path above, which snapshots a directory into an
 in-memory FFS volume behind a virtual drive. The guest side is a tiny
 handler (see `guest/services/`) mapped into the Copperline services board
-with a mount table and a hand-built DiagArea; at expansion init it builds
-one DeviceNode per mount and `AddBootNode`s it (at the mount's configured
-boot priority), so DOS mounts the devices at boot. The handler probes the
-library versions at runtime and falls back to the 1.3-era calls
-(`AddDosNode`, a Forbid-protected DosList splice) on Kickstart 1.3, which
-mounts but cannot boot from the volumes -- the bootpri vote needs the
-2.0+ BootNode strap. The handler forwards
+with a mount table and a hand-built DiagArea. DiagPoint only patches a
+Romtag into the retained diag copy; Kickstart's cold-start resident scan
+calls its rt_Init once DOS-list surgery is actually safe (doing it
+straight out of raw DiagPoint context corrupts Kickstart 1.3's own boot),
+and rt_Init builds one DeviceNode per mount and `AddBootNode`s it (at the
+mount's configured boot priority), so DOS mounts the devices at boot. The
+handler probes the library versions at runtime and falls back to the
+1.3-era calls on Kickstart 1.3: `AddDosNode` for a non-boot mount, and a
+hand-built BootNode `Enqueue()`d on `eb_MountList` (mirroring the
+V34-era A590/A2091 boot ROM recipe) for a bootable one, so `bootpri`
+boots the machine from a hostfs volume on 1.3 exactly as it does on
+2.0+. V34's own boot-time handler startup carries BCPL process
+parameters rather than a V36 `ACTION_STARTUP` (`dp_Arg3` is NULL; the
+handler locates its unit through `dp_Arg2`'s `FileSysStartupMsg`
+instead). The handler forwards
 every DosPacket to the host through a doorbell register in the board's
 MMIO window: writing the packet APTR to `REG_DOSPKT` services the packet
 synchronously inside the register write, so `dp_Res1`/`dp_Res2` and the
@@ -273,6 +281,37 @@ that filter. Linux's companion process owns only `CAP_NET_RAW`, validates an
 interface request, and passes a bound descriptor with `SCM_RIGHTS`; it never
 handles a frame. Backend construction is fallible so bridge errors abort
 machine startup or state restoration rather than changing connectivity.
+
+## HostSocket (`hostsocket.rs`, `crates/hostsocket-plugin/`, `guest/hostsocket/`)
+
+The `[hostsocket]` option fits the bundled HostSocket board: guest-facing
+`bsdsocket.library` backed by a smoltcp TCP/IP stack on the host, so socket
+applications run with no guest network stack at all. It is deliberately
+*not* a native device like the A2065 but a WASM plugin board hosted by
+`wasmboard.rs`, with its module and guest stub ROM embedded in the binary
+(`hostsocket.rs` holds the bytes and expands the config section into an
+ordinary plugin-board entry whose module path is a sentinel the plugin host
+and save-state restore resolve). The plugin boundary is what makes the
+board save-state-clean: the entire TCP/IP stack -- smoltcp interface,
+socket set, fd table, DNS state -- lives in the module's linear memory,
+which snapshots and restores byte-for-byte like Amiga RAM; a native port
+would have to hand-serialize live smoltcp state, which smoltcp does not
+support. The guest side (`guest/hostsocket/`) installs the library via an
+`rt_Init`-deferred Romtag (safe on real Kickstart 1.3/3.1 and AROS) and
+stages each LVO through a Forbid-bracketed register-window RPC, with a
+wake-queue interrupt path for blocking calls -- the same host-does-the-work
+pattern as the services board's hostfs handler. The board reuses the shared
+`NetBackend`s above through the plugin `net` capability; `loopback` is
+deterministic, `nat`/`bridge` are not. `gethostbyname()` defaults to the
+plugin ABI's `resolve` capability under `net = "nat"`/`"bridge"`
+(`resolve_start`/`resolve_poll` in `wasmboard.rs`, `register_host_fns`),
+resolving via the host's own OS resolver on a short-lived background
+thread -- the same `getaddrinfo`-on-a-thread shape the NAT DNS forwarder
+above already uses, reused directly (`net::nat::dns::resolve_a`) rather than
+reimplemented -- so it works out of the box under `net = "bridge"` with no
+`dns_server` hand-configured to match the LAN. `[hostsocket] resolver =
+"dns"` opts back into the board speaking DNS itself over that same `net`
+traffic, to target a specific server instead of the host's own resolver.
 
 ## CDTV (`cdtv.rs`, `cdrom.rs`)
 

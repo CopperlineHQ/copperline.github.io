@@ -14,7 +14,13 @@
     <loc>http://localhost:3000/ui</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/floppybridge</loc>
+    <loc>http://localhost:3000/fluxbridge</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/host-disks</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/mt32</loc>
   </url>
   <url>
     <loc>http://localhost:3000/headless</loc>
