@@ -102,7 +102,7 @@
         </a>
       </div>
       <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-14-0.html">0.14.0 is out &middot; read what's new</a>
+        <a href="news/copperline-0-15-0.html">0.15.0 is out &middot; read what's new</a>
       </p>
       <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
         <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
@@ -197,19 +197,21 @@
            joystick, CD32 pad or analogue paddles, driven by USB gamepads (pure-Rust
            gilrs, no SDL2) with autofire and a remappable key map - and 4-channel Paula
            audio with the LED filter. Paula's
-           serial port bridges to host MIDI or TCP, and the parallel port takes a
-           printer or an 8-bit audio sampler.</p>
+           serial port bridges to host MIDI or TCP - or feeds an emulated Roland
+           MT-32, the whole module with its front panel, mixed beside Paula - and
+           the parallel port takes a printer or an 8-bit audio sampler.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">storage</span>
         <h3>Disks, drives &amp; expansion</h3>
-        <p>Up to four floppies (ADF / ADZ / DMS / SCP, plain or zipped) with multi-disk
-           swap playlists and a configurable drive speed - or a real 3.5" drive in any
-           bay through DrawBridge, Greaseweazle or SupercardPro - Gayle and A4000 IDE,
+        <p>Up to four floppies (ADF / ADZ / DMS / IPF / SCP, plain or zipped) with
+           multi-disk swap playlists and a configurable drive speed - or a real 3.5"
+           drive in any bay through a Greaseweazle controller - Gayle and A4000 IDE,
            A2091 / A4091 / A3000 SCSI carrying hard disks and CD-ROM drives, CDTV and
-           CD32 CD, Zorro II / III autoconfig, and host directories mounted as writable
-           AmigaDOS volumes - bootable ones included.</p>
+           CD32 CD, the host's real disks handed to the machine RDB and all, Zorro
+           II / III autoconfig, and host directories mounted as writable AmigaDOS
+           volumes - bootable ones included.</p>
       </article>
 
       <article class="card">
@@ -229,8 +231,11 @@
            privileges, no host drivers and no configuration, the same on Linux, macOS and
            Windows - a built-in DHCP server hands the Amiga its address. Or bridge the
            card onto a host adapter and the Amiga joins the real LAN: DHCP from your
-           router, static addresses, local servers. Paula's serial port dials a telnet
-           BBS, from the desktop app or the browser build.</p>
+           router, static addresses, local servers. The HostSocket board goes further
+           still: a <code>bsdsocket.library</code> autoboots from its ROM, so guest
+           applications get sockets with no TCP/IP stack installed in the guest at
+           all. And Paula's serial port dials a telnet BBS, from the desktop app or
+           the browser build.</p>
       </article>
 
       <article class="card">
@@ -256,10 +261,11 @@
         <span class="card__tag">presentation</span>
         <h3>CRT presentation</h3>
         <p>Three CRT shader presets - scanlines, mask and full CRT - or your own WGSL
-           shader, monochrome and sepia screen tints, and a 1084-style bezel whose power
-           LED follows the guest. Plus phosphor persistence, a motion-adaptive
-           deinterlacer for laced screens, tv / full overscan, and a TV-like 4:3 - the
-           way the hardware drove a real monitor.</p>
+           shader, monochrome and sepia screen tints, and a choice of monitor bezels -
+           an authentic 1084 or a plainer classic frame - whose power LED follows the
+           guest. Plus phosphor persistence, a motion-adaptive deinterlacer for laced
+           screens, integer scaling, tv / full overscan, and a TV-like 4:3 - the way
+           the hardware drove a real monitor.</p>
       </article>
 
       <article class="card">
@@ -605,11 +611,12 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <li>Denise / Lisa</li>
       <li>Paula audio</li>
       <li>Paula serial</li>
+      <li>Roland MT-32</li>
       <li>CIA-A / CIA-B</li>
       <li>Chip / fast / slow RAM</li>
       <li>Battery RTC</li>
       <li>Floppy DMA</li>
-      <li>FloppyBridge drives</li>
+      <li>FluxBridge drives</li>
       <li>Gayle IDE</li>
       <li>A4000 IDE</li>
       <li>A2091 SCSI</li>
@@ -617,6 +624,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <li>A3000 SCSI (SDMAC)</li>
       <li>Ramsey / Fat Gary</li>
       <li>SCSI CD-ROM</li>
+      <li>Host hard disks</li>
       <li>Parallel port</li>
       <li>030 / 040 / 060 MMU</li>
       <li>HOSTFS volumes</li>
@@ -624,6 +632,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <li>Z3660 RTG</li>
       <li>Picasso II / II+ RTG</li>
       <li>A2065 Ethernet</li>
+      <li>HostSocket sockets</li>
       <li>WASM Zorro plugins</li>
       <li>OCS sprites</li>
       <li>HAM6 / HAM8 / EHB</li>
@@ -685,14 +694,16 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
           <li>The A3000 and A4000 profiles are still incomplete. Both boot AmigaOS
               from their onboard SCSI / IDE and fill in their memory maps, but
               expect gaps.</li>
-          <li>Real floppy drives through DrawBridge, Greaseweazle and SupercardPro
-              are new this release, with a first release's worth of mechanisms and
-              disks behind them.</li>
-          <li>RTG is young: the Z3660 has a release of mileage behind it, and the
-              Zorro II Picasso II / II+ are new this release.</li>
-          <li>The A2065 now bridges onto a host adapter as well as the zero-setup
-              NAT mode, but the bridge is new this release and Wi-Fi bridging is
-              best-effort.</li>
+          <li>This cycle's peripherals - the MT-32, real host hard disks, HostSocket
+              networking and native IPF - are new this release, with a first
+              release's worth of real-world mileage behind them.</li>
+          <li>The physical floppy path was rebuilt this release on FluxBridge,
+              Copperline's own pure-Rust library - a young library driving real
+              mechanisms.</li>
+          <li>RTG is still young: the Z3660 has a couple of releases of mileage
+              behind it, and the Zorro II Picasso II / II+ one.</li>
+          <li>The A2065 bridges onto a host adapter as well as the zero-setup
+              NAT mode, but Wi-Fi bridging is still best-effort.</li>
           <li>The JIT CPU mode is experimental and off by default: accelerator-class
               speed, but cycle-counted chip-level effects no longer line up.</li>
           <li>The browser build has far less real-world mileage than the desktop app,
@@ -705,8 +716,9 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <ul>
           <li>Linux/m68k reaches a login prompt on the A4000 profile, but that is
               where it stops being tested - treat it as a demo, not a platform.</li>
-          <li>No IPF (CAPS) protected-disk images - deliberately out of scope for the
-              built-in loader for now.</li>
+          <li>Real drives are Greaseweazle-only: the FluxBridge rewrite dropped the
+              DrawBridge and SupercardPro drivers for now, and a config asking for
+              one is refused with an error saying so.</li>
           <li>No HD (1.76 MB) or PC / CrossDOS floppies.</li>
           <li>Host keyboard layouts other than QWERTY are not mapped yet.</li>
         </ul>
@@ -716,7 +728,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
     <div class="status-next">
       <span class="card__tag">// main vs the release</span>
       <p>Development happens in the open, and <code>main</code> usually runs well ahead
-         of the release you can download. Right now it doesn't: 0.14.0 has just shipped,
+         of the release you can download. Right now it doesn't: 0.15.0 has just shipped,
          so for once the release and main are the same machine.</p>
       <p>Every release gets a write-up on the <a href="news/">news page</a> when it
          ships. If you want to follow development commit by commit,
@@ -760,7 +772,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
           <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.14.0</span>-macos-universal.dmg and drag</span>
+            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.15.0</span>-macos-universal.dmg and drag</span>
 <span class="c-comment"># Copperline.app into your Applications folder, then launch it</span>
 
 <span class="c-comment"># the build is not notarized, so macOS blocks the first launch.</span>
@@ -783,14 +795,14 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
           <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
             <pre><code><span class="c-comment"># grab the .AppImage from the latest release, then make it executable</span>
-chmod +x Copperline-<span class="relver">0.14.0</span>-x86_64.AppImage
+chmod +x Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage
 
 <span class="c-comment"># run it - the bundled AROS ROM means no Kickstart is required</span>
-./Copperline-<span class="relver">0.14.0</span>-x86_64.AppImage
+./Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage
 
 <span class="c-comment"># or boot your own Kickstart ROM, or a config file</span>
-./Copperline-<span class="relver">0.14.0</span>-x86_64.AppImage path/to/kickstart.rom
-./Copperline-<span class="relver">0.14.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
+./Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage path/to/kickstart.rom
+./Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
           </div>
 
           <div class="codeblock" role="group" aria-label="Install with Homebrew on Linux">
@@ -807,7 +819,7 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="codeblock" role="group" aria-label="Run the Windows build">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.14.0</span>-win-x64.zip, then from a terminal</span>
+            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.15.0</span>-win-x64.zip, then from a terminal</span>
 <span class="c-comment"># with no ROM it boots the bundled AROS Kickstart replacement</span>
 copperline.exe
 copperline.exe path\to\kickstart.rom

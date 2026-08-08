@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 0.15.0: an MT-32, your real hard disks, and sockets with nothing to install - Copperline News</title>
+<meta name="description" content="Copperline 0.15.0 puts an emulated Roland MT-32 - front panel and all - on the MIDI port, hands the machine the host's real hard disks RDB and all, adds a HostSocket board that gives guest applications BSD sockets with no TCP/IP stack to install, rebuilds the physical floppy path pure-Rust on FluxBridge, and reads IPF and CHD images natively - plus a redesigned menu, an authentic 1084 bezel, integer scaling, a performance overlay, and a browser build that works on phones.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 0.15.0: an MT-32, your real hard disks, and sockets with nothing to install">
+<meta property="og:description" content="An emulated Roland MT-32 on the MIDI port, the host's real hard disks handed to the machine, BSD sockets with nothing to install in the guest, a pure-Rust physical floppy path, native IPF and CHD, an authentic 1084 bezel, and a browser build that works on phones.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-0-15-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
+    <span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu">
+    <a href="../">Home</a>
+    <a href="./">News</a>
+    <a href="feed.xml">RSS</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../#download">Download</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
+    </a>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
+      <span class="nav__burger" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <article class="post">
+      <a class="post__back" href="./">&lt; all news</a>
+      <span class="post__date">8 August 2026 &middot; release</span>
+      <h1>Copperline 0.15.0: an MT-32, your real hard disks, and sockets with nothing to install</h1>
+
+      <p>This is the release where the machine's peripherals arrive. A Roland
+         MT-32 now answers on the MIDI port - the whole module, front panel and
+         all - so the game soundtracks written for it finally play the way
+         their composers heard them. The machine can be handed one of the
+         host's real hard disks - a CF card in a reader, a USB drive, a drive
+         on a SATA port - and reads the medium as its own, RDB, partitions and
+         all. And a new HostSocket board gives guest applications BSD sockets
+         with no TCP/IP stack to install in the guest at all.</p>
+
+      <p>Underneath, the physical floppy path is rebuilt on FluxBridge,
+         CopperlineHQ's own pure-Rust library, so real drives no longer need a
+         vendored C++ library behind them. Around the machine, the pop-up menu
+         is redesigned as a proper tree, the display gains integer scaling, a
+         performance overlay and a choice of monitor bezels including an
+         authentic 1084, and the browser build grows a screen keyboard and
+         serious performance work for phones. As always it is a
+         hardware-behaviour release: compatibility fixes model the underlying
+         Amiga subsystems rather than individual titles.</p>
+
+      <h2>An MT-32 on the MIDI port</h2>
+
+      <p><code>[midi] midi_out = "mt32"</code> routes the machine's MIDI port
+         to an emulated MT-32 built into Copperline, mixed beside Paula's
+         output - the synthesiser engine is
+         <a href="https://github.com/CopperlineHQ/mt32-rs" target="_blank" rel="noopener">mt32-rs</a>,
+         grown from Munt. It is the whole unit, not just the sound: a front
+         panel sits under the display with the module's own buttons, starting
+         it with them held reaches the service screens, ROM Play plays the
+         demo songs the control ROM carries, and there is a choice of display
+         styles. <code>midi_in = "mt32"</code> wires the module's MIDI OUT
+         back to the machine, which is what a patch editor or librarian
+         needs. The control and PCM ROM images are yours to supply, like a
+         Kickstart.</p>
+
+      <p>Contributed by Lee Hobson
+         (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>).</p>
+
+      <h2>Your real hard disks</h2>
+
+      <p><code>[[host_disk]]</code> - and the launcher's new page - hands the
+         machine one of the host's real disks on Linux, macOS and Windows.
+         The Amiga sees the medium exactly as it is: its own Rigid Disk
+         Block, its own partitions, its own filesystem. Nothing is copied,
+         and no RDB is invented over a disk that has none. Attach points
+         cover IDE master / slave and SCSI IDs 0-6, and
+         <code>--list-disks</code> shows what the host has.</p>
+
+      <p>The safety model is strict: the disk the host is running from is
+         never offered and never opened; the first open asks the host's
+         permission (polkit, authopen, Administrator); the host's volumes on
+         the disk are unmounted while the machine holds it; attaches are
+         read-only unless writes are explicitly allowed; and a
+         launcher-written fingerprint follows a disk to a changed device name
+         only when the match is unambiguous. Contributed by Lee Hobson.</p>
+
+      <h2>Sockets with nothing to install</h2>
+
+      <p>The new HostSocket board gives guest applications a
+         <code>bsdsocket.library</code> backed by a host-side TCP/IP stack -
+         the library autoboots from the board's ROM, so there is nothing to
+         install or boot in the guest. It takes the same backends as the
+         A2065 (<code>nat</code>, <code>bridge</code>, <code>loopback</code>,
+         <code>none</code>) plus an Amiberry-style <code>"host"</code>
+         backend that hands each socket operation straight to a real host OS
+         socket: zero configuration, no interface address, no privileges, and
+         the guest's sockets go out on the host's own network identity.
+         <code>gethostbyname()</code> resolves through the host OS resolver
+         by default. Contributed by Simon Dick
+         (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>).</p>
+
+      <h2>FluxBridge</h2>
+
+      <p>Physical floppy drives are now driven by
+         <a href="https://github.com/CopperlineHQ/FluxBridge" target="_blank" rel="noopener">FluxBridge</a>,
+         CopperlineHQ's own pure-Rust library, grown from a port of Rob
+         Smith's FloppyDriveBridge - nothing vendored, no C++ toolchain, and
+         <code>Cargo.lock</code> pins the exact revision. Reads stream each
+         track as the platter turns it, a written track is not read back
+         until the platter actually has it, and captured revolutions replay
+         at real or double speed (<code>replay_speed</code>). This build
+         drives Greaseweazle controllers; DrawBridge and SupercardPro configs
+         are refused with an error saying what is available. Contributed by
+         Lee Hobson.</p>
+
+      <h2>Native IPF and CHD</h2>
+
+      <p>IPF disk images are read by a direct CAPS decoder built into
+         Copperline - no external library - and mount in any drive bay,
+         always write-protected. CD-ROM drives (CD32, CDTV and the SCSI
+         CD-ROM alike) now also take chdman v5 <code>.chd</code> images
+         alongside BIN/CUE and ISO.</p>
+
+      <h2>A menu that is a proper tree</h2>
+
+      <p>The pop-up menu is redesigned as a tree you walk with keys or
+         pointer through one cursor: categories open on hover, each level
+         opens beside the row that opened it, ticks show what is on, and the
+         trailing dots are reserved for rows that open something. It says the
+         same words the launcher does, and <code>menu_scale = "2x"</code>
+         draws it double size. Contributed by Lee Hobson.</p>
+
+      <h2>The 1084 face</h2>
+
+      <p><code>[display] bezel</code> now chooses a monitor front: the
+         1084 - the monitor the Amiga shipped with, its moulding following
+         the face at every strength - or the plainer classic frame. The CRT
+         shader preset's face geometry now matches the 1084 tube datasheet,
+         the picture meets the bezel's moulded insert, and overscan fills the
+         glass like a real raster. The 1084 bezel style and the choice of
+         frames were contributed by Lee Hobson.</p>
+
+      <h2>Integer scaling and a performance overlay</h2>
+
+      <p><code>[display] scaling = "integer"</code> fits the largest
+         whole-number multiple of the canvas, centred and point-sampled, in
+         the spirit of WinUAE and Amiberry - pair it with
+         <code>pixel_aspect = "square"</code> for a fully pixel-exact
+         picture. <code>perf_overlay</code> (or <code>Cmd/Alt+P</code>)
+         shows emulated fps, speed factor, per-frame cost, host utilisation,
+         audio health and pacer slips in the corner of the display; captures
+         never include it.</p>
+
+      <h2>The browser build on phones</h2>
+
+      <p><a href="../try/">copperline.dev/try</a> now draws an on-screen
+         A600 keyboard for phones and tablets (or summons the device's own
+         keyboard beside it), presents on the 1084 monitor by default, and
+         survives iOS killing the page's audio session by rebuilding the
+         audio stack in place. Under the hood a weak-host performance pass -
+         render stride, identical-frame reuse, simd128 with a wasm-opt pass,
+         fat LTO, and the removal of redundant render and presentation work -
+         buys real headroom on modest hardware. Audio steps from its own
+         clock when the browser starves animation frames, and under sustained
+         load the picture degrades before the machine does.</p>
+
+      <h2>A 1.3 machine that boots from a folder</h2>
+
+      <p>0.14.0 mounted host-directory volumes under Kickstart 1.3; 0.15.0
+         boots AmigaDOS from them, shaping the boot node the way 1.3-proven
+         autoboot drivers do. A plain 1.3 machine now boots straight into a
+         Workbench that lives in a folder on the host. Contributed by Simon
+         Dick.</p>
+
+      <h2>Hardware accuracy fixes</h2>
+
+      <ul>
+        <li>Bitplanes 7 and 8 are fetched by the AGA lo-res fetch unit, so
+            8-bitplane lo-res displays get their full palette depth - the
+            Pinball Fantasies CD32 table colours - and CPU palette pre-pass
+            writes resolve against the live BPLCON3.</li>
+        <li>Scroll taps fold at the absolute-grid arrival phase in wide fetch
+            modes, fixing the fold boundary - the Roots II AGA folder.</li>
+        <li>The HAM hold colour is carried across the DIW left edge, so a HAM
+            display that opens early no longer shows a wrong-colour fringe -
+            Lemmings 2's green edge.</li>
+        <li>The 68020 and the chip bus now share one clock timeline, with
+            posted chip writes and a read-return sync clock, calibrated
+            against timing measured on a real A1200 - and the earlier
+            result-forwarding model is retracted on the same evidence.
+            <code>timing-test/</code> gains the real-A1200 ground-truth
+            column, a chip-bus access-phase probe and <code>bfprobe</code>,
+            a 68020 bit-field cost probe.</li>
+        <li>A 68020 memory bit field transfers at the width it spans, and the
+            three-byte operand is sized by the port that answers it.</li>
+        <li>A track just written to a bridged real drive is not read back
+            until the platter actually has it.</li>
+        <li>An undrained host pty no longer blocks the emulator (Bernie
+            Innocenti).</li>
+        <li>A Z3660 rect copy honours its minterm (Bernie Innocenti).</li>
+      </ul>
+
+      <h2>Desktop, tooling and platform</h2>
+
+      <ul>
+        <li>The A4091 defaults to the open-source v42.39 autoboot ROM,
+            bundled with its full third-party notices - an A4091 machine now
+            boots SCSI out of the box (Bernie Innocenti).</li>
+        <li>The surface re-syncs to the host window before every draw - no
+            more stale pictures after fullscreen transitions - the canvas
+            follows a resize the platform adjusted, and the offscreen GPU
+            tests serialise on one shared device helper, fixing a Windows
+            access violation.</li>
+        <li>The 68k core moves to the published
+            <a href="https://crates.io/crates/m68k" target="_blank" rel="noopener">m68k</a>
+            0.7 crate, and a pre-release hardening pass updates the
+            dependency tree.</li>
+        <li>The bundled AROS ROM is refreshed to upstream master.</li>
+        <li>The web pipeline pins modern binaryen and smoke-loads the
+            published bundle before it goes out, and MIDI tests are isolated
+            from the host's real devices.</li>
+      </ul>
+
+      <h2>Contributed this cycle</h2>
+
+      <p>This cycle, for the first time, most of the new code came from
+         outside the project - external contributors wrote more lines than I
+         did. That feels like a milestone worth marking.</p>
+
+      <p>Lee Hobson
+         (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>)
+         contributed four of the cycle's headline features: the MT-32 module
+         with its front panel (and the mt32-rs engine port that powers it),
+         real host hard disks on all three desktop platforms, the FluxBridge
+         rewrite that takes the physical-floppy path pure-Rust, and the menu
+         redesign - plus the 1084 bezel style and the choice of frames.</p>
+
+      <p>Simon Dick
+         (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>)
+         contributed the HostSocket board and its Amiberry-style host backend
+         (including real <code>MSG_OOB</code> handling), wired
+         <code>diag_vec</code> through for WASM plugin boards so they can
+         autoboot, and made hostfs volumes bootable under Kickstart 1.3.</p>
+
+      <p>Bernie Innocenti
+         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>)
+         bundled the open-source A4091 boot ROM as the default, fixed the
+         Z3660's rect-copy minterm, and stopped an undrained pty from
+         blocking the emulator.</p>
+
+      <h2>Compatibility notes</h2>
+
+      <p><strong>Save states from 0.14.0 do not load in 0.15.0.</strong> The
+         serialized machine shape changed several times this cycle, so the
+         state format version moves from 44 to 50. Re-create snapshots after
+         upgrading.</p>
+
+      <p><strong>Physical floppy configs may need a small edit.</strong> The
+         move from the vendored FloppyBridge library to FluxBridge changes
+         the bridge surface:</p>
+
+      <ul>
+        <li>This build drives Greaseweazle controllers. A config asking for
+            <code>bridge = "drawbridge"</code> or <code>"supercardpro"</code>
+            is refused at parse time with an error naming what is available
+            (FluxBridge carries those protocols for the future, but
+            Copperline compiles in the drivers it supports and the launcher
+            offers exactly those).</li>
+        <li><code>bridge_speed</code> (a percentage) is replaced by
+            <code>replay_speed = "normal" | "fast"</code>. The old key is
+            still accepted at <code>100</code> or <code>200</code> - the only
+            two values that ever meant something distinct - and refused
+            otherwise.</li>
+        <li><code>bridge_auto_cache</code> is gone, and a config carrying it
+            is refused. The bridge now serves a captured track while the
+            platter is still turning it, which is what the cache was
+            for.</li>
+      </ul>
+
+      <p>One key changed shape, compatibly: <code>[display] bezel</code> is
+         now a named choice - <code>"off"</code>, <code>"1084"</code> or
+         <code>"classic"</code> - because there is more than one frame to
+         choose. The old boolean form is still accepted, and
+         <code>true</code> means the 1084. And one default changed: an A4091
+         SCSI board with no ROM path now boots the bundled open-source A4091
+         ROM instead of requiring you to supply an EPROM image; machines that
+         set an explicit ROM path are unaffected.</p>
+
+      <p><a href="../try/">copperline.dev/try</a> now fronts the picture
+         with the 1084 monitor by default - a display change only; the
+         machine underneath is unchanged.</p>
+
+      <h2>Get it</h2>
+
+      <p>Builds for macOS, Linux and Windows are on the
+         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.15.0" target="_blank" rel="noopener">release page</a>,
+         and the Homebrew tap is updated. Or skip the download entirely:
+         <a href="../try/">copperline.dev/try</a> is the same emulator.</p>
+
+      <p>Copperline also has a
+         <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>.
+         Nothing there buys a feature or a place in the queue - monthly
+         support goes towards development time, real hardware to measure the
+         emulator against, and the code-signing subscriptions that would let
+         the downloads open without a warning.</p>
+
+      <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
+         <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
+        no CDNs - even the fonts are served from here.
+      </p>
+    </div>
+    <nav class="footer__links">
+      <a href="./">News</a>
+      <a href="feed.xml">RSS</a>
+      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

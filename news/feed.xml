@@ -8,6 +8,14 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.15.0: an MT-32, your real hard disks, and sockets with nothing to install</title>
+    <link>https://copperline.dev/news/copperline-0-15-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-15-0.html</guid>
+    <pubDate>Sat, 08 Aug 2026 05:15:27 +0000</pubDate>
+    <description>An emulated Roland MT-32 - front panel and all - on the MIDI port, the host's real hard disks handed to the machine RDB and all, a HostSocket board giving guest applications BSD sockets with no TCP/IP stack to install, the physical floppy path rebuilt pure-Rust on FluxBridge, native IPF and CHD images, a redesigned menu tree, an authentic 1084 bezel, integer scaling and a performance overlay, and a browser build with a screen keyboard and real headroom on phones.</description>
+  </item>
+
+  <item>
     <title>Copperline 0.14.0: real drives, real networks, and a 1084 on your desk</title>
     <link>https://copperline.dev/news/copperline-0-14-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-14-0.html</guid>
