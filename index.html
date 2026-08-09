@@ -689,11 +689,6 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <div class="status-col status-col--mid">
         <h3>Rough edges</h3>
         <ul>
-          <li>Developed and tested on macOS. The Linux and Windows builds are produced
-              by CI and get far less real-world exercise.</li>
-          <li>The A3000 and A4000 profiles are still incomplete. Both boot AmigaOS
-              from their onboard SCSI / IDE and fill in their memory maps, but
-              expect gaps.</li>
           <li>This cycle's peripherals - the MT-32, real host hard disks, HostSocket
               networking and native IPF - are new this release, with a first
               release's worth of real-world mileage behind them.</li>
@@ -706,16 +701,13 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
               NAT mode, but Wi-Fi bridging is still best-effort.</li>
           <li>The JIT CPU mode is experimental and off by default: accelerator-class
               speed, but cycle-counted chip-level effects no longer line up.</li>
-          <li>The browser build has far less real-world mileage than the desktop app,
-              and runs single-threaded.</li>
+          <li>The browser build runs single-threaded.</li>
         </ul>
       </div>
 
       <div class="status-col status-col--gap">
         <h3>Not there yet</h3>
         <ul>
-          <li>Linux/m68k reaches a login prompt on the A4000 profile, but that is
-              where it stops being tested - treat it as a demo, not a platform.</li>
           <li>Real drives are Greaseweazle-only: the FluxBridge rewrite dropped the
               DrawBridge and SupercardPro drivers for now, and a config asking for
               one is refused with an error saying so.</li>
