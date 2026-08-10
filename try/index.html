@@ -59,18 +59,15 @@
   }
   /* Monitor column plus a collapsible sidebar holding everything but the
      handful of while-playing buttons. On wide viewports the sidebar is a
-     fixed-width column beside the monitor; under 900px it becomes a
-     slide-in drawer over the page (rules further down). The head script
-     stamps html[data-sidebar] before first paint. */
+     fixed-width column beside the monitor, or a full-width strip below it
+     when docked there (rules further down); under 900px it becomes a
+     slide-in drawer over the page. The head script stamps
+     html[data-sidebar] and html[data-sidebar-pos] before first paint. */
   .try-layout {
     display: flex;
     align-items: flex-start;
     justify-content: center;
     gap: 1.1rem;
-  }
-  .try-main {
-    flex: 1 1 auto;
-    min-width: 0;
     /* Two height-derived curves, and the wider one wins. The first is the
        laptop fit this page has always had (capped at 920px, 275px
        reserve), kept verbatim so the monitor never shrinks on the screens
@@ -83,11 +80,17 @@
        sits below its 32px maximum wherever the wrap case can occur, so
        310 covers both. It overtakes the first curve at ~1005px of
        viewport height and lets a Studio Display or 4K screen fill with
-       monitor instead of margin. */
-    max-width: min(1600px,
+       monitor instead of margin. A variable so the bottom-docked panel
+       can match the monitor's width. */
+    --try-col: min(1600px,
       max(420px,
         min(920px, calc((100vh - 275px) * 4 / 3)),
         calc((100vh - 310px) * 4 / 3)));
+  }
+  .try-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: var(--try-col);
   }
   html[data-sidebar="closed"] .try-sidebar { display: none; }
   .try-scrim { display: none; }
@@ -219,9 +222,10 @@
     overflow-y: auto;
     overscroll-behavior: contain;
   }
-  /* Drawer-only header (title + close); hidden beside the monitor. */
+  /* Panel header: title, the dock arrow that swaps the panel between the
+     side column and a strip below the monitor, and the close X. */
   .try-side-head {
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 0.7rem;
@@ -232,7 +236,8 @@
     font-size: 0.95rem;
     letter-spacing: 0.03em;
   }
-  .try-side-close {
+  .try-side-actions { display: flex; gap: 0.4rem; }
+  .try-side-close, .try-side-dock {
     background: none;
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -242,7 +247,7 @@
     padding: 0.25rem 0.6rem;
     cursor: pointer;
   }
-  .try-side-close:hover { color: var(--copper-hi); border-color: var(--copper); }
+  .try-side-close:hover, .try-side-dock:hover { color: var(--copper-hi); border-color: var(--copper); }
   .try-side-section {
     display: flex;
     flex-direction: column;
@@ -343,7 +348,43 @@
       transition: opacity 0.22s ease;
     }
     html[data-sidebar="open"] .try-scrim { opacity: 1; pointer-events: auto; }
-    .try-side-head { display: flex; }
+    /* The drawer has one shape; the side/bottom dock choice is a
+       wide-viewport affair. */
+    .try-side-dock { display: none; }
+  }
+  /* Bottom dock: the panel's arrow button drops the controls below the
+     monitor as a strip of section columns matching its width. Scoped to
+     the exact complement of the drawer breakpoint so these higher-
+     specificity rules can never leak into the drawer. */
+  @media not all and (max-width: 900px) {
+    html[data-sidebar-pos="bottom"] .try-layout {
+      flex-direction: column;
+      align-items: center;
+    }
+    html[data-sidebar-pos="bottom"] .try-main { width: 100%; }
+    html[data-sidebar-pos="bottom"] .try-sidebar {
+      position: static;
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: var(--try-col);
+      max-height: none;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.95rem 1.5rem;
+      align-items: start;
+    }
+    /* Gated on open so the closed panel's display:none still wins. */
+    html[data-sidebar="open"][data-sidebar-pos="bottom"] .try-sidebar { display: grid; }
+    html[data-sidebar-pos="bottom"] .try-side-head,
+    html[data-sidebar-pos="bottom"] .try-side-build { grid-column: 1 / -1; }
+    html[data-sidebar-pos="bottom"] .try-side-head { margin-bottom: 0; }
+    /* The grid gap spaces the sections; drop the column layout's
+       stacked separators. */
+    html[data-sidebar-pos="bottom"] .try-side-section + .try-side-section {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+    html[data-sidebar-pos="bottom"] .try-side-build { margin-top: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     .try-sidebar, .try-scrim { transition: none; }
@@ -367,17 +408,24 @@
 <script>
   // Stamped before first paint so the sidebar never flashes: wide viewports
   // open it unless a previous visit closed it; the phone drawer starts
-  // closed. ?sidebar=0 or =1 overrides the initial state, so a shared
-  // bootable link can present a clean monitor. The wiring script at the
-  // bottom of the page toggles it.
+  // closed. The panel's side/bottom dock choice is stamped the same way.
+  // ?sidebar=0 or =1 and ?sidebarpos=side or =bottom override the initial
+  // state, so a shared bootable link can present a clean monitor. The
+  // wiring script at the bottom of the page toggles both.
   (function () {
+    var params = new URLSearchParams(window.location.search);
     var open = !window.matchMedia('(max-width: 900px)').matches;
     if (open) {
       try { open = localStorage.getItem('copperline-try-sidebar') !== '0'; } catch (e) {}
     }
-    var q = new URLSearchParams(window.location.search).get('sidebar');
+    var q = params.get('sidebar');
     if (q === '0' || q === '1') open = q === '1';
     document.documentElement.dataset.sidebar = open ? 'open' : 'closed';
+    var pos = 'side';
+    try { if (localStorage.getItem('copperline-try-sidebar-pos') === 'bottom') pos = 'bottom'; } catch (e) {}
+    var qpos = params.get('sidebarpos');
+    if (qpos === 'side' || qpos === 'bottom') pos = qpos;
+    document.documentElement.dataset.sidebarPos = pos;
   })();
 </script>
 <script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -459,7 +507,14 @@
         <aside class="try-sidebar" id="sidebar" aria-label="Emulator controls">
           <div class="try-side-head">
             <span class="try-side-title">Controls</span>
-            <button class="try-side-close" id="sidebar-close" aria-label="Close controls">&#215;</button>
+            <span class="try-side-actions">
+              <!-- The wiring script keeps the arrow and label pointing
+                   where the panel would go, and hides neither: the drawer
+                   hides the dock button in CSS instead. -->
+              <button class="try-side-dock" id="sidebar-dock"
+                      aria-label="Move controls below the screen">&#8595;</button>
+              <button class="try-side-close" id="sidebar-close" aria-label="Close controls">&#215;</button>
+            </span>
           </div>
           <div class="try-side-section">
             <h3>Storage</h3>
@@ -537,7 +592,10 @@
         own disk files with the Insert DF0 button. The <b>Controls</b> button
         opens a panel with the rest of the machine's controls - disks and
         Kickstarts, save states, machine, display and sound settings - and
-        hides them again when you just want the picture. A loaded
+        hides them again when you just want the picture. The panel sits
+        beside the screen; the small arrow in its header docks it underneath
+        instead, if that suits your display better, and your browser
+        remembers the choice. A loaded
         Kickstart is remembered by your browser, so your next visit boots it
         without the picker (the Saved states panel shows what is remembered,
         with a Forget button). A disk can
@@ -639,14 +697,19 @@
 
 <script>
   // Sidebar toggle wiring. Wide viewports remember the choice across
-  // visits; the narrow-viewport drawer always starts closed and also
-  // closes from its X button or a tap on the scrim. Crossing the 900px
-  // breakpoint (a rotated tablet, a resized window) re-derives the state
-  // so the drawer never springs open on its own.
+  // visits (the X button included, now that it shows there too); the
+  // narrow-viewport drawer always starts closed and also closes from its
+  // X button or a tap on the scrim. Crossing the 900px breakpoint (a
+  // rotated tablet, a resized window) re-derives the state so the drawer
+  // never springs open on its own. The dock button swaps the panel
+  // between the side column and a strip below the monitor; that choice
+  // is remembered too, and the drawer simply ignores it.
   (function () {
     var KEY = 'copperline-try-sidebar';
+    var POSKEY = 'copperline-try-sidebar-pos';
     var drawer = window.matchMedia('(max-width: 900px)');
     var toggle = document.getElementById('sidebar-toggle');
+    var dock = document.getElementById('sidebar-dock');
     function isOpen() { return document.documentElement.dataset.sidebar === 'open'; }
     function setOpen(open, persist) {
       document.documentElement.dataset.sidebar = open ? 'open' : 'closed';
@@ -655,9 +718,23 @@
         try { localStorage.setItem(KEY, open ? '1' : '0'); } catch (e) {}
       }
     }
+    function setPos(pos, persist) {
+      document.documentElement.dataset.sidebarPos = pos;
+      var bottom = pos === 'bottom';
+      dock.textContent = bottom ? '\u2192' : '\u2193';
+      var label = bottom ? 'Move controls beside the screen' : 'Move controls below the screen';
+      dock.setAttribute('aria-label', label);
+      dock.title = label;
+      if (persist) {
+        try { localStorage.setItem(POSKEY, pos); } catch (e) {}
+      }
+    }
     toggle.addEventListener('click', function () { setOpen(!isOpen(), true); });
-    document.getElementById('sidebar-close').addEventListener('click', function () { setOpen(false, false); });
+    document.getElementById('sidebar-close').addEventListener('click', function () { setOpen(false, true); });
     document.getElementById('sidebar-scrim').addEventListener('click', function () { setOpen(false, false); });
+    dock.addEventListener('click', function () {
+      setPos(document.documentElement.dataset.sidebarPos === 'bottom' ? 'side' : 'bottom', true);
+    });
     drawer.addEventListener('change', function (e) {
       var open = false;
       if (!e.matches) {
@@ -666,8 +743,9 @@
       }
       setOpen(open, false);
     });
-    // Sync the button's aria-expanded with the state the head script set.
+    // Sync the button states with what the head script stamped.
     setOpen(isOpen(), false);
+    setPos(document.documentElement.dataset.sidebarPos || 'side', false);
   })();
 </script>
 <script type="module" src="./try.js"></script>
