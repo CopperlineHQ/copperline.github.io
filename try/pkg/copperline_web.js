@@ -383,7 +383,8 @@ export class WebEmu {
     /**
      * Emulated field lines the presentation buffer shows, for a page-side
      * CRT shader pass to key its scanline pitch: 270 on the standard 50 Hz
-     * TV aperture, 214 on a 60 Hz scan, half the presented rows in full
+     * TV aperture, 214 on a 60 Hz scan (285 and 235 under the tube
+     * aperture of a drawn bezel), half the presented rows in full
      * overscan. 0 means the pass has nothing to draw -- no frame yet, or a
      * programmable scan, whose lines are not a 15 kHz raster (the desktop
      * suspends its CRT preset there too). Tracks the presentation, so it
@@ -648,6 +649,22 @@ export class WebEmu {
      */
     set_joystick_port2(up, down, left, right, fire, button2) {
         wasm.webemu_set_joystick_port2(this.__wbg_ptr, up, down, left, right, fire, button2);
+    }
+    /**
+     * Whether the page is drawing a monitor bezel around the picture. A
+     * drawn bezel widens the standard-scan presentation from the TV
+     * aperture to the tube aperture -- every rendered row of the field,
+     * the desktop's tube view -- because a real 1084's visible raster
+     * exceeds even the whole captured field; the bezel's rounded corners
+     * then crop into the extra overscan border instead of into the
+     * picture. Full overscan and programmable scans are unaffected. The
+     * last completed frame is re-presented under the new aperture, like
+     * `set_overscan`, so a paused page repaints without stepping the
+     * machine.
+     * @param {boolean} drawn
+     */
+    set_monitor_bezel(drawn) {
+        wasm.webemu_set_monitor_bezel(this.__wbg_ptr, drawn);
     }
     /**
      * Average the left and right channels into both outputs (the desktop's
