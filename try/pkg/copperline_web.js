@@ -715,6 +715,22 @@ export class WebEmu {
         wasm.webemu_set_port_device(this.__wbg_ptr, port, ptr0, len0);
     }
     /**
+     * Centre the TV presentation on the glass, the desktop's `[display]
+     * tv_h_centre` / `tv_v_centre` knobs (a monitor's H-CENTER/V-CENTER
+     * controls). `h` is in lo-res pixels, positive moving the picture
+     * right; `v` in scan lines, positive moving it down; both clamp to
+     * the knobs' travel. Glass the nudged aperture exposes past the
+     * captured raster shows black. A TV-aperture nudge, so it moves
+     * nothing under full overscan. The last completed frame is
+     * re-presented under the new centring, like `set_overscan`, so a
+     * paused page repaints without stepping the machine.
+     * @param {number} h
+     * @param {number} v
+     */
+    set_tv_centre(h, v) {
+        wasm.webemu_set_tv_centre(this.__wbg_ptr, h, v);
+    }
+    /**
      * @param {number} percent
      */
     set_volume_percent(percent) {
