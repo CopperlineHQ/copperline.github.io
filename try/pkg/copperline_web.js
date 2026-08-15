@@ -75,7 +75,7 @@ export class WebEmu {
         const ret = wasm.webemu_disk_name(this.__wbg_ptr, drive);
         let v1;
         if (ret[0] !== 0) {
-            v1 = getStringFromWasm0(ret[0], ret[1]).slice();
+            v1 = getStringFromWasm0(ret[0], ret[1]);
             wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
         }
         return v1;
@@ -138,7 +138,7 @@ export class WebEmu {
      */
     static floppy_formats() {
         const ret = wasm.webemu_floppy_formats();
-        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]);
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
     }
@@ -274,7 +274,7 @@ export class WebEmu {
         const ret = wasm.webemu_machine_model(this.__wbg_ptr);
         let v1;
         if (ret[0] !== 0) {
-            v1 = getStringFromWasm0(ret[0], ret[1]).slice();
+            v1 = getStringFromWasm0(ret[0], ret[1]);
             wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
         }
         return v1;
@@ -308,7 +308,7 @@ export class WebEmu {
      */
     static models() {
         const ret = wasm.webemu_models();
-        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]);
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
     }
@@ -777,7 +777,7 @@ export class WebEmu {
      */
     static video_standards() {
         const ret = wasm.webemu_video_standards();
-        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]);
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
         return v1;
     }
@@ -790,20 +790,17 @@ export function start() {
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
-        __wbg___wbindgen_is_undefined_c05833b95a3cf397: function(arg0) {
+        __wbg___wbindgen_is_undefined_6cff064c44e0d823: function(arg0) {
             const ret = arg0 === undefined;
             return ret;
         },
-        __wbg___wbindgen_throw_344f42d3211c4765: function(arg0, arg1) {
+        __wbg___wbindgen_throw_bb96b2010945f0bc: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },
-        __wbg_debug_87fd9b1a625b7efb: function(arg0) {
+        __wbg_debug_3853dbaf0bca30f9: function(arg0) {
             console.debug(arg0);
         },
-        __wbg_error_744744ff0c9861e6: function(arg0) {
-            console.error(arg0);
-        },
-        __wbg_error_a6fa202b58aa1cd3: function(arg0, arg1) {
+        __wbg_error_757e9472f8410341: function(arg0, arg1) {
             let deferred0_0;
             let deferred0_1;
             try {
@@ -814,17 +811,20 @@ function __wbg_get_imports() {
                 wasm.__wbindgen_free(deferred0_0, deferred0_1, 1);
             }
         },
-        __wbg_info_eadbe775a8e2e9eb: function(arg0) {
+        __wbg_error_dd408a7b3cb542dd: function(arg0) {
+            console.error(arg0);
+        },
+        __wbg_info_726982aff9befe16: function(arg0) {
             console.info(arg0);
         },
-        __wbg_log_d267660666346fb3: function(arg0) {
+        __wbg_log_e6372b4fbfc9f81e: function(arg0) {
             console.log(arg0);
         },
         __wbg_new_227d7c05414eb861: function() {
             const ret = new Error();
             return ret;
         },
-        __wbg_now_86c0d4ba3fa605b8: function() {
+        __wbg_now_8b265300afd5f2b9: function() {
             const ret = Date.now();
             return ret;
         },
@@ -843,23 +843,23 @@ function __wbg_get_imports() {
             getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
             getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
         },
-        __wbg_static_accessor_GLOBAL_4ef717fb391d88b7: function() {
-            const ret = typeof global === 'undefined' ? null : global;
-            return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
-        },
-        __wbg_static_accessor_GLOBAL_THIS_8d1badc68b5a74f4: function() {
+        __wbg_static_accessor_GLOBAL_THIS_466428f93b4eaa76: function() {
             const ret = typeof globalThis === 'undefined' ? null : globalThis;
             return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
         },
-        __wbg_static_accessor_SELF_146583524fe1469b: function() {
+        __wbg_static_accessor_GLOBAL_c7aea38d4de089bc: function() {
+            const ret = typeof global === 'undefined' ? null : global;
+            return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
+        },
+        __wbg_static_accessor_SELF_42d4fae05e59267a: function() {
             const ret = typeof self === 'undefined' ? null : self;
             return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
         },
-        __wbg_static_accessor_WINDOW_f2829a2234d7819e: function() {
+        __wbg_static_accessor_WINDOW_e0db14a0eba6a812: function() {
             const ret = typeof window === 'undefined' ? null : window;
             return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
         },
-        __wbg_warn_b1370d804fa3e259: function(arg0) {
+        __wbg_warn_917d7f727ab78481: function(arg0) {
             console.warn(arg0);
         },
         __wbindgen_cast_0000000000000001: function(arg0, arg1) {
@@ -1039,11 +1039,15 @@ function __wbg_finalize_init(instance, module) {
 
 async function __wbg_load(module, imports) {
     if (typeof Response === 'function' && module instanceof Response) {
+        if (!module.ok) {
+            throw new Error(`failed to fetch Wasm: ${module.status} ${module.statusText} fetching '${module.url}'`);
+        }
+
         if (typeof WebAssembly.instantiateStreaming === 'function') {
             try {
                 return await WebAssembly.instantiateStreaming(module, imports);
             } catch (e) {
-                const validResponse = module.ok && expectedResponseType(module.type);
+                const validResponse = expectedResponseType(module.type);
 
                 if (validResponse && module.headers.get('Content-Type') !== 'application/wasm') {
                     console.warn("`WebAssembly.instantiateStreaming` failed because your server does not serve Wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n", e);
