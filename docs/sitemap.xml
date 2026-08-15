@@ -14,6 +14,12 @@
     <loc>http://localhost:3000/ui</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/whdload</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/run</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/fluxbridge</loc>
   </url>
   <url>

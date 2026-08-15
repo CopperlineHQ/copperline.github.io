@@ -38,6 +38,7 @@ src/
   wasm_manifest.rs  # plugin manifest types shared with wasmtime-less builds
   floppy.rs         # disk images + timed disk DMA controller
   dms.rs            # DMS archive decompression
+  gzip.rs           # gzip member loop behind ADZ/HDZ (multi-member, padding-tolerant)
   drive_sounds.rs   # synthesized floppy-drive sound effects
   gary.rs           # Gary motherboard address decode (big-box machines)
   ramsey.rs         # Ramsey memory controller registers (A3000/A4000)
@@ -49,7 +50,7 @@ src/
   scsi.rs           # WD33C93A SBIC + SCSI-2 disk targets
   sdmac.rs          # A3000 Super DMAC fronting the WD33C93
   harddrive.rs      # shared hard-drive image backend (IDE + SCSI)
-  dirfs.rs          # host directory -> in-memory FFS partition image
+  dirfs.rs          # host directory -> in-memory FFS/OFS partition image
   filesys.rs        # host directories mounted live as AmigaDOS volumes
   a2065.rs          # A2065 Zorro II Ethernet board (Am7990 LANCE)
   net/              # loopback, userspace NAT, and host-adapter bridge backends
@@ -132,6 +133,10 @@ The flow of a frame:
    form once per slice. Arming a debugger, trace, watchpoint, waveform PC
    trigger or diagnostic recorder selects the former; normal and browser
    runs therefore do not retest every inactive hook after every instruction.
+   An instruction-granular control stop retains the unfinished budget and its
+   `STOP` fast-forward state in `Emulator`; resume completes that same quantum
+   before starting another, so a host-side observation cannot move an
+   emulated interrupt race by repartitioning the execution loop.
 2. Advancing the clock for a CPU access also advances everything else:
    Agnus beam counters, Copper fetches, blitter slots, Paula audio and disk
    DMA, CIA timers. The chip bus is arbitrated per colour clock, so a CPU
@@ -219,6 +224,20 @@ ever-changing floating value lets the chase wander to a zero terminator as
 on silicon. Device windows that decode their own floating bus keep their
 own values -- e.g. the A2091 board's unpopulated XT-interface bytes read
 `$FF` from its own model, not the chip data bus.
+
+Write-only and unmapped custom-register offsets float the same way: the
+chips decode the address but drive no data, so `move.w $DFF106,d0` returns
+the bus residue rather than the register's internal latch (which the
+debugger still inspects separately). Each driven word cycle recharges the
+bus, so a longword read pairing a readable register with a write-only one
+floats the second word to the first -- `move.l $DFF01E,d0` reads INTREQR
+in both halves. Reading a write-only register back
+and OR-ing the result into a fresh write therefore picks up garbage bits
+exactly as on real hardware -- a floating BPLCON3 LOCT bit, for example,
+misroutes AGA palette writes into the low nibbles and darkens the whole
+palette. The one deliberate exception is DENISEID (`$07C`) on OCS Denise,
+held at `$FFFF` so ECS-detection code (low byte `$FC`) cannot false-match
+a residue; see the TODO in `read_custom_word`.
 
 ## Determinism and the host boundary
 

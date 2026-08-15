@@ -39,6 +39,15 @@ raw-DDFSTRT unit rounding to preserve their 40-word rows, and the lo-res
 FMODE=3 landscape needs packed first-eight CCK plane slots instead of
 spreading those slots across the 32-CCK unit.
 
+Like SPRxPT below, each BPLxPT is one live counter: bitplane fetches
+advance it and the end-of-line modulo adds to the full pointer, carrying
+across the 16-bit register boundary, and it is never reloaded at vertical
+blank -- software rewrites the pointers each field. A BPLxPTH/PTL write
+replaces only that half of the DMA-advanced value, which programs exploit
+to flip 8-bitplane double buffers with half the Copper writes: the modulo
+is sized so the end-of-frame carry lands the high half on the next
+buffer, and only the PTL half is rewritten per frame.
+
 Agnus revisions are modelled independently of Denise (machines shipped
 mixed): OCS (8370/8371), ECS 8372A (1M chip RAM reach), ECS 8375 (2M), and
 AGA Alice (2M, HRM IDs $23/$33). VPOSR bits 8-14 report the chipset ID:
@@ -200,6 +209,26 @@ plane dual playfield addresses palette entries 8..15 per field. The extra
 bits are gated on the AGA revision; pre-AGA chips never carry bitplanes
 7/8 and keep the exact three-bit decode. Denise state is not rendered live
 -- writes become beam events that the [video pipeline](video) replays.
+
+BPLCON2's PF1P/PF2P priority codes behave differently on the two chip
+generations, and the split is where the evidence is. Denise draws a dual
+playfield field transparent when its code is programmed out of range (5-7):
+the winning field collapses to the background instead of revealing the
+field behind it. That is photographed on an A500 (vAmigaTS
+Denise/Registers/BPLCON0/invprio1 runs PF2 code 7 and the real machine
+shows background between the bars).
+
+Lisa does not inherit it. Alfred Chicken runs its whole in-game display at
+BPLCON2 = 0x003F -- both codes 7 -- and draws an eight-plane dual playfield
+on real AGA hardware, which the Denise rule would blank to the background
+colour. The quirk reached us from an OCS/ECS-only reference, so it never
+carried evidence about Lisa in the first place; WinUAE, which does model
+AGA, resolves the playfield colour from the plane bits alone and uses the
+codes only to mask sprites. On both chips the code still saturates in the
+sprite comparison, where it counts the sprite pairs passing in front of the
+playfield: 101/110/111 behave as 100. No AGA photo of invprio1 exists yet
+to confirm Lisa ignores out-of-range codes entirely rather than differing
+some other way.
 
 The ECS DIWHIGH high bits only stay in force until the next DIWSTRT or
 DIWSTOP write, which re-arms the OCS-implicit high bits derived from the

@@ -30,10 +30,16 @@ pre-boot choice is stashed and applied when the machine starts (the boot
 button relabels to show which ROM it will use), and a post-boot pick swaps
 the disk live. Disk images are recognised by content -- ADF, ADZ, DMS, IPF,
 and SCP, plain or gzip/zip packed -- and are always write-protected, since
-the browser has no filesystem to write changes back to. On iOS the pickers
-offer every file rather than filtering by extension, because the system
-document picker greys out extensions it does not recognise, which would
-lock out `.adf` and friends.
+the browser has no filesystem to write changes back to. A file picker
+cannot sniff content, though: it filters by extension and hides whatever
+the filter leaves out, which is how an `.ipf` stayed greyed out in a
+bundle that decodes IPF perfectly well. So the glue rewrites the disk
+picker's filter from the running build's own format list instead of
+leaving it as the page shell's hand-written HTML spelled it. A shell that
+ships no filter at all still offers every file, and on iOS the pickers
+filter nothing either, because the system document picker greys out
+extensions it does not recognise, which would lock out `.adf` and
+friends.
 
 A Kickstart that fits is also *remembered*: the image goes into the
 browser's own storage (IndexedDB, never uploaded anywhere), and the next
@@ -44,17 +50,22 @@ visit boots it with no picker round trip -- the boot button simply reads
 a **Forget** button that puts the boot button back on AROS.
 
 Five more controls shape what the glass shows without touching the
-machine. **Monitor** is the desktop window's 1084 presentation, on by
+machine. **Monitor** is the desktop window's monitor presentation, on by
 default: the CRT shader preset (bowed tube face, scanlines, aperture
-grille, corner vignette -- the desktop's `[display] shader = "crt"`) with
-the picture seated in a moulded plastic bezel -- the desktop's Classic
-frame; the page does not offer its 1084 one --
-rendered through WebGL2 at display resolution. *CRT filter* and *Bezel*
-select either half alone, and *Plain* is the undecorated blit the page
-always had -- also what a browser without WebGL2 falls back to (the
-select hides there). As on the desktop, the CRT pass suspends itself on
-programmable scans, which have no 15 kHz line structure to draw; the
-bezel stays. The selected monitor fronts the page before anything boots
+grille, corner vignette -- the desktop's `[display] shader = "crt"`)
+with the picture seated in one of the desktop's two bezel styles
+(`[display] bezel`), rendered through WebGL2 at display resolution.
+*1084* pairs the preset with the two-tone 1084 cabinet -- moulding, model
+badge, logotype and power lamp -- and *Classic* with the plain rounded
+frame Copperline drew before the 1084 arrived. *CRT filter*, *1084
+cabinet* and *Classic bezel* select each half alone, and *Plain* is the
+undecorated blit the page always had -- also what a browser without
+WebGL2 falls back to (the select hides there). As on the desktop, a
+drawn frame also widens what its tube shows: the whole captured raster,
+border colour to the glass edges, so the opening's rounded corners crop
+into overscan border the way a real tube's do, not into the picture.
+And as on the desktop, the CRT pass suspends itself on programmable
+scans, which have no 15 kHz line structure to draw; the bezel stays. The selected monitor fronts the page before anything boots
 too -- the powered-off tube, dark glass in the moulded frame, rather
 than a bare black rectangle -- and while a bezel mode is up the page
 shell's own thin border around the canvas hides, since the moulded case
@@ -130,7 +141,9 @@ Controls:
 
 - **Mouse**: with the pointer unlocked, the cursor drives the Amiga pointer
   through position deltas (Workbench-friendly); clicking the canvas
-  requests pointer lock for relative motion (games), and Esc releases it.
+  requests pointer lock for relative motion (games), and Esc releases it --
+  also in fullscreen, which releasing the mouse no longer abandons (see
+  the fullscreen section below).
 - **Keyboard**: physical keys map to Amiga raw keycodes with the same table
   as the desktop frontend. The mapping is positional, and the browser does
   not report the host's layout, so the one Amiga key it cannot reach is
@@ -224,6 +237,15 @@ device keyboard is measured from how much of the viewport it covers, which
 is what a browser offers instead of leaving room. On iPhones, where Safari has no element
 fullscreen, the button pins the shell over the page instead -- Safari's
 chrome stays, the page furniture goes, and the same letterbox applies.
+
+Esc carries two browser defaults -- leaving fullscreen and releasing the
+captured mouse -- and the guest wants it as the Amiga Esc key besides. In
+browsers with the Keyboard Lock API (Chromium), the page locks Escape
+while fullscreen, so a press releases the captured mouse without ending
+fullscreen, or types Esc into the guest when the pointer is free; leaving
+fullscreen moves to press-and-hold Esc (the browser announces this on
+entry) or the Exit button. Browsers without the API keep the default,
+where a single Esc leaves fullscreen.
 
 Once a machine boots, a status strip appears below the screen with the
 same front-panel readouts as the desktop [status bar](ui.md): the PWR and
@@ -360,6 +382,10 @@ through wasm-bindgen; the page's JavaScript drives everything from
   bezel-mask black columns of the full framebuffer. PAL and NTSC share the
   one canvas shape -- both apertures fill the same 4:3 glass, so an NTSC
   scan's shorter 428-row crop is scaled onto the same 540 output rows.
+  While the page draws a monitor bezel (`set_monitor_bezel`), the crop
+  widens to the tube aperture: the whole rendered field, 668x570, an
+  NTSC field's 470 rows scaled onto the same 570 -- the browser
+  counterpart of the desktop's tube view.
   Non-standard frames (true overscan, programmable scans) keep the full
   716-pixel width, as on the desktop, and a programmable super-hi-res scan
   carries its double (1432-pixel, 35 ns pitch) canvas straight to the
@@ -510,6 +536,16 @@ fitted Agnus crystal, not the live BEAMCON0 bit ECS software can flip);
 CPU, chipset, video standard, RAM, ROM fingerprint -- for bug reports
 and diagnostics.
 
+`insert_floppy(drive, bytes, name)` takes any format the core reads --
+ADF/ADZ, extended ADF, DMS, IPF, SCP, plain or gzip/zip packed -- decided
+by signature, so the name it is given is only a label. The static
+`WebEmu.floppy_formats()` lists the extensions those formats conventionally
+carry (`["adf", "adz", ...]`, no dots) for the one thing a page cannot
+decide by content: a file input's `accept` filter, and any list it scrapes
+by name. Building the filter from it is what stops a picker hiding an image
+the build would happily read; its absence is the feature test on an older
+bundle.
+
 Input goes through `key_event(event.code, pressed)` (returns whether the key
 mapped, for `preventDefault`), `mouse_delta(dx, dy)` and
 `mouse_button(button, pressed)`. `key_raw(rawkey, pressed)` is the same
@@ -575,6 +611,18 @@ horizontal overscan like a CRT bezel and presents standard screens
 as the captured TV aperture, `"full"` presents the whole overscan field;
 unknown names are ignored. The last completed frame is re-presented
 under the new aperture immediately, so a paused page only has to blit.
+`set_monitor_bezel(drawn)` tells the emulator a monitor front is drawn
+around the picture, which widens the standard-scan crop from the TV
+aperture to the tube aperture (the whole rendered field, the desktop's
+tube view); full overscan and programmable scans are unaffected, and the
+last completed frame is re-presented like `set_overscan`.
+`set_tv_centre(h, v)` centres the TV picture on the glass, the desktop's
+`[display] tv_h_centre` / `tv_v_centre` knobs (a monitor's front-panel
+H-CENTER/V-CENTER controls): `h` in lo-res pixels (-16..16, positive
+right), `v` in scan lines (-8..8, positive down), clamped to those
+ranges. Glass the nudge exposes past the captured raster shows black; a
+TV-aperture control, so full overscan ignores it. The last completed
+frame is re-presented like `set_overscan`.
 Front-panel status getters mirror the desktop status bar's LED block and
 are cheap enough to poll every frame: `power_led()` and `fdd_led()` return
 booleans, `caps_lock_led()` returns the keyboard MCU's own Caps Lock lamp
@@ -596,10 +644,10 @@ and anything else (presented as the full framebuffer), so size the canvas
 from both every frame rather than assuming fixed dimensions.
 `present_crt_lines()` describes the same presentation for a page-side CRT
 shader pass: the emulated field lines it shows (270 on the standard 50 Hz
-TV aperture, 214 on a 60 Hz scan, half the presented rows in full
-overscan), and 0 when a scanline effect has nothing honest to draw -- no
-frame yet, or a programmable scan, where the desktop suspends its CRT
-preset too.
+TV aperture, 214 on a 60 Hz scan, 285 and 235 under the tube aperture of
+a drawn bezel, half the presented rows in full overscan), and 0 when a
+scanline effect has nothing honest to draw -- no frame yet, or a
+programmable scan, where the desktop suspends its CRT preset too.
 
 `www/try.js`, `www/render-stride.js`, and `www/audio-worklet.js` are the
 reference implementation of
@@ -673,10 +721,12 @@ elements, and pages without them are untouched:
   a shell-hosted checkbox the input element is hidden, so a shell can
   drop the whole labelled row with a
   `.row:has(> input[hidden]) { display: none }` rule.
-- `#monitor` (a `<select>` with option values `1084`, `crt`, `bezel`,
-  and `plain`): the monitor presentation (**Monitor** on the hosted
-  page), the desktop window's CRT shader preset and 1084 bezel rendered
-  through WebGL2. Defaults to `1084` (both together), self-inserting,
+- `#monitor` (a `<select>` with option values `1084`, `classic`, `crt`,
+  `cabinet`, `bezel`, and `plain`): the monitor presentation (**Monitor**
+  on the hosted page), the desktop window's CRT shader preset and its two
+  bezel styles rendered through WebGL2 -- `1084` and `classic` pair the
+  preset with the 1084 cabinet or the Classic frame, `cabinet` and
+  `bezel` are those frames alone. Defaults to `1084`, self-inserting,
   applied live including to a paused machine -- and to the powered-off
   monitor a page shows before boot -- and remembered in the browser like
   `#overscan`. While a bezel mode is up the glue makes the shell's
@@ -684,6 +734,24 @@ elements, and pages without them are untouched:
   the other modes; a shell that wants no part of that can simply not
   style a border. It hides itself -- and the page keeps its
   plain 2D blit -- in a browser without WebGL2.
+- `#bezel-stickers` (a `<script type="application/json">` element): PNG
+  stickers drawn onto the monitor front while a bezel mode is up, the
+  desktop's `[display] bezel_stickers` for a hosting page -- community
+  logos as die-cut decals on the plastic, with a soft drop shadow and the
+  plastic's lighting. The element's content is a JSON array of up to 16
+  entries with the same keys as the desktop folder's `stickers.toml`
+  ([the configuration chapter](configuration.md)): `image` (a URL,
+  resolved against the page -- typically a `stickers/` folder beside it),
+  optional `x`/`y` (the sticker's centre as fractions of the canvas, as a
+  pair), `width` (fraction of the canvas width; height follows the
+  image's aspect), `rotate` (degrees clockwise) and `opacity`. Entries
+  without `x`/`y` line up along the cabinet's top band in written order
+  with a slight alternating tilt, exactly as the desktop lays a bare
+  folder out. The decals are drawn on the canvas itself, so they follow
+  the plastic through resizes and fullscreen, and never appear in
+  screenshots, which capture the presentation buffer. Cross-origin images
+  are requested with CORS and skipped (with a console note) when the host
+  refuses. Without the element, or without WebGL2, no stickers are drawn.
 - `#floppy-speed` (a `<select>` with option values `100`, `200`, `400`,
   `800`, and `0` for turbo): hosts the floppy drive speed control, letting
   the page place and style it. Unlike the other hooks this one is always
@@ -700,8 +768,10 @@ elements, and pages without them are untouched:
   `<folder>/index.json` -- a JSON array of file names, or of
   `{name, url}` objects with URLs resolved against the folder. Without a
   manifest, a server directory listing of the folder (nginx `autoindex`,
-  Apache, `python -m http.server`) is scraped for disk-image links
-  instead. If the folder yields nothing, the select hides itself.
+  Apache, `python -m http.server`) is scraped for links whose extension
+  the build reads (`WebEmu.floppy_formats()`, the same list the disk
+  picker filters on). If the folder yields nothing, the select hides
+  itself, as it does on a bundle too old to name its formats.
 - `#kicklist` (a `<select>`): the same list pattern for Kickstart ROMs.
   The folder is the select's `data-src` attribute (default `kick/`), with
   the same manifest-or-directory-listing contract as `#df0list`: a
@@ -826,10 +896,10 @@ already serves); `df0` is any URL the visitor's browser may fetch, like
 controls -- the speed select inserts itself, and a configured
 `floppy_sounds` or `mono_audio` is applied at boot even with no checkbox
 to show it. `overscan`, `tint`, and `monitor` (the CRT + bezel
-presentation: `1084`, `crt`, `bezel`, or `plain`) are starting points for
-first-time visitors only: all three are per-browser viewing preferences
-the glue remembers, and a visitor's own remembered choice wins over the
-file. `serial_url` and `serial_raw` preset the
+presentation: `1084`, `classic`, `crt`, `cabinet`, `bezel`, or `plain`)
+are starting points for first-time visitors only: all three are
+per-browser viewing preferences the glue remembers, and a visitor's own
+remembered choice wins over the file. `serial_url` and `serial_raw` preset the
 serial bridge's inputs and therefore need those elements: a shell
 without them has no connect button to dial with either. `joy` picks the
 starting joystick mode. `background_run` starts first-time visitors with
