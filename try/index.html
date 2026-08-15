@@ -491,7 +491,7 @@
           <div class="try-controls">
             <button class="btn btn--ghost" id="pause">Pause</button>
             <label class="btn btn--ghost">Insert DF0&hellip;
-              <input id="df0" type="file" accept=".adf,.adz,.dms,.gz,.zip,.scp" hidden></label>
+              <input id="df0" type="file" accept=".adf,.adz,.dms,.ipf,.gz,.zip,.scp" hidden></label>
             <button class="btn btn--ghost" id="joy">Joystick: off</button>
             <button class="btn btn--ghost" id="keyboard">Keyboard</button>
             <!-- Ships hidden: only a touch screen wants its device keyboard
@@ -605,7 +605,8 @@
         runs locally in your browser; nothing you load here is uploaded
         anywhere. Still experimental, but no longer desktop-only: 0.15.0
         brought a screen keyboard, touch controls and a performance pass
-        aimed squarely at phones and tablets.
+        aimed squarely at phones and tablets, and 0.16.0 reads IPF disk
+        images.
       </p>
 
       <p class="try-note">
@@ -645,8 +646,9 @@
       </p>
 
       <p class="try-note">
-        Click the screen to capture your mouse for relative motion (Esc releases
-        it); without capture, the pointer follows your cursor over the screen.
+        Click the screen to capture your mouse for relative motion - tap Esc
+        to release it, and in fullscreen hold Esc to leave fullscreen instead;
+        without capture, the pointer follows your cursor over the screen.
         On a touch screen the display works like a trackpad: drag to move the
         pointer, tap to click, hold still for a moment to drag with the button
         held, and rest a second finger to hold the right button for menus.

@@ -8,6 +8,14 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.16.0: one-command WHDLoad, a game library, and a new Amiga game built on Copperline</title>
+    <link>https://copperline.dev/news/copperline-0-16-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-16-0.html</guid>
+    <pubDate>Sat, 15 Aug 2026 05:50:42 +0000</pubDate>
+    <description>A WHDLoad-installed game boots straight from its archive, the launcher grows a browsable game library with OpenRetro cover art, --run warp-boots freshly built Amiga executables for developers, storage gains a lide.device-compatible IDE board with ATAPI CD-ROM, OFS directory mounts that boot Kickstart 1.3 and a Create Image workshop - and a studio building a new commercial Amiga game on Copperline drove fixes from Agnus pointer semantics to floating-bus reads.</description>
+  </item>
+
+  <item>
     <title>Copperline 0.15.0: an MT-32, your real hard disks, and sockets with nothing to install</title>
     <link>https://copperline.dev/news/copperline-0-15-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-15-0.html</guid>

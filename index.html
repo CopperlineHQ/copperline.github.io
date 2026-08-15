@@ -102,7 +102,7 @@
         </a>
       </div>
       <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-15-0.html">0.15.0 is out &middot; read what's new</a>
+        <a href="news/copperline-0-16-0.html">0.16.0 is out &middot; read what's new</a>
       </p>
       <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
         <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
@@ -140,7 +140,9 @@
         <span class="quickstart__num">3</span>
         <h3>Insert a disk</h3>
         <p>Load an ADF from the status bar's disk controls, or skip the window
-           entirely: <code>copperline game.adf</code>.</p>
+           entirely: <code>copperline game.adf</code> - or boot a WHDLoad
+           install straight from its archive:
+           <code>copperline --whdload game.lha</code>.</p>
       </li>
     </ol>
 
@@ -207,11 +209,12 @@
         <h3>Disks, drives &amp; expansion</h3>
         <p>Up to four floppies (ADF / ADZ / DMS / IPF / SCP, plain or zipped) with
            multi-disk swap playlists and a configurable drive speed - or a real 3.5"
-           drive in any bay through a Greaseweazle controller - Gayle and A4000 IDE,
-           A2091 / A4091 / A3000 SCSI carrying hard disks and CD-ROM drives, CDTV and
-           CD32 CD, the host's real disks handed to the machine RDB and all, Zorro
-           II / III autoconfig, and host directories mounted as writable AmigaDOS
-           volumes - bootable ones included.</p>
+           drive in any bay through a Greaseweazle controller - Gayle and A4000 IDE
+           plus a lide.device-compatible Zorro II IDE board, ATAPI CD-ROM drives on
+           any IDE slot, A2091 / A4091 / A3000 SCSI carrying hard disks and CD-ROM
+           drives, CDTV and CD32 CD, the host's real disks handed to the machine RDB
+           and all, Zorro II / III autoconfig, and host directories mounted as
+           writable AmigaDOS volumes - bootable ones included, as FFS or OFS.</p>
       </article>
 
       <article class="card">
@@ -262,10 +265,11 @@
         <h3>CRT presentation</h3>
         <p>Three CRT shader presets - scanlines, mask and full CRT - or your own WGSL
            shader, monochrome and sepia screen tints, and a choice of monitor bezels -
-           an authentic 1084 or a plainer classic frame - whose power LED follows the
-           guest. Plus phosphor persistence, a motion-adaptive deinterlacer for laced
-           screens, integer scaling, tv / full overscan, and a TV-like 4:3 - the way
-           the hardware drove a real monitor.</p>
+           an authentic 1084 or a plainer classic frame, with a stickers folder for
+           your own decals - whose power LED follows the guest. Plus phosphor
+           persistence, a motion-adaptive deinterlacer for laced screens, integer
+           scaling, tv / full overscan, and a TV-like 4:3 - the way the hardware
+           drove a real monitor.</p>
       </article>
 
       <article class="card">
@@ -619,11 +623,13 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <li>FluxBridge drives</li>
       <li>Gayle IDE</li>
       <li>A4000 IDE</li>
+      <li>lide.device IDE</li>
       <li>A2091 SCSI</li>
       <li>A4091 SCSI</li>
       <li>A3000 SCSI (SDMAC)</li>
       <li>Ramsey / Fat Gary</li>
       <li>SCSI CD-ROM</li>
+      <li>ATAPI CD-ROM</li>
       <li>Host hard disks</li>
       <li>Parallel port</li>
       <li>030 / 040 / 060 MMU</li>
@@ -680,23 +686,26 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
               reverse debugger built on them.</li>
           <li>The tooling - debugger, frame analyzer, headless scripting - which is
               half the point of the project.</li>
-          <li>Floppies (ADF / ADZ / DMS / SCP, plain or zipped), Gayle IDE,
-              A2091 / A4091 SCSI with CD-ROM drives, CDTV / CD32 CD, and host
-              directories mounted as writable, bootable AmigaDOS volumes.</li>
+          <li>Floppies (ADF / ADZ / DMS / IPF / SCP, plain or zipped), Gayle and
+              A4000 IDE, A2091 / A4091 SCSI with CD-ROM drives, CDTV / CD32 CD,
+              and host directories mounted as writable, bootable AmigaDOS
+              volumes.</li>
         </ul>
       </div>
 
       <div class="status-col status-col--mid">
         <h3>Rough edges</h3>
         <ul>
-          <li>This cycle's peripherals - the MT-32, real host hard disks, HostSocket
-              networking and native IPF - are new this release, with a first
-              release's worth of real-world mileage behind them.</li>
-          <li>The physical floppy path was rebuilt this release on FluxBridge,
+          <li>This cycle's arrivals - direct WHDLoad boot and the game library,
+              the lide.device IDE board with its ATAPI CD-ROM drives, and OFS
+              directory mounts - are brand new, and last cycle's MT-32, real
+              host hard disks and HostSocket networking have one release of
+              mileage behind them.</li>
+          <li>The physical floppy path was rebuilt in 0.15.0 on FluxBridge,
               Copperline's own pure-Rust library - a young library driving real
               mechanisms.</li>
-          <li>RTG is still young: the Z3660 has a couple of releases of mileage
-              behind it, and the Zorro II Picasso II / II+ one.</li>
+          <li>RTG is still young: the Z3660 has a few releases of mileage
+              behind it, and the Zorro II Picasso II / II+ a couple.</li>
           <li>The A2065 bridges onto a host adapter as well as the zero-setup
               NAT mode, but Wi-Fi bridging is still best-effort.</li>
           <li>The JIT CPU mode is experimental and off by default: accelerator-class
@@ -720,7 +729,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
     <div class="status-next">
       <span class="card__tag">// main vs the release</span>
       <p>Development happens in the open, and <code>main</code> usually runs well ahead
-         of the release you can download. Right now it doesn't: 0.15.0 has just shipped,
+         of the release you can download. Right now it doesn't: 0.16.0 has just shipped,
          so for once the release and main are the same machine.</p>
       <p>Every release gets a write-up on the <a href="news/">news page</a> when it
          ships. If you want to follow development commit by commit,
@@ -764,7 +773,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
           <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.15.0</span>-macos-universal.dmg and drag</span>
+            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.16.0</span>-macos-universal.dmg and drag</span>
 <span class="c-comment"># Copperline.app into your Applications folder, then launch it</span>
 
 <span class="c-comment"># the build is not notarized, so macOS blocks the first launch.</span>
@@ -787,14 +796,14 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
           <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
             <pre><code><span class="c-comment"># grab the .AppImage from the latest release, then make it executable</span>
-chmod +x Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage
+chmod +x Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage
 
 <span class="c-comment"># run it - the bundled AROS ROM means no Kickstart is required</span>
-./Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage
+./Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage
 
 <span class="c-comment"># or boot your own Kickstart ROM, or a config file</span>
-./Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage path/to/kickstart.rom
-./Copperline-<span class="relver">0.15.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
+./Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage path/to/kickstart.rom
+./Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
           </div>
 
           <div class="codeblock" role="group" aria-label="Install with Homebrew on Linux">
@@ -811,7 +820,7 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="codeblock" role="group" aria-label="Run the Windows build">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.15.0</span>-win-x64.zip, then from a terminal</span>
+            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.16.0</span>-win-x64.zip, then from a terminal</span>
 <span class="c-comment"># with no ROM it boots the bundled AROS Kickstart replacement</span>
 copperline.exe
 copperline.exe path\to\kickstart.rom
