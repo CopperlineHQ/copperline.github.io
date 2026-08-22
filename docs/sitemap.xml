@@ -29,10 +29,16 @@
     <loc>http://localhost:3000/mt32</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/coppersynth</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/headless</loc>
   </url>
   <url>
     <loc>http://localhost:3000/browser</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/publishing</loc>
   </url>
   <url>
     <loc>http://localhost:3000/zorro</loc>

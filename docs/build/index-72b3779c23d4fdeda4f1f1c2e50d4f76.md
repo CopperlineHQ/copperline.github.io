@@ -48,6 +48,8 @@ running in Copperline.
   in place of an image, with its own RDB and partitions intact.
 - [](guide/mt32) -- configuring the built-in MT-32 synthesiser and its front
   panel.
+- [](guide/coppersynth) -- Coppersynth, the built-in General MIDI
+  synthesiser: soundfonts, MT-32 translation, and its front panel.
 - [](guide/headless) -- scripted, deterministic runs: screenshots, frame
   dumps, scripted input, and WAV capture.
 - [](guide/browser) -- the same core compiled to WebAssembly, hosted at
@@ -63,6 +65,11 @@ running in Copperline.
 - [](internals/architecture) -- how the emulator works inside, for
   contributors.
 - [](internals/picasso2) -- the Picasso II/II+ and CL-GD5426/5428 RTG model.
+- [](internals/audio) -- the audio mixer/sink service and stem capture.
+- [](internals/toccata) -- the MacroSystem Toccata AD1848 sound board model.
+- [](internals/graffity) -- the Graffity [Zorro II]/[Zorro III] RTG model.
+- [](internals/mhi) -- the virtual MHI MPEG audio decoder board's
+  bus-agnostic mailbox register protocol.
 
 ## Design principles
 

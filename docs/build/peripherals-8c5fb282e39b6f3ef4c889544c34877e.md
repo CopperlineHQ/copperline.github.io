@@ -416,6 +416,31 @@ functions) stay `_hs_stub` rather than jumping off the end of the table
 (see `guest/hostsocket/entry.s`'s own jump-table comment for the full
 accounting).
 
+## zz9k crypto board (`zz9k.rs`, `crates/zz9k-plugin/`)
+
+The `[zz9k]` option fits the bundled ZZ9000 SDK crypto board: a
+register-compatible subset of the MNT ZZ9000's SDK v2 service platform
+(CORE + MEMORY + CRYPTO) whose crypto runs host-side on pure-Rust
+RustCrypto inside the plugin, so the zz9000-sdk's unmodified Amiga
+software -- transport library, tools, accelerated AmiSSL -- offloads
+TLS-era crypto at host speed. Like HostSocket it is a bundled WASM plugin
+board with a path-sentinel module, but unlike every other bundled board it
+autoconfigs under MNT's own manufacturer ID (0x6D6E, product 4/3): the
+SDK's `FindConfigDev` probe is the detection mechanism, so compatibility
+*is* the identity. The whole board -- registers, ring mailbox, and the
+shared-buffer heap the guest copies payloads through -- is one byte array
+in the plugin's linear memory; there is no DMA, no network, and no host
+randomness (key-exchange scalars always come from the guest), which keeps
+the board pure compute and therefore deterministic, replay-safe, and
+save-state-exact including mid-operation (pending completions carry
+remaining-colour-clock counters, never host time). Requests are picked up
+by the plugin's tick scanning the request ring -- the SDK's Zorro II
+transport never rings the doorbell -- computed at dispatch, and completed
+after a deterministic latency table, one request per tick so no single
+wasm call approaches the plugin fuel budget. The register/opcode contract,
+the pinned zz9000-sdk revision, and every firmware-latitude choice are
+specified in [](zz9k.md).
+
 ## CDTV (`cdtv.rs`, `cdrom.rs`)
 
 The CDTV model pairs the DMAC (which autoconfigs ahead of the Zorro chain,
@@ -439,6 +464,24 @@ stream as 2352-byte raw frames at 75 (or 150 at 2x) sectors/second; CD
 audio mixes into the host output, and both light the blue CD LED. The
 512 KiB extended ROM sits at `$E00000`, and the CD32 pad protocol drives
 port 2.
+
+The drive protocol is cross-checked against both ROM drivers known to have
+run on real hardware, Kickstart's cd.device and AROS's, which pinned down
+four behaviours where the two disagree with older emulator lore: the drive
+microcontroller answers a command about a millisecond after its last byte
+rather than inside the guest's register write (drivers arm their
+completion interrupt in that window); the TOC dump streams the track
+entries before the A0/A1/A2 session entries, since a parser may treat the
+lead-out entry as end-of-TOC; the CDINTREQ status read exposes only
+enabled sources (`intreq & intena`), because INT2 servers read it on every
+chain entry and a stale latch from a disabled source must not look like
+fresh work; and the media-status packet reports a present disc as `$83`
+(Kickstart masks the byte with 3, AROS compares it whole -- only `$83`
+satisfies both). Akiko's DMA engines drive a full 24-bit address bus (the
+address registers mask to `$00FFF000`), so the rings and sector buffers
+resolve through every RAM bank in the low 16 MB -- Zorro II fast RAM
+included, which is where AROS places its `MEMF_24BITDMA` allocations when
+fast RAM exists -- not just chip RAM.
 
 `cdrom.rs` parses BIN/CUE cue sheets (single- or multi-file;
 MODE1/2048, MODE1/2352, and AUDIO tracks) for both machines.
@@ -480,10 +523,17 @@ overflow, and ghost suppression on the real A500 key matrix (the seven
 qualifiers are on dedicated lines and never ghost). The protocol was
 cross-checked against real-hardware-validated replacement keyboard
 firmware. Mouse deltas
-feed the JOY0DAT quadrature counters. Gamepads are read through raw
-`gilrs` events against the per-UUID calibration described in
-[](../guide/ui); on CD32 machines the pad output is serialized through
-the CD32 pad protocol instead of the plain digital joystick lines.
+feed the JOY0DAT quadrature counters. Gamepads are read through `gilrs`
+with its bundled SDL controller database enabled: a recognised pad
+resolves through a fixed standard layout, overridden per-UUID by the
+calibration described in [](../guide/ui), which records raw event codes
+and is the only path for unrecognised pads. On CD32 machines the pad
+output is serialized through the CD32 pad protocol instead of the plain
+digital joystick lines, modelled after the pad's 4021 shift register:
+in load mode the register's output follows Blue continuously (which is
+how Blue doubles as the plain second button on POTxY), and while the
+register is clocking each shifted bit reflects only its own button
+line, a held Blue included.
 
 The window layer has one host-source policy for the emulated port-2
 joystick/CD32 pad: gamepad (the default) or keyboard. Keyboard mode
@@ -609,6 +659,14 @@ layout-sensitive -- CoreMIDI packs its packet list to 4 bytes, the ALSA
 are replicated by hand, and WinMM's `MIDIHDR` is packed -- so the mirrors are
 pinned with compile-time layout assertions and want checking against live MIDI,
 not just review.
+
+On macOS the process holds exactly one `MIDIClient`, created at first use
+(enumeration included) and never disposed. CoreMIDI's link to the MIDIServer
+daemon is per-process and does not recover: the daemon exits a few seconds
+after the system-wide last client is disposed, and a process whose link dies
+that way cannot create a client again until it is relaunched. The one held
+client keeps the daemon running for the app's lifetime; each machine's
+backend owns only its ports.
 
 Two debug knobs help tell a dead path from a routing one:
 `COPPERLINE_MIDI_DEBUG=1` reports per-second tx/rx byte counts and the

@@ -21,10 +21,10 @@ There are two board kinds:
   forking and recompiling Copperline. See
   [WASM plugin boards](#wasm-plugin-boards) below.
 
-Functional boards (the A2091, the A4091, the A2065, the CDTV DMAC, and WASM
-plugins) all implement the `ZorroDevice` trait (`src/zorro_device.rs`): the
-bus drives every board through that one boundary for register access,
-ticking, interrupts, and DMA.
+Functional boards (the A2091, the A4091, the A2065, the CDTV DMAC, the
+Toccata, the MHI decoder board, and WASM plugins) all implement the `ZorroDevice` trait
+(`src/zorro_device.rs`): the bus drives every board through that one
+boundary for register access, ticking, interrupts, and DMA.
 
 ## Describing a board in TOML
 
@@ -244,7 +244,8 @@ net = "nat"   # "bridge", "loopback", or "none" for isolation
 ```
 
 (`--a2065-net BACKEND` is the matching per-run flag, and the launcher's
-**I/O Ports** tab has the same picker under its **Ethernet:** heading. Bridged
+**I/O Ports** tab's **Networking** page has the same picker under its
+**Ethernet:** heading. Bridged
 mode adds a live host-adapter picker. `--list-net-interfaces` prints the stable
 names accepted by `[a2065] interface` and `--a2065-interface`.)
 
@@ -313,6 +314,46 @@ while traffic flows -- the emulator logs this when the board is attached. Save
 states record only the chosen backend and bring up a fresh one on load
 (in-flight frames are dropped; the guest's TCP retransmits).
 
+## Audio: the Toccata sound board
+
+`[toccata]` fits an in-tree MacroSystem Toccata (`src/toccata.rs`), a Zorro
+II AD1848-based sound board with a mature, open-source AHI driver
+(`toccata.audio`), so AHI-aware guest software gets 16-bit sound with no
+Copperline-specific driver work:
+
+```toml
+[toccata]
+enabled = true
+```
+
+No other options exist yet. Unlike the A2065/HostSocket boards above,
+Toccata's guest interface is purely register-and-FIFO, not bus-mastering
+DMA, and its output joins Copperline's own mixer as a named source (the
+`toccata` stem in `--audio-stems`) rather than talking to a host device
+directly -- see [](internals/toccata) for the register model and
+[](internals/audio) for the mixer/stem-capture integration.
+
+## Audio: the MHI decoder board
+
+`[mhi]` fits an in-tree virtual MPEG-1/2/2.5 Layer III audio decoder board
+(`src/mhi.rs`) that serves the Amiga MHI API through the ported
+`mhi_copperline.library` (`guest/mhi/`), rather than modelling any real
+physical hardware -- MHI-aware players such as AmigaAMP decode MP3 through
+it exactly as they would through a real MHI decoder board or software MHI
+driver:
+
+```toml
+[mhi]
+enabled = true
+```
+
+No other options exist yet. Omit the section (or `enabled = false`) for no
+board. Like Toccata, its guest interface is register-and-descriptor-queue,
+not bus-mastering DMA, and its decoded output joins Copperline's own mixer
+as a named source (the `mhi` stem in `--audio-stems`) rather than talking
+to a host device directly -- see [](internals/mhi) for the register model
+and [](internals/audio) for the mixer/stem-capture integration.
+
 ## Networking: the bundled HostSocket board
 
 `[hostsocket]` fits the bundled HostSocket board: guest-facing
@@ -350,6 +391,36 @@ board (previous section) whose module and guest autoboot ROM ship inside the
 The board autoconfigs under the Copperline manufacturer ID with product 6
 (see below). Its conformance record against the external bsdsocktest suite
 is `crates/hostsocket-plugin/docs/bsdsocktest-status.md`.
+
+## Crypto: the bundled zz9k board
+
+`[zz9k]` fits the bundled ZZ9000 SDK crypto board: a register-compatible
+subset of the MNT ZZ9000's "SDK v2" service platform (the CORE + MEMORY +
+CRYPTO services) whose crypto runs host-side, so the SDK's unmodified
+Amiga-side software -- its transport library, the `zz9k-*` tools, and the
+accelerated AmiSSL build -- gets modern-speed hashing, AEAD, key exchange,
+and signature verification from an emulated 68k. See the
+[configuration guide](guide/configuration.md) for the user-facing knobs and
+[the protocol contract](internals/zz9k.md) for the register/opcode surface
+and the exact zz9000-sdk revision it tracks.
+
+Like HostSocket it is a WASM plugin board whose module ships inside the
+`copperline` binary: `crates/zz9k-plugin/` is the source, the committed
+artifact is `assets/zz9k/zz9k_plugin.wasm` (refresh with `make` in the
+crate), and config resolution (`src/zz9k.rs`) expands `[zz9k]` into a
+plugin-board entry with the module-path sentinel `<bundled-zz9k>`. Unlike
+HostSocket it is **pure compute** -- no DMA, no network, no host sockets --
+so fitting it keeps the machine fully deterministic and replay-safe, and it
+carries no autoboot ROM or guest driver of its own: the SDK software finds
+the board via `FindConfigDev` and speaks to it directly.
+
+It is also the one bundled board that does **not** autoconfig under the
+Copperline manufacturer ID: it presents the ZZ9000's own identity
+(manufacturer 0x6D6E, product 4 on Zorro III / 3 on Zorro II), because that
+identity is what the SDK's board probe looks for. The RTG/USB/Ethernet
+faces of the real ZZ9000 are absent -- their registers read zero and their
+services report unsupported -- so installing the real board's P96
+`zz9000.card` driver against it is unsupported (harmless, but no display).
 
 ## Graphics: RTG boards
 
@@ -421,6 +492,40 @@ Only the II+ drives an interrupt line. A write to register-window offset
 vertical interrupt latches at the CRTC-programmed retrace edge in emulated
 time; writing CRTC `$11` with bit 4 clear acknowledges it. The original card
 stores the board-enable bit for register compatibility but never asserts INT2.
+
+### Atéo Concepts Graffity [Zorro II] and [Zorro III]
+
+`[rtg] card = "graffityz2"`/`"graffityz3"` fit Graffity, a lesser-known board
+that reuses Picasso II+'s CL-GD5428 core under Atéo Concepts' own registered
+manufacturer ID 2092 (`$082C`). Both take 1 or 2 MB of VRAM (`[rtg] vram`);
+see [](internals/graffity) for the chip-level detail. Graffity ships a
+first-class Picasso96 board driver (`Graffity.card` in the classic Aminet
+`Picasso96Install` package), so no CyberGraphX or custom driver is needed.
+
+The Zorro II variant enumerates the same way Picasso II does -- a chained
+VRAM aperture (product 34) and a register aperture (product 33), except the
+register aperture is 128 KB rather than 64 KB, and its VGA ports sit directly
+at the window offset (no odd-lane `+0x1000` mirror):
+
+| product | size | autoconfig space | purpose |
+| --- | ---: | --- | --- |
+| 34 | 1 or 2 MB | Zorro II memory | linear VRAM aperture |
+| 33 | 128 KB | Zorro II I/O | VGA registers and monitor switch |
+
+The Zorro III variant is a single 16 MB window (product 33, no chained
+identity) with three fixed sub-apertures instead of one shared register
+window:
+
+| offset | size | purpose |
+| --- | ---: | --- |
+| `+$400000` | 64 KB | monitor-switch strobe trap only; never reaches VGA registers |
+| `+$800000` | 64 KB | VGA registers, same direct port addressing as the Zorro II variant |
+| `+$C00000` | 1 or 2 MB | linear VRAM |
+
+Both variants decode the monitor switch the same way Picasso II does (`$60`
+selects RTG, `$40` selects native Amiga pass-through), but neither has a
+board-level interrupt-enable latch: INT2 follows the CL-GD5428 core's own
+vertical-blank state directly.
 
 ## How autoconfig works in Copperline
 
@@ -496,6 +601,12 @@ makes the real ROMulus flash-ROM board. The product numbers under it are:
 | 4 | Built-in Zorro III RAM (`[memory] z3`) |
 | 5 | Copperline services board (host `[[filesys]]` mounts; `filesys.rs`) |
 | 6 | HostSocket bsdsocket.library board (`[hostsocket]`; `hostsocket.rs`) |
+| 7 | MHI virtual MPEG audio decoder board (`[mhi]`; `mhi.rs`) |
+
+(The bundled [zz9k crypto board](#crypto-the-bundled-zz9k-board) is the one
+exception: it autoconfigs under MNT's manufacturer ID 0x6D6E with the
+ZZ9000's own product numbers, because the ZZ9000 SDK detects the board by
+that identity.)
 
 The **identification board** (`BoardSpec::copperline_id`) is always added to
 the chain (unless disabled, below) so guest software can detect that it is
