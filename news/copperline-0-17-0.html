@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 0.17.0: Coppersynth, two sound boards, and CD32 discs that boot without a Kickstart - Copperline News</title>
+<meta name="description" content="Copperline 0.17.0 is the audio release: Coppersynth, a built-in General MIDI sound module with an SC-55-style front panel and MT-32 translation that needs no ROMs, a MacroSystem Toccata board for AHI, an MHI MPEG audio decoder board for MP3 on a 68000, per-source audio stems and a debugger that hears every source. Also: CD32 discs cold-boot on the bundled AROS ROM, a publisher kit for single-game players, gamepads that work out of the box and drive the whole UI, a new About page and Graffity RTG.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 0.17.0: Coppersynth, two sound boards, and CD32 discs that boot without a Kickstart">
+<meta property="og:description" content="Coppersynth puts a General MIDI sound module on the Amiga's MIDI cable with no ROMs, a Toccata and an MHI decoder board join the Zorro bus, every audio source gets its own stem and debugger row - and CD32 discs cold-boot on the bundled AROS ROM with no Kickstart at all.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-0-17-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
+    <span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu">
+    <a href="../">Home</a>
+    <a href="./">News</a>
+    <a href="feed.xml">RSS</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../#download">Download</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
+    </a>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
+      <span class="nav__burger" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <article class="post">
+      <a class="post__back" href="./">&lt; all news</a>
+      <span class="post__date">22 August 2026 &middot; release</span>
+      <h1>Copperline 0.17.0: Coppersynth, two sound boards, and CD32 discs that boot without a Kickstart</h1>
+
+      <p>This one is the audio release. Coppersynth puts a General MIDI
+         sound module on the other end of the Amiga's MIDI cable - a
+         sixteen-part SoundFont synthesizer in the style of a Roland Sound
+         Canvas, with an SC-55-style front panel under the display and an
+         MT-32 translation layer in front of it, so a game that talks to an
+         MT-32 plays with no ROMs and no configuration. Beside it, two Zorro
+         II sound boards arrive: a MacroSystem Toccata, the AD1848 card the
+         stock AHI driver expects, and an MHI MPEG audio decoder board that
+         lets AmigaAMP play MP3 on a plain 68000. Every audio source the
+         machine has now flows through one mixer that can write each of
+         them to its own WAV, and the debugger's Audio tab grows a row per
+         source.</p>
+
+      <p>Elsewhere: CD32 discs cold-boot on the bundled AROS ROM with no
+         Kickstart at all, a publisher kit builds a launcher-free player for
+         a single game, most gamepads work out of the box and can now drive
+         the whole user interface, the About page had a makeover, and RTG
+         gains the Graffity boards. As always it is a hardware-behaviour
+         release: compatibility fixes model the underlying Amiga subsystems
+         rather than individual titles.</p>
+
+      <h2>Coppersynth</h2>
+
+      <p>The MT-32 arrived in 0.15.0 as a bit-exact emulation of the real
+         module, which is wonderful if you own its ROMs and a dead end if
+         you do not. Coppersynth is the answer for everyone else: a
+         sixteen-part General MIDI synthesizer, with GS and NRPN handling,
+         reverb and chorus, and the GeneralUser GS bank by S. Christian
+         Collins embedded in the binary - the complete GM sound set, the SFX
+         bank and the drum kits, with no files to find. Load any
+         <code>.sf2</code> in its place if you have a favourite. Its audio
+         is mixed beside Paula's four channels, so a game's MIDI score and
+         its Amiga sound effects play together.</p>
+
+      <p>The part I did not expect is the front panel. Under the display
+         sits an SC-55mkII-style fascia with the backlit LCD, the sixteen
+         part meters and the real unit's button grammar: part and system
+         menus, variation banks, GS init, the demo sequences, and the
+         power-on button combinations that selected MT-32 mode on the real
+         thing. A right click latches a button down, which is how the
+         multi-button gestures are made, and the module remembers its
+         settings across power cycles like the real unit's battery does.
+         The MT-32 translation layer (<code>auto</code>, <code>on</code> or
+         <code>off</code>) turns a game's MT-32 instrument uploads and drum
+         map into General MIDI as it plays, and the LCD shows the messages
+         games send to the module.</p>
+
+      <p>Select it with <code>[serial] midi_out = "coppersynth"</code>, with
+         <code>--midi-out coppersynth</code>, from the launcher's I/O Ports
+         tab or from the in-window MIDI Out menu, and switch between it and
+         the bit-exact MT-32 without a restart. The synthesizer is its own
+         crate,
+         <a href="https://github.com/CopperlineHQ/Coppersynth" target="_blank" rel="noopener">CopperlineHQ/Coppersynth</a>,
+         so other projects can use it too. Contributed by Lee Hobson
+         (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>),
+         who built it from the first commit to the 0.14.0 pin this release
+         ships.</p>
+
+      <h2>A Toccata and an MHI decoder board</h2>
+
+      <p><code>[toccata] enabled = true</code> fits a register-accurate
+         MacroSystem Toccata: the AD1848 codec's indexed registers, the
+         board's own 1024-byte FIFO with its half-empty interrupt and
+         little-endian word quirk, all fourteen sample rates from 5512 to
+         48000 Hz, and 8- and 16-bit mono and stereo playback. The stock
+         open-source <code>toccata.audio</code> AHI driver runs unmodified,
+         so AHI-aware software gets 16-bit sound with no Copperline-specific
+         driver anywhere.</p>
+
+      <p><code>[mhi] enabled = true</code> fits something that never existed
+         as hardware: a Copperline-native Zorro II board serving the Amiga
+         MHI API - the hardware-decode backend players such as AmigaAMP use
+         - through a ported <code>mhi_copperline.library</code>. MP3
+         decodes at essentially zero guest CPU cost on a stock 68000, with
+         working volume, pan, bass, mid and treble, and the bitstream is
+         consumed at the decoded audio's emulated-time rate so warp and
+         replay stay deterministic. The board's register protocol is
+         published as a bus-agnostic contract that any emulator could
+         implement. Both boards, the audio mux beneath them and the
+         <code>--audio-stems</code> capture that writes every source -
+         Paula, the drive noises, CD-DA, the MT-32, Coppersynth, Toccata,
+         MHI, and each Paula channel on its own - to byte-identical WAVs
+         were contributed by Simon Dick
+         (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>).</p>
+
+      <p>On my side of the same story, the debugger's Audio tab grew a row
+         for each source the machine has - CD-DA, the MIDI synth, Toccata
+         with its latched rate and FIFO fill, MHI with its transport state
+         and parameter latches - each with an oscilloscope and a developer
+         mute. When a game's music sounds wrong you can now see which box
+         is making it.</p>
+
+      <h2>CD32 discs boot on the AROS ROM</h2>
+
+      <p><code>copperline --factory --model CD32 --insert-cd-after 0
+         game.cue</code> now cold-boots a CD32 title with no Kickstart in
+         sight. On Copperline's side that meant correcting Akiko's drive
+         protocol against both Kickstart's and AROS's <code>cd.device</code>
+         - the order of the TOC dump, command execution paced in emulated
+         time rather than inside the guest's write, masked interrupt-request
+         reads, the media-status byte, and DMA that reaches every RAM bank
+         in the low 16 MB instead of the chip-RAM slice. On AROS's side it
+         meant four upstream series Copperline contributed this fortnight:
+         CD32 CD boot through CDVDFS, an appliance-quiet boot that can never
+         raise a requester on a pad-only machine, the Kickstart-private
+         <code>lowlevel.library</code> vectors that CD32 titles call blind,
+         and an m68k low-memory series that frees well over a megabyte of
+         chip RAM at boot - a CD32 with a disc in the drive had 164 KiB free
+         before and has 1.48 MB now. Pinball Fantasies and Pinball Illusions
+         cold-boot from CD to playable tables on a chip-only CD32, and the
+         same headroom helps a chip-hungry A1200 floppy title that used to
+         run out of memory under the bundled ROM.</p>
+
+      <h2>A publisher kit</h2>
+
+      <p><code>tools/publish --manifest game.toml</code> builds a
+         dedicated, launcher-free player for one game: a small binary that
+         boots straight into the title with the machine and RAM fixed at
+         build time, no status bar, no debugger, and an in-game menu
+         carrying only what an end user changes - CRT shader and strength,
+         bezel, fullscreen, controller setup, and save states if the
+         publisher opts in. The distributable bundles the player, the game
+         as a sidecar file, the AROS ROM pair and the licence documents for
+         macOS, Linux and Windows. The game is never embedded in the binary,
+         so publishing a commercial title needs no licence exception - the
+         same mere-aggregation model commercial ScummVM releases use. Brazen
+         Gameplay, whose
+         <a href="https://www.kickstarter.com/projects/tonywarriner/urbx-warriors-the-lost-city-16-bit-edition/" target="_blank" rel="noopener">Urb-X Warriors</a>
+         Kickstarter is live, have announced a Copperline-wrapped edition of
+         the game; this kit is what that ships on, and the CD32 work above
+         grew out of the same collaboration.</p>
+
+      <h2>Gamepads, out of the box and in charge</h2>
+
+      <p>The bundled SDL_GameControllerDB now identifies most pads and gives
+         them a fixed layout - d-pad and left stick for directions, the
+         south face button for fire or CD32 red, east blue, west green,
+         north yellow, Start for play/pause, the shoulders and triggers for
+         reverse and forward, Select or the guide button for the menu -
+         with calibration kept as the override for the pads it misses. An
+         optional hold-to-quit hotkey quits after a 1.5-second hold with an
+         on-screen countdown.</p>
+
+      <p>And a pad can now drive everything. Every control the mouse can
+         reach in the launcher, the menu, the status bar and the overlay
+         panels is reachable with the arrow keys, Return and Esc, or a pad's
+         d-pad, fire and second button - a console-style path from the
+         couch through every setting. A new <code>gamepad-mouse</code>
+         device on port 1 is the same quadrature mouse the Amiga already
+         sees, moved by the gamepad as well as the host mouse, so
+         mouse-driven software plays from a pad. Contributed by Lee
+         Hobson.</p>
+
+      <h2>An About page worth opening, and a launcher sweep</h2>
+
+      <p>The About panel is rebuilt: a sliding title, contributors and
+         sponsors arriving one by one over a three-layer copper-and-silver
+         wave, and a machine readout that identifies the fitted ROM by
+         checksum, bundled AROS included. Around it the launcher's I/O Ports
+         tab splits into Serial Port, Parallel Port, Networking and Audio
+         pages, on/off rows become steppers, the ROM tab names the chosen
+         Kickstart's name, version and revision, and submenus open on a
+         hover dwell. Contributed by Lee Hobson.</p>
+
+      <h2>Graffity RTG and a ZZ9000 crypto board</h2>
+
+      <p><code>[rtg] card = "graffityz2"</code> or <code>"graffityz3"</code>
+         fits At&eacute;o Concepts' Graffity, which reuses the Picasso II+'s
+         CL-GD5428 core under its own manufacturer ID and window layout,
+         with 1 or 2 MB of VRAM and the stock <code>Graffity.card</code>
+         Picasso96 driver. Contributed by Simon Dick.</p>
+
+      <p><code>[zz9k] enabled = true</code> fits a bundled WASM plugin board
+         register-compatible with the MNT ZZ9000's SDK v2 service platform,
+         under the ZZ9000's own identity, so the unmodified zz9000-sdk
+         software - its transport library, the <code>zz9k-*</code> tools and
+         the accelerated AmiSSL build - gets host-speed SHA-2, BLAKE2s,
+         ChaCha20-Poly1305, AES-GCM, X25519 and P-256 from an emulated 68k.
+         It is pure compute, so it is deterministic, replay-safe and
+         save-state-exact.</p>
+
+      <h2>Hardware accuracy fixes</h2>
+
+      <ul>
+        <li>Denise's horizontal display window is a flip-flop set and
+            cleared by exact comparator matches: a DIWSTOP beyond the
+            counter's wrap never matches, the window stays open across
+            lines, and a DIWSTRT match on an already-open window is a
+            no-op. Copperline now paints the playfield a carried-open window
+            reveals left of DIWSTRT, matching photographed A500 behaviour -
+            the clipped left edge of the Grandslam logo in the Chambers of
+            Shaolin intro.</li>
+        <li>A standard PAL or NTSC frame is presented with the calibrated
+            centring constant rather than a shift derived from the display
+            window, so a late-opening window no longer drags the picture 89
+            pixels left (Volker Schwaberow).</li>
+        <li>Akiko's TOC dump streams track entries before the session
+            entries, commands execute about a millisecond after the guest's
+            write, CDINTREQ reads return the masked request, a present disc
+            reports media status $83, and CD DMA resolves through the whole
+            24-bit address space.</li>
+        <li>The CD32 pad's 4021 shift register follows the Blue line only
+            while loading, so holding Blue no longer makes a game read all
+            seven buttons as pressed.</li>
+      </ul>
+
+      <h2>Desktop, tooling and platform</h2>
+
+      <ul>
+        <li>Windows on ARM joins the CI matrix and the release assets, and
+            the MHI decoder's move to the pure-Rust Symphonia removed the
+            last C compile from the default build.</li>
+        <li>One CoreMIDI client per process lifetime on macOS, fixing an
+            intermittent failure that could block MIDI until relaunch (Lee
+            Hobson).</li>
+        <li>Gamepad calibration binds on press with hold-to-skip, so pads
+            that report a control held at rest calibrate correctly (Lee
+            Hobson).</li>
+        <li>The HDD LED lights for the lide.device-compatible Zorro IDE
+            board (Matt Harlum), and a WHDLoad library folder of unpacked
+            games under letter shelves is walked into instead of listed as
+            one entry per letter.</li>
+        <li>A structural clean-up split the oversized window, config and
+            floppy modules with every golden render bit-identical before
+            and after; the RTG texture path warns instead of panicking; a
+            save-state round-trip test and a nightly 68000 cputest
+            conformance run join CI.</li>
+      </ul>
+
+      <h2>Contributed this cycle</h2>
+
+      <p>Copperline welcomes a new contributor this cycle: Matt Harlum
+         (<a href="https://github.com/LIV2" target="_blank" rel="noopener">@LIV2</a>),
+         the author of the open-source <code>lide.device</code> whose board
+         arrived in 0.16.0, who lit the HDD LED for it in his first PR.
+         Welcome aboard.</p>
+
+      <p>Lee Hobson
+         (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>)
+         wrote the headline feature - Coppersynth, its front panel and its
+         own crate - and then the keyboard and controller navigation of the
+         entire UI with the gamepad mouse, the new About page, the launcher
+         sweep and the CoreMIDI fix. He also topped the commit count this
+         cycle, 89 to my 77, which has not happened before.</p>
+
+      <p>Simon Dick
+         (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>)
+         contributed the other half of the audio story - the audio mux and
+         stem capture, the Toccata board, the MHI decoder board through four
+         milestones - and the Graffity RTG boards. Volker Schwaberow
+         (<a href="https://github.com/vschwaberow" target="_blank" rel="noopener">@vschwaberow</a>)
+         fixed the raster centring shift. Five people, 218 commits, seven
+         days.</p>
+
+      <h2>Compatibility notes</h2>
+
+      <p><strong>Save states from 0.16.0 do not load in 0.17.0.</strong>
+         Three new boards, the Akiko fixes and the gamepad mouse all changed
+         the serialized machine shape, so the state format version moves
+         from 54 to 61. Re-create snapshots after upgrading.</p>
+
+      <p><strong>Gamepads no longer need calibrating first.</strong> A saved
+         calibration always wins over the database, so existing setups are
+         untouched - but a calibration made before 0.17.0 for a pad the
+         database also knows may have a stick reversed; Copperline logs a
+         one-time hint, and recalibrating once fixes it.</p>
+
+      <p><strong>Nothing was removed or renamed</strong> in the
+         configuration; everything new is additive. Coppersynth keeps its
+         battery-backed settings in <code>coppersynth.nvram</code> in the
+         NVRAM folder, and the MHI board's guest library is copied by hand
+         into <code>LIBS:mhi/</code> on the Amiga side.</p>
+
+      <h2>Get it</h2>
+
+      <p>Builds for macOS, Linux and Windows - now including Windows on ARM
+         - are on the
+         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.17.0" target="_blank" rel="noopener">release page</a>,
+         and the Homebrew tap is updated. Or skip the download entirely:
+         <a href="../try/">copperline.dev/try</a> is the same emulator.</p>
+
+      <p>Copperline also has a
+         <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>.
+         Nothing there buys a feature or a place in the queue - monthly
+         support goes towards development time, real hardware to measure the
+         emulator against, and the code-signing subscriptions that would let
+         the downloads open without a warning.</p>
+
+      <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
+         <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
+        no CDNs - even the fonts are served from here.
+      </p>
+    </div>
+    <nav class="footer__links">
+      <a href="./">News</a>
+      <a href="feed.xml">RSS</a>
+      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -102,7 +102,7 @@
         </a>
       </div>
       <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-16-0.html">0.16.0 is out &middot; read what's new</a>
+        <a href="news/copperline-0-17-0.html">0.17.0 is out &middot; read what's new</a>
       </p>
       <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
         <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
@@ -200,8 +200,10 @@
            gilrs, no SDL2) with autofire and a remappable key map - and 4-channel Paula
            audio with the LED filter. Paula's
            serial port bridges to host MIDI or TCP - or feeds an emulated Roland
-           MT-32, the whole module with its front panel, mixed beside Paula - and
-           the parallel port takes a printer or an 8-bit audio sampler.</p>
+           MT-32, or Coppersynth, a built-in General MIDI module with an SC-55-style
+           front panel that needs no ROMs, both mixed beside Paula - the Zorro bus
+           takes a Toccata sound board for AHI and an MHI decoder board for MP3,
+           and the parallel port takes a printer or an 8-bit audio sampler.</p>
       </article>
 
       <article class="card">
@@ -616,6 +618,9 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <li>Paula audio</li>
       <li>Paula serial</li>
       <li>Roland MT-32</li>
+      <li>Coppersynth GM synth</li>
+      <li>Toccata sound board</li>
+      <li>MHI decoder board</li>
       <li>CIA-A / CIA-B</li>
       <li>Chip / fast / slow RAM</li>
       <li>Battery RTC</li>
@@ -637,6 +642,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <li>Zorro II / III autoconfig</li>
       <li>Z3660 RTG</li>
       <li>Picasso II / II+ RTG</li>
+      <li>Graffity RTG</li>
       <li>A2065 Ethernet</li>
       <li>HostSocket sockets</li>
       <li>WASM Zorro plugins</li>
@@ -696,16 +702,17 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <div class="status-col status-col--mid">
         <h3>Rough edges</h3>
         <ul>
-          <li>This cycle's arrivals - direct WHDLoad boot and the game library,
-              the lide.device IDE board with its ATAPI CD-ROM drives, and OFS
-              directory mounts - are brand new, and last cycle's MT-32, real
-              host hard disks and HostSocket networking have one release of
-              mileage behind them.</li>
+          <li>This cycle's arrivals - Coppersynth, the Toccata and MHI sound
+              boards, the publisher kit and the Graffity RTG boards - are brand
+              new, and last cycle's direct WHDLoad boot, game library and
+              lide.device IDE board have one release of mileage behind
+              them.</li>
           <li>The physical floppy path was rebuilt in 0.15.0 on FluxBridge,
               Copperline's own pure-Rust library - a young library driving real
               mechanisms.</li>
           <li>RTG is still young: the Z3660 has a few releases of mileage
-              behind it, and the Zorro II Picasso II / II+ a couple.</li>
+              behind it, the Zorro II Picasso II / II+ a couple, and Graffity
+              arrived this release.</li>
           <li>The A2065 bridges onto a host adapter as well as the zero-setup
               NAT mode, but Wi-Fi bridging is still best-effort.</li>
           <li>The JIT CPU mode is experimental and off by default: accelerator-class
@@ -729,7 +736,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
     <div class="status-next">
       <span class="card__tag">// main vs the release</span>
       <p>Development happens in the open, and <code>main</code> usually runs well ahead
-         of the release you can download. Right now it doesn't: 0.16.0 has just shipped,
+         of the release you can download. Right now it doesn't: 0.17.0 has just shipped,
          so for once the release and main are the same machine.</p>
       <p>Every release gets a write-up on the <a href="news/">news page</a> when it
          ships. If you want to follow development commit by commit,
@@ -773,7 +780,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
           <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.16.0</span>-macos-universal.dmg and drag</span>
+            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.17.0</span>-macos-universal.dmg and drag</span>
 <span class="c-comment"># Copperline.app into your Applications folder, then launch it</span>
 
 <span class="c-comment"># the build is not notarized, so macOS blocks the first launch.</span>
@@ -796,14 +803,14 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
           <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
             <pre><code><span class="c-comment"># grab the .AppImage from the latest release, then make it executable</span>
-chmod +x Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage
+chmod +x Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage
 
 <span class="c-comment"># run it - the bundled AROS ROM means no Kickstart is required</span>
-./Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage
+./Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage
 
 <span class="c-comment"># or boot your own Kickstart ROM, or a config file</span>
-./Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage path/to/kickstart.rom
-./Copperline-<span class="relver">0.16.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
+./Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage path/to/kickstart.rom
+./Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
           </div>
 
           <div class="codeblock" role="group" aria-label="Install with Homebrew on Linux">
@@ -820,7 +827,7 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="codeblock" role="group" aria-label="Run the Windows build">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.16.0</span>-win-x64.zip, then from a terminal</span>
+            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.17.0</span>-win-x64.zip (win-arm64 on ARM), then from a terminal</span>
 <span class="c-comment"># with no ROM it boots the bundled AROS Kickstart replacement</span>
 copperline.exe
 copperline.exe path\to\kickstart.rom

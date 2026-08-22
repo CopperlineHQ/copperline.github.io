@@ -8,6 +8,14 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.17.0: Coppersynth, two sound boards, and CD32 discs that boot without a Kickstart</title>
+    <link>https://copperline.dev/news/copperline-0-17-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-17-0.html</guid>
+    <pubDate>Sat, 22 Aug 2026 05:46:55 +0000</pubDate>
+    <description>Coppersynth puts a General MIDI sound module with an SC-55-style front panel and MT-32 translation on the Amiga's MIDI cable with no ROMs, a MacroSystem Toccata and an MHI MPEG decoder board join the Zorro bus, every audio source gets its own stem and debugger row - and CD32 discs cold-boot on the bundled AROS ROM, a publisher kit builds single-game players, and gamepads work out of the box and drive the whole UI.</description>
+  </item>
+
+  <item>
     <title>Copperline 0.16.0: one-command WHDLoad, a game library, and a new Amiga game built on Copperline</title>
     <link>https://copperline.dev/news/copperline-0-16-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-16-0.html</guid>
