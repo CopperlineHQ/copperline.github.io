@@ -544,6 +544,19 @@ export class WebEmu {
         wasm.webemu_serial_send(this.__wbg_ptr, ptr0, len0);
     }
     /**
+     * Raise or drop the serial port's carrier-detect input (CIA-B PA5, /CD)
+     * as the page's far end connects and hangs up. The bridge always
+     * presents itself as a present, ready device (DSR and CTS asserted);
+     * carrier is the one line a byte-stream bridge knows the state of, and
+     * it is what a guest terminal or BBS watches to notice a hang-up. Call
+     * with `true` when the socket opens and `false` when it closes; a page
+     * that never calls it leaves the guest seeing a modem with no call up.
+     * @param {boolean} connected
+     */
+    serial_set_carrier(connected) {
+        wasm.webemu_serial_set_carrier(this.__wbg_ptr, connected);
+    }
+    /**
      * Drain everything the guest transmitted on the serial port since the
      * last call (the guest -> the page's socket). Call once per animation
      * frame, like `take_audio`; output is bounded, and anything a
