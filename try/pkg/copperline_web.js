@@ -106,6 +106,21 @@ export class WebEmu {
         return ret;
     }
     /**
+     * Snapshot DFn's current image bytes. Standard disks export as ADF and
+     * track images as UAE extended ADF; compressed inputs export decoded.
+     * @param {number} drive
+     * @returns {Uint8Array}
+     */
+    export_floppy(drive) {
+        const ret = wasm.webemu_export_floppy(this.__wbg_ptr, drive);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
      * Floppy activity LED: lit while any drive's motor runs.
      * @returns {boolean}
      */
@@ -151,6 +166,16 @@ export class WebEmu {
         return ret;
     }
     /**
+     * Whether DFn's inserted image is write-protected, or undefined when
+     * empty. A writable browser image remains in memory until exported.
+     * @param {number} drive
+     * @returns {boolean | undefined}
+     */
+    floppy_write_protected(drive) {
+        const ret = wasm.webemu_floppy_write_protected(this.__wbg_ptr, drive);
+        return ret === 0xFFFFFF ? undefined : ret !== 0;
+    }
+    /**
      * Hard-disk activity LED, or undefined on machines without a disk
      * controller (the page hides the LED).
      * @returns {boolean | undefined}
@@ -162,8 +187,8 @@ export class WebEmu {
     /**
      * Insert a floppy image from bytes: every format the core reads
      * (ADF/ADZ, extended ADF, DMS, IPF, SCP, optionally gzip/zip-packed),
-     * recognised by signature rather than by name. Always write-protected:
-     * the browser has nowhere to write changes back to.
+     * recognised by signature rather than by name. Always write-protected;
+     * use `insert_floppy_writable` when the page will offer an export.
      * @param {number} drive
      * @param {Uint8Array} bytes
      * @param {string} name
@@ -174,6 +199,26 @@ export class WebEmu {
         const ptr1 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
         const ret = wasm.webemu_insert_floppy(this.__wbg_ptr, drive, ptr0, len0, ptr1, len1);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * Insert an uncompressed standard or UAE extended ADF with a writable,
+     * in-memory backing. Guest writes stay in the machine (and its save
+     * states) until the page calls `export_floppy`; no browser filesystem is
+     * involved. Compressed containers, DMS, IPF and SCP throw because their
+     * decoded representation cannot be written back in the original format.
+     * @param {number} drive
+     * @param {Uint8Array} bytes
+     * @param {string} name
+     */
+    insert_floppy_writable(drive, bytes, name) {
+        const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_insert_floppy_writable(this.__wbg_ptr, drive, ptr0, len0, ptr1, len1);
         if (ret[1]) {
             throw takeFromExternrefTable0(ret[0]);
         }
@@ -343,16 +388,20 @@ export class WebEmu {
      * `video` picks the video standard ("PAL" or "NTSC", the desktop's
      * `[chipset] video` key) on top of whatever the profile chose; omitted
      * or empty keeps the profile's own standard (PAL for every offered
-     * profile). An unknown name throws, like an unknown model.
+     * profile). `floppy_drives` fits one to four drives, matching the
+     * desktop's `[floppy] drives` setting; omitted, the profile default stays
+     * in place (one drive for the offered models). An unknown name or invalid
+     * drive count throws.
      * @param {string | null} [model]
      * @param {string | null} [video]
+     * @param {number | null} [floppy_drives]
      */
-    constructor(model, video) {
+    constructor(model, video, floppy_drives) {
         var ptr0 = isLikeNone(model) ? 0 : passStringToWasm0(model, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
         var ptr1 = isLikeNone(video) ? 0 : passStringToWasm0(video, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len1 = WASM_VECTOR_LEN;
-        const ret = wasm.webemu_new(ptr0, len0, ptr1, len1);
+        const ret = wasm.webemu_new(ptr0, len0, ptr1, len1, !isLikeNone(floppy_drives), isLikeNone(floppy_drives) ? 0 : floppy_drives);
         if (ret[2]) {
             throw takeFromExternrefTable0(ret[1]);
         }
