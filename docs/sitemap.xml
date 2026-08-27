@@ -32,6 +32,12 @@
     <loc>http://localhost:3000/coppersynth</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/modem</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/import-uae</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/headless</loc>
   </url>
   <url>
