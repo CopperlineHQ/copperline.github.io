@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Try it in your browser - Copperline</title>
-<meta name="description" content="Copperline, a cycle-driven Amiga emulator written in Rust, compiled to WebAssembly and running in your browser. Boots the open-source AROS ROM; bring your own Kickstart and disks.">
+<meta name="description" content="Copperline Amiga emulator compiled to WebAssembly running directly in your browser. Boots the bundled AROS ROM, with support for custom Kickstart ROMs and disk images.">
 <meta name="theme-color" content="#0a0d16">
 <link rel="manifest" href="./manifest.webmanifest">
 <!-- Pre-16.4 iOS ignores the manifest's display mode; these keep
@@ -582,93 +582,38 @@
       <div class="try-scrim" id="sidebar-scrim" aria-hidden="true"></div>
 
       <p class="try-note">
-        The same cycle-driven core as the desktop builds, running
-        single-threaded in your browser. It starts as an Amiga 500 with 512K of
-        chip RAM plus a 512K trapdoor expansion; the Machine control switches
-        it to an AGA A1200, and the Video control to an NTSC machine, each
-        carrying the ROM and the disk in the drive across the rebuild.
-        It boots the bundled open-source
-        AROS ROM out of the box - no Kickstart needed - and you can load your
-        own disk files with the Insert DF0 button. The <b>Controls</b> button
-        opens a panel with the rest of the machine's controls - disks and
-        Kickstarts, save states, machine, display and sound settings - and
-        hides them again when you just want the picture. The panel sits
-        beside the screen; the small arrow in its header docks it underneath
-        instead, if that suits your display better, and your browser
-        remembers the choice. A loaded
-        Kickstart is remembered by your browser, so your next visit boots it
-        without the picker (the Saved states panel shows what is remembered,
-        with a Forget button). A disk can
-        also come from a link: paste an address into DF0 from URL, or append
-        <code>?df0=&lt;url&gt;</code> to this page's address to share a
-        bootable link (the host must allow cross-origin requests). Everything
-        runs locally in your browser; nothing you load here is uploaded
-        anywhere. Still experimental, but no longer desktop-only: 0.15.0
-        brought a screen keyboard, touch controls and a performance pass
-        aimed squarely at phones and tablets, and 0.16.0 reads IPF disk
-        images.
+        Copperline runs directly in your browser using WebAssembly. The default configuration
+        is an Amiga 500 (512 KB Chip RAM + 512 KB Slow RAM) running the bundled open-source AROS
+        Kickstart replacement. Use the <strong>Machine</strong> and <strong>Video</strong>
+        controls in the sidebar to switch between an Amiga 500 and AGA Amiga 1200, or toggle
+        PAL and NTSC modes. You can insert your own floppy disk images (.adf, .adz, .dms, .ipf,
+        .scp) with the <strong>Insert DF0</strong> button, or provide a custom Kickstart ROM.
       </p>
 
       <p class="try-note">
-        Save states snapshot the entire machine - memory, chips, CPU and the
-        disk in the drive - so you can put a game down and pick it up exactly
-        where you left it; their buttons live in the Controls panel.
-        <b>Quick save</b> keeps a snapshot inside your
-        browser and <b>Quick load</b> brings it back, even after you close
-        the tab and come back tomorrow; you can quick load straight from a
-        cold page, without booting first. <b>Saved states&hellip;</b> opens
-        a panel of everything your browser holds - name a state to keep
-        several games parked at once, load or delete any of them, and export
-        one as a file. <b>Save state</b> downloads the
-        snapshot as a <code>.clstate</code> file instead, and
-        <b>Load state</b> (or dropping the file onto the page) restores it.
-        That file is the same format the desktop builds read and write, so a
-        state started here can be finished on your desktop and the other way
-        round.
+        Save states allow you to snapshot the complete emulated machine state. <strong>Quick save</strong>
+        keeps a state in browser storage that persists across visits, while <strong>Save state</strong>
+        downloads a standard <code>.clstate</code> snapshot file compatible with Copperline desktop
+        builds. You can also load disk images directly from a URL via <strong>DF0 from URL</strong>
+        or by appending <code>?df0=&lt;url&gt;</code> to the page address (requires CORS support on
+        the host). All emulation runs entirely client-side on your device.
       </p>
 
       <p class="try-note">
-        The page works offline once it has loaded, and installs as an app:
-        <b>Install</b> from the browser menu on desktop Chrome and Edge, or
-        <b>Add to Home Screen</b> in Safari on an iPhone or iPad - the
-        emulator then opens in its own window, no address bar, and boots
-        AROS (or your remembered Kickstart) with no network at all. The
-        <b>View</b> control chooses between the TV picture (deep overscan
-        hidden behind the bezel, as a real set would) and the full overscan
-        field the chipset produces; <b>Screen</b> tints the picture like a
-        monochrome monitor - green or amber phosphor, black &amp; white, or
-        sepia - and screenshots keep the tint; View and Screen are remembered
-        by your browser. The <b>Monitor</b> control picks the frame around
-        the glass: the Commodore 1084 the page now fronts by default, a
-        plainer classic frame, or none at all. While the machine runs, the
-        page also holds your screen awake, so a demo can play out with no
-        keyboard nudging.
+        Customise CRT shaders, display scaling, overscan, and monitor bezels in the
+        <strong>Display</strong> settings. Click the emulated screen to capture the mouse pointer
+        (press <kbd>Esc</kbd> to release, or hold <kbd>Esc</kbd> to exit fullscreen). Toggle
+        the <strong>Joystick</strong> button to control port 2 using the keyboard (arrow keys and
+        Right Ctrl/Alt) or virtual touch controls on mobile devices. An on-screen Amiga keyboard
+        can be opened with the <strong>Keyboard</strong> button.
       </p>
 
       <p class="try-note">
-        Click the screen to capture your mouse for relative motion - tap Esc
-        to release it, and in fullscreen hold Esc to leave fullscreen instead;
-        without capture, the pointer follows your cursor over the screen.
-        On a touch screen the display works like a trackpad: drag to move the
-        pointer, tap to click, hold still for a moment to drag with the button
-        held, and rest a second finger to hold the right button for menus.
-        The Joystick toggle drives port 2 from the keyboard with the same
-        mapping as the desktop app: cursor keys for directions, Right Ctrl or
-        Right Alt for fire (CD32 extras on C/X/D/S/Enter/Z/A). On touch
-        screens the toggle has a third mode that turns the screen into a pad:
-        the left half is a floating stick, the right half is fire.
-        The <b>Keyboard</b> button draws an A600's keyboard on the screen -
-        so a phone or tablet can type into the Amiga - and on touch screens
-        <b>Device keys</b> summons the device's own keyboard beside it.
-        In fullscreen, small Joystick and Exit buttons sit in the top-right
-        corner of the screen; on iPhones, where Safari has no fullscreen mode
-        for page content, the button fills the browser window instead.
-        Disks are always write-protected in the browser. Kickstart ROMs are
-        copyrighted and not provided - use your own dump. The bundled AROS ROMs
-        are distributed under the <a href="aros/LICENSE">AROS Public License</a>.
-        Found a bug? The Report a bug link at the top of the page opens the
-        GitHub issue form with the details this page knows (build, browser,
-        machine state) already filled in for you to edit.
+        Floppy disks are write-protected in the browser build. Official Commodore Kickstart ROMs
+        are copyrighted and not included; please use ROMs dumped from your own hardware. The
+        bundled AROS ROMs are distributed under the <a href="aros/LICENSE">AROS Public License</a>.
+        If you encounter an issue, click <strong>Report a bug</strong> in the top navigation to
+        file a pre-filled report on GitHub.
       </p>
     </div>
   </section>
@@ -683,8 +628,7 @@
         <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
       </p>
       <p class="footer__colophon">
-        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
-        no CDNs - even the fonts and the emulator are served from here.
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
       </p>
     </div>
     <nav class="footer__links">

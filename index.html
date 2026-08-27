@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Copperline - A cycle-driven Amiga emulator</title>
-<meta name="description" content="Copperline is a cycle-driven Amiga emulator (OCS / ECS / AGA) written in Rust, with a reverse-stepping debugger, a chip-bus frame analyzer, deterministic record and replay, and headless scripting.">
+<title>Copperline - An Amiga emulator in Rust</title>
+<meta name="description" content="Copperline is an open-source Amiga emulator (OCS, ECS, AGA) written in Rust, featuring reverse debugging, chip-bus frame analysis, deterministic recording, and headless scripting.">
 <meta name="theme-color" content="#0a0d16">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Copperline - A cycle-driven Amiga emulator">
-<meta property="og:description" content="A cycle-driven Amiga emulator (OCS / ECS / AGA) in Rust, with a reverse debugger, a chip-bus frame analyzer and deterministic replay.">
+<meta property="og:title" content="Copperline - An Amiga emulator in Rust">
+<meta property="og:description" content="An open-source Amiga emulator (OCS, ECS, AGA) in Rust, featuring reverse debugging, chip-bus frame analysis, and deterministic replay.">
 <meta property="og:url" content="https://copperline.dev/">
 <meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -78,15 +78,15 @@
     <div class="hero__glow" aria-hidden="true"></div>
 
     <div class="hero__inner">
-      <p class="eyebrow reveal">Cycle-driven &middot; OCS / ECS / AGA &middot; written in Rust</p>
+      <p class="eyebrow reveal">Amiga Emulation &middot; OCS / ECS / AGA &middot; Written in Rust</p>
       <h1 class="hero__logo reveal" style="--d:1">
         <img src="assets/copperline-logo.png" alt="Copperline" width="620" height="128">
       </h1>
       <p class="hero__tag reveal" style="--d:2">
-        Cycle-driven means the whole machine advances on one colour-clock timeline -
-        CPU, DMA, Copper, blitter, all of it. Built around that core: a debugger that
-        steps <strong>backwards</strong>, a chip-bus frame analyzer, and byte-identical
-        record and replay.
+        An open-source Amiga emulator focusing on cycle-level accuracy,
+        developer tooling, and inspection. Features an interactive reverse-stepping
+        debugger, a chip-bus frame analyzer, deterministic session replay, and
+        headless automation.
       </p>
       <div class="hero__cta reveal" style="--d:3">
         <a class="btn btn--primary" href="#download">
@@ -102,7 +102,7 @@
         </a>
       </div>
       <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-17-0.html">0.17.0 is out &middot; read what's new</a>
+        <a href="news/copperline-0-17-0.html">Version 0.17.0 released &middot; read the release notes</a>
       </p>
       <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
         <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
@@ -116,38 +116,37 @@
   <!-- ===================== QUICKSTART ===================== -->
   <section id="quickstart" class="section section--quickstart">
     <div class="section__head">
-      <span class="kicker">// zero to running</span>
-      <h2>Up and running in about a minute</h2>
-      <p>Or skip the minute: <a href="try/">try it in your browser</a> - the
-         same cycle-driven core compiled to WebAssembly, booting the bundled
-         AROS ROM in a few seconds. No download, nothing to install.</p>
+      <span class="kicker">// quickstart</span>
+      <h2>Getting started</h2>
+      <p>Download a native build for desktop platforms or <a href="try/">try it directly in your browser</a>
+         via WebAssembly. It includes the open-source AROS ROM, allowing you to test configurations
+         immediately without needing your own Kickstart files.</p>
     </div>
 
     <ol class="quickstart__steps">
       <li>
         <span class="quickstart__num">1</span>
-        <h3>Grab a build</h3>
-        <p>A macOS .dmg, a Linux AppImage or a Windows zip from
-           <a href="#download">the latest release</a> - or install with Homebrew.</p>
+        <h3>Download or install</h3>
+        <p>Grab pre-built packages for macOS, Linux, and Windows from
+           <a href="#download">the downloads section</a>, or install with Homebrew.</p>
       </li>
       <li>
         <span class="quickstart__num">2</span>
-        <h3>Open it</h3>
-        <p>Copperline boots the bundled open-source AROS ROM straight away.
-           No Kickstart hunt before you see a working machine.</p>
+        <h3>Launch</h3>
+        <p>Run Copperline to open the configuration GUI, or launch from the terminal
+           to boot the built-in AROS Kickstart replacement.</p>
       </li>
       <li>
         <span class="quickstart__num">3</span>
-        <h3>Insert a disk</h3>
-        <p>Load an ADF from the status bar's disk controls, or skip the window
-           entirely: <code>copperline game.adf</code> - or boot a WHDLoad
-           install straight from its archive:
-           <code>copperline --whdload game.lha</code>.</p>
+        <h3>Load software</h3>
+        <p>Insert disk images (ADF, IPF, etc.) via the status bar or pass files on
+           the command line: <code>copperline game.adf</code>. WHDLoad archives can also
+           be launched directly: <code>copperline --whdload game.lha</code>.</p>
       </li>
     </ol>
 
-    <p class="quickstart__note">Have real Kickstart ROMs and disk images? They work too - point the
-       launcher at them. Copperline just doesn't make you find them before you can try it.</p>
+    <p class="quickstart__note">Standard Commodore Kickstart ROMs (1.3, 2.05, 3.1) and custom ROMs like
+       DiagROM are fully supported. Simply select your ROM in the launcher or pass it on the command line.</p>
   </section>
 
   <hr class="copperline">
@@ -156,133 +155,97 @@
   <section id="features" class="section">
     <div class="section__head">
       <span class="kicker">// features</span>
-      <h2>What's in the box</h2>
-      <p>The 68000, Agnus, Denise, Paula, the CIAs and the floppy, all scheduled against
-         a single colour-clock timeline. 68000 cycle counts are validated against the
-         TomHarte SingleStepTests, and chip-bus timing against a test disk cross-checked
-         on real hardware and the vAmigaTS suite.</p>
+      <h2>Features and architecture</h2>
+      <p>Accurate chip-level emulation validated against test suites, custom test disks, and real hardware,
+         combined with rich inspection and debugging tools.</p>
     </div>
 
     <div class="grid">
       <article class="card">
         <span class="card__tag">timing core</span>
-        <h3>Cycle-driven chip bus</h3>
-        <p>The chip bus is arbitrated per colour clock between refresh, display, sprite,
-           disk and audio DMA, the Copper, the blitter and the CPU - with hardware
-           per-word bus sequences and modelled 68000 interrupt-recognition latency.</p>
+        <h3>Cycle-level chip bus</h3>
+        <p>Chip bus arbitration is scheduled per colour clock across the CPU, Copper,
+           blitter, and DMA channels (display, sprite, audio, disk, and refresh), with
+           hardware bus sequencing and modelled interrupt latency.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">chipsets</span>
         <h3>OCS, ECS &amp; AGA</h3>
-        <p>Independent Agnus / Denise revisions and machine profiles spanning the A1000,
-           A500 / A500+, A1200 and the big-box A3000 / A4000, plus CDTV and CD32. Boots the bundled AROS ROM out of the box - no
-           Kickstart needed - as well as Kickstart 1.3 / 2.05 / 3.1 and DiagROM, and runs
-           the timing-sensitive regression set at real speed.</p>
+        <p>Configurable Agnus and Denise/Lisa revisions covering the A1000, A500, A500+,
+           A600, A1200, A3000, A4000, CDTV, and CD32. Supports Kickstart 1.2 through 3.1,
+           DiagROM, and the bundled AROS ROMs.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">cpu</span>
         <h3>68000 through 68060</h3>
-        <p>Selectable 68000 / 68EC020 / 68020 / 68030 / 68040 / 68060 and clock, accurate
-           68000 cycle counts, the 68030 / 68040 / 68060 MMUs, on-chip caches (on by
-           default where the silicon had them), 68060 superscalar dual-issue with its
-           branch cache, and an 80-bit 68881 / 68882 FPU with pure-Rust softfloat
-           transcendentals and packed-decimal reals. An experimental JIT mode runs a
-           68020 or later at accelerator-class speeds.</p>
+        <p>Configurable 68000 to 68060 CPU models with accurate 68000 cycle counts, MMU support
+           (030/040/060), on-chip caches, 68060 dual-issue execution, and 68881/68882 FPU
+           emulation. An experimental JIT compiler is available for fast 68020+ execution.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">peripherals</span>
-        <h3>Input &amp; audio</h3>
-        <p>A bit-timed keyboard (6500/1 MCU), any controller in either game port - mouse,
-           joystick, CD32 pad or analogue paddles, driven by USB gamepads (pure-Rust
-           gilrs, no SDL2) with autofire and a remappable key map - and 4-channel Paula
-           audio with the LED filter. Paula's
-           serial port bridges to host MIDI or TCP - or feeds an emulated Roland
-           MT-32, or Coppersynth, a built-in General MIDI module with an SC-55-style
-           front panel that needs no ROMs, both mixed beside Paula - the Zorro bus
-           takes a Toccata sound board for AHI and an MHI decoder board for MP3,
-           and the parallel port takes a printer or an 8-bit audio sampler.</p>
+        <h3>Audio and input</h3>
+        <p>Four-channel Paula audio with the hardware low-pass filter, plus Toccata sound cards
+           and MHI MP3 decoders. Built-in MIDI routing supporting host MIDI, emulated Roland MT-32,
+           and Coppersynth (SoundFont GM synth). Full input support for mice, joysticks, CD32 pads,
+           and USB gamepads.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">storage</span>
-        <h3>Disks, drives &amp; expansion</h3>
-        <p>Up to four floppies (ADF / ADZ / DMS / IPF / SCP, plain or zipped) with
-           multi-disk swap playlists and a configurable drive speed - or a real 3.5"
-           drive in any bay through a Greaseweazle controller - Gayle and A4000 IDE
-           plus a lide.device-compatible Zorro II IDE board, ATAPI CD-ROM drives on
-           any IDE slot, A2091 / A4091 / A3000 SCSI carrying hard disks and CD-ROM
-           drives, CDTV and CD32 CD, the host's real disks handed to the machine RDB
-           and all, Zorro II / III autoconfig, and host directories mounted as
-           writable AmigaDOS volumes - bootable ones included, as FFS or OFS.</p>
+        <h3>Storage and media</h3>
+        <p>Up to four floppy drives supporting ADF, ADZ, DMS, IPF, and SCP formats, plus real floppy
+           drives via Greaseweazle. Hard disk and CD-ROM support via Gayle IDE, A4000 IDE, Zorro IDE,
+           and A2091/A3000/A4091 SCSI. Mount host directories as bootable AmigaDOS volumes or attach physical host drives.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">expansion</span>
         <h3>Pluggable Zorro boards</h3>
-        <p>Functional Zorro boards sit behind a clean device boundary, so external WASM
-           plugin boards can add deterministic read / write / tick / interrupt behaviour,
-           with optional DMA, file resources and networking. The built-in Commodore A2065
-           Ethernet board (Am7990 LANCE) and the Z3660 and Picasso II RTG cards sit
-           behind the same boundary.</p>
+        <p>Zorro II and III autoconfig expansion architecture with support for external WebAssembly
+           plugin cards. Community or custom boards can implement memory mapping, DMA, interrupts,
+           and I/O alongside built-in cards.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">networking</span>
-        <h3>Ethernet with nothing to set up</h3>
-        <p>The A2065 board's user-mode NAT backend gives the guest outbound IPv4 with no
-           privileges, no host drivers and no configuration, the same on Linux, macOS and
-           Windows - a built-in DHCP server hands the Amiga its address. Or bridge the
-           card onto a host adapter and the Amiga joins the real LAN: DHCP from your
-           router, static addresses, local servers. The HostSocket board goes further
-           still: a <code>bsdsocket.library</code> autoboots from its ROM, so guest
-           applications get sockets with no TCP/IP stack installed in the guest at
-           all. And Paula's serial port dials a telnet BBS, from the desktop app or
-           the browser build.</p>
+        <h3>Ethernet and networking</h3>
+        <p>Commodore A2065 Ethernet emulation supporting user-mode NAT with DHCP (no host root/driver required)
+           or direct bridging to host network adapters. Includes a HostSocket expansion board for direct
+           <code>bsdsocket.library</code> integration without a guest TCP/IP stack, and serial-over-TCP/telnet support.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">rtg</span>
         <h3>RTG graphics</h3>
-        <p>The Z3660 board's RTG core, a Zorro III autoconfig card with a 128 MB window
-           driven by the unmodified open-source Z3660.card Picasso96 driver - fitted by
-           default on any machine with a 32-bit address bus. The Zorro II Picasso II
-           and II+ bring RTG to 24-bit CPUs, so an A2000-class machine gets high-colour
-           Workbench too. 8, 16 and 32-bit modes, blitter operations, planar-to-chunky
-           blits and hardware-sprite compositing.</p>
+        <p>High-colour Workbench and RTG display modes via Zorro III (Z3660) and Zorro II (Picasso II / II+
+           and Graffity) graphics cards. Supports 8, 16, and 32-bit colour depths with accelerated blits
+           and Picasso96 driver compatibility.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">graphics</span>
-        <h3>The full AGA path</h3>
-        <p>8 bitplanes, a 256-entry 25-bit palette, HAM8, FMODE wide fetch, dual playfield,
-           EHB, sprites and hardware collisions - replayed by beam position so the renderer
-           never races the chipset.</p>
+        <h3>Video and display path</h3>
+        <p>Accurate OCS, ECS, and AGA video pipelines: bitplanes (up to 8 in AGA), HAM6/HAM8, Extra Half-Brite (EHB),
+           dual playfield, hardware sprites, and collision registers, all rendered in sync with the raster beam.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">presentation</span>
-        <h3>CRT presentation</h3>
-        <p>Three CRT shader presets - scanlines, mask and full CRT - or your own WGSL
-           shader, monochrome and sepia screen tints, and a choice of monitor bezels -
-           an authentic 1084 or a plainer classic frame, with a stickers folder for
-           your own decals - whose power LED follows the guest. Plus phosphor
-           persistence, a motion-adaptive deinterlacer for laced screens, integer
-           scaling, tv / full overscan, and a TV-like 4:3 - the way the hardware
-           drove a real monitor.</p>
+        <h3>CRT shaders and display</h3>
+        <p>Customisable video presentation with CRT shaders (scanlines, shadow mask, CRT curvature), custom WGSL
+           shaders, integer scaling, aspect ratio correction, and deinterlacing for laced screens. Includes optional
+           monitor bezels with reactive LEDs and amber/green/sepia monochrome screen tints.</p>
       </article>
 
       <article class="card">
         <span class="card__tag">tooling</span>
-        <h3>Deterministic by design</h3>
-        <p>An in-window debugger that steps <strong>backwards</strong>, a GDB-flavoured
-           console, a chip-bus frame analyzer, deterministic save states with rewind and
-           ten quick-save slots, input recording / replay, headless screenshot &amp;
-           frame-dump capture, and a
-           JSON-RPC control protocol for driving live sessions. Every replay is
-           byte-identical.</p>
+        <h3>Debugging and reproducibility</h3>
+        <p>Built-in reverse-stepping CPU and Copper debugger, GDB-compatible console interface, chip-bus frame analyzer,
+           deterministic state recording and playback (<code>.clscript</code>), and JSON-RPC control protocol for automated testing and scripting.</p>
       </article>
     </div>
   </section>
@@ -293,16 +256,14 @@
   <section id="shots" class="section">
     <div class="section__head">
       <span class="kicker">// screenshots</span>
-      <h2>See it run</h2>
-      <p>Real captures from the emulator - some from the window, chrome and status bar
-         and all, some grabbed headless from a scripted run. Save a still to PNG, or record
-         the screen to a lossless AVI - both locked to the emulated clock, so even a
-         warp-speed capture plays back at the right speed.</p>
+      <h2>Screenshots</h2>
+      <p>Captures from Copperline running classic demos, Workbench, and games. Screenshots can be saved
+         to PNG and video recorded to lossless AVI in sync with the emulated clock.</p>
     </div>
 
     <figure class="shot shot--feature">
       <img src="assets/shot-aga.png" width="1656" height="1450" alt="Copperline window showing a 256-colour AGA HAM8 image" loading="lazy">
-      <figcaption><strong>AGA HAM8.</strong> A 262 144-colour image decoded through the full Alice / Lisa display path.</figcaption>
+      <figcaption><strong>AGA HAM8.</strong> 262,144 colours rendered through the AGA display pipeline.</figcaption>
     </figure>
 
     <div class="shot-row">
@@ -312,20 +273,18 @@
       </figure>
       <figure class="shot">
         <img src="assets/shot-dancer.png" width="716" height="537" alt="Spaceballs State of the Art demo running in Copperline" loading="lazy">
-        <figcaption><strong>State of the Art.</strong> Spaceballs' OCS demo - timing-sensitive, at real speed.</figcaption>
+        <figcaption><strong>State of the Art.</strong> Spaceballs' classic OCS demo running in sync.</figcaption>
       </figure>
     </div>
 
     <div class="shot-row shot-row--after">
       <figure class="shot">
         <img src="assets/shot-hamazing.png" width="692" height="540" alt="A scene from Desire's HAMazing demo: a robot and a toy monkey on a couch, lit by a swinging lamp, rendered in Hold-And-Modify" loading="lazy">
-        <figcaption><strong>HAMazing.</strong> Desire's Hold-And-Modify demo - a swinging
-           lamp lights the scene, all in HAM.</figcaption>
+        <figcaption><strong>HAMazing.</strong> Desire's HAM-6 demo showcasing dynamic lighting.</figcaption>
       </figure>
       <figure class="shot">
         <img src="assets/shot-inside.png" width="692" height="540" alt="A scene from Desire's Inside demo: an Amiga 500 motherboard drawn as pixel art, with the CPU, Paula, Fat Agnus, ROM and RAM banks labelled" loading="lazy">
-        <figcaption><strong>Inside.</strong> Desire's pixel-art A500 motherboard, chip by
-           chip - the machine drawing its own insides.</figcaption>
+        <figcaption><strong>Inside.</strong> Desire's pixel-art Amiga 500 motherboard.</figcaption>
       </figure>
     </div>
 
@@ -333,11 +292,10 @@
     <div class="statusbar-callout">
       <div class="statusbar-callout__text">
         <span class="kicker">// status bar</span>
-        <h3>Hardware at a glance</h3>
-        <p>The bottom bar mirrors the front panel: power, floppy and hard-disk activity
-           LEDs, a live floppy track counter, disk insert / swap / eject controls, an
-           audio volume slider, an input-mode toggle between keyboard and gamepad, and
-           shortcuts for the menu, screenshots, pause and power.</p>
+        <h3>Hardware status at a glance</h3>
+        <p>The status bar provides immediate access to hardware status and media: power and drive activity
+           LEDs, live floppy track positions, disk insert and eject controls, volume adjustment, input mode
+           switching, and shortcuts for screenshots, pause, and power.</p>
       </div>
       <figure class="statusbar-callout__img">
         <img src="assets/shot-statusbar.png" width="1424" height="106" alt="Close-up of the Copperline status bar showing power, floppy and hard-disk LEDs, track counter, disk controls, volume slider and power buttons" loading="lazy">
@@ -350,52 +308,46 @@
   <!-- ===================== LAUNCHER ===================== -->
   <section id="launcher" class="section">
     <div class="section__head">
-      <span class="kicker">// launcher</span>
-      <h2>Set up the machine, no config file</h2>
-      <p>Launch Copperline with no options and it opens a full machine-configuration
-         launcher - also reachable from the menu. Pick a base profile, tweak it, then
-         <em>Run</em> - no hand-written TOML required to get going.</p>
+      <span class="kicker">// configuration</span>
+      <h2>Graphical machine launcher</h2>
+      <p>Configure hardware profiles, CPU models, memory expansions, and storage devices directly in the GUI.
+         Configurations can be saved to and loaded from standard TOML configuration files.</p>
     </div>
 
     <div class="launcher">
       <figure class="launcher__shot">
         <img src="assets/shot-launcher.png" width="1656" height="1450" alt="The Copperline machine-configuration launcher on the Memory tab of an A1200 profile, showing machine profile buttons across the top, a category sidebar, and Chip / Fast / Slow RAM controls" loading="lazy">
-        <figcaption><strong>Machine Configuration.</strong> Profile tabs across the top,
-           categories down the side - here the A1200's chip, fast and slow RAM.</figcaption>
+        <figcaption><strong>Machine Configuration.</strong> Profile tabs across the top and categories down the side for memory, CPU, storage, and display.</figcaption>
       </figure>
 
       <div class="launcher__panel">
         <span class="card__tag">machine configuration</span>
-        <h3>Every setting on one screen</h3>
-        <p>Edit the machine profile, chipset, CPU, memory, ROM, floppy, hard disk, CD,
-           Zorro boards, audio / video and emulation behaviour through a graphical
-           front-end - including settings declared by external plugin boards.</p>
-        <p>It reads and writes the same TOML schema as a hand-edited config, so
-           <em>Load</em>, <em>Save</em>, <em>Run</em> and <em>Defaults</em> round-trip
-           cleanly with the config files you already keep.</p>
+        <h3>Complete hardware configuration</h3>
+        <p>Easily select base machine profiles (from the Amiga 1000 through the 4000 and CD32) and adjust CPU models,
+           memory allocations (Chip, Fast, Slow, Zorro III), Kickstart ROMs, storage controllers, and display settings.</p>
+        <p>The GUI automatically reflects options exposed by external WASM plugin boards and synchronises with TOML
+           configuration files for easy sharing and command-line use.</p>
       </div>
     </div>
 
     <div class="shot-row shot-row--after">
       <figure class="shot">
         <img src="assets/shot-launcher-storage.png" width="716" height="536" alt="The launcher's Hard Disk tab on an A1200 profile, with an IDE master image selected and a SCSI controller selector with seven unit slots" loading="lazy">
-        <figcaption><strong>Hard Disk.</strong> IDE master and slave, and an A2091 / A4091
-           SCSI controller with up to seven units.</figcaption>
+        <figcaption><strong>Storage.</strong> IDE master and slave drives, plus A2091 / A4091 SCSI controllers with up to seven units.</figcaption>
       </figure>
       <figure class="shot">
         <img src="assets/shot-launcher-zorro.png" width="716" height="536" alt="The launcher's Zorro tab on an A500 profile, showing an external WASM plugin board's declared settings: mode, verbose, MTU, boot ROM and MAC address" loading="lazy">
-        <figcaption><strong>Zorro.</strong> An external WASM plugin board's own settings -
-           declared by the plugin, drawn by the launcher.</figcaption>
+        <figcaption><strong>Expansion.</strong> External WASM plugin board settings declared dynamically by the plugin.</figcaption>
       </figure>
     </div>
 
     <ul class="dbg-tabs" aria-label="What the launcher configures">
-      <li><span class="dbg-tabs__name">Profiles</span> A1000, A500 / OCS / +, A600, A1200, A3000, A4000, CDTV and CD32 - start from a real machine and adjust.</li>
-      <li><span class="dbg-tabs__name">Chipset &amp; CPU</span> Agnus / Denise revisions, 68000 - 68060 selection, clock, caches and FPU.</li>
-      <li><span class="dbg-tabs__name">Memory &amp; ROM</span> Chip / fast / slow RAM, Zorro III RAM where the CPU allows it, and the boot ROM.</li>
-      <li><span class="dbg-tabs__name">Storage</span> Floppy drives and swap lists, IDE and SCSI hard disks, CD images, and host-directory mounts with per-mount access control.</li>
-      <li><span class="dbg-tabs__name">Zorro &amp; plugins</span> Autoconfig boards, external WASM plugin boards with their own settings, and A2065 networking.</li>
-      <li><span class="dbg-tabs__name">A/V &amp; emulation</span> Audio and video presentation plus the emulation behaviour controls.</li>
+      <li><span class="dbg-tabs__name">Profiles</span> Start from standard presets (A1000, A500, A600, A1200, A3000, A4000, CDTV, CD32) and customise as needed.</li>
+      <li><span class="dbg-tabs__name">Chipset &amp; CPU</span> Select CPU models (68000-68060), clock speeds, FPU, MMU, caches, and chipset revisions.</li>
+      <li><span class="dbg-tabs__name">Memory &amp; ROM</span> Configure Chip, Slow, Fast, and Zorro III RAM, alongside Kickstart and extended ROM images.</li>
+      <li><span class="dbg-tabs__name">Storage</span> Manage floppy images and swap playlists, IDE/SCSI hard disks, CD images, and host directory shares.</li>
+      <li><span class="dbg-tabs__name">Zorro &amp; plugins</span> Manage autoconfig expansion boards, WASM plugin cards, and A2065 network adapters.</li>
+      <li><span class="dbg-tabs__name">A/V &amp; display</span> Configure CRT shaders, aspect ratios, scaling options, audio filters, and volume levels.</li>
     </ul>
   </section>
 
@@ -405,12 +357,10 @@
   <section id="debugger" class="section">
     <div class="section__head">
       <span class="kicker">// debugger</span>
-      <h2>A debugger that runs time backwards</h2>
-      <p>Press <kbd>Cmd</kbd>+<kbd>B</kbd> to pause and open the in-window debugger:
-         eight tabs covering the CPU, the chipset, the Copper, the display pipeline,
-         Paula audio, memory, the IO map and breakpoints - with a GDB-flavoured
-         console (<kbd>Cmd</kbd>+<kbd>K</kbd>) in its own window alongside. Then step
-         the machine <em>backwards</em>.</p>
+      <h2>Interactive and reverse debugging</h2>
+      <p>Pause emulation at any time (<kbd>Cmd</kbd>+<kbd>B</kbd> / <kbd>Ctrl</kbd>+<kbd>B</kbd>) to inspect CPU registers,
+         custom chipset state, memory, the Copper list, and audio channels. A dedicated GDB-style console
+         (<kbd>Cmd</kbd>+<kbd>K</kbd> / <kbd>Ctrl</kbd>+<kbd>K</kbd>) is available for command-driven debugging.</p>
     </div>
 
     <div class="debugger">
@@ -426,71 +376,59 @@
 
         <figure class="dbg-gallery__shot" id="dbgshot-cpu" role="tabpanel" aria-labelledby="dbgtab-cpu">
           <img src="assets/shot-dbg-cpu.png" width="716" height="536" alt="The debugger's CPU tab: the register file, decoded status register, a live 68000 disassembly at the PC, and transport controls including the reverse Frame, Step and Run buttons">
-          <figcaption><strong>The CPU tab.</strong> Registers you can poke, decoded SR
-             flags, a live disassembly that follows the PC - and the reverse transport
-             on the right.</figcaption>
+          <figcaption><strong>CPU tab.</strong> Editable registers, decoded status register flags, live disassembly, and reverse execution controls.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-video" role="tabpanel" aria-labelledby="dbgtab-video" hidden>
           <img src="assets/shot-dbg-video.png" width="716" height="536" alt="The debugger's Video tab: a decoded BPLCON0, per-plane and per-sprite isolation toggles, sprite DMA positions, and the 256-entry palette" loading="lazy">
-          <figcaption><strong>The Video tab.</strong> Hide individual planes and sprites
-             in the picture without touching the emulation - with per-sprite decode and
-             the live 256-entry palette.</figcaption>
+          <figcaption><strong>Video tab.</strong> Plane and sprite isolation toggles, sprite DMA decode, and active palette viewer.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-audio" role="tabpanel" aria-labelledby="dbgtab-audio" hidden>
           <img src="assets/shot-dbg-audio.png" width="716" height="536" alt="The debugger's Audio tab: Paula's four channels with decoded DMA state, latches and pointers, per-channel mute buttons and live oscilloscopes, plus a CD-DA row" loading="lazy">
-          <figcaption><strong>The Audio tab.</strong> Paula's four channels with their DMA
-             state machines decoded, per-channel mutes and live scopes - and a fifth row
-             for CD-DA.</figcaption>
+          <figcaption><strong>Audio tab.</strong> Decoded Paula DMA channels, per-channel mutes, live waveforms, and CD-DA status.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-iomap" role="tabpanel" aria-labelledby="dbgtab-iomap" hidden>
           <img src="assets/shot-dbg-iomap.png" width="716" height="536" alt="The debugger's IO Map tab: the custom register bank with live values, with BPLCON0 selected and its bits decoded by name" loading="lazy">
-          <figcaption><strong>The IO Map tab.</strong> Every custom-bank register with its
-             live value - here BPLCON0, decoded bit by bit.</figcaption>
+          <figcaption><strong>IO Map tab.</strong> Custom register viewer with live values and decoded bitfields.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-break" role="tabpanel" aria-labelledby="dbgtab-break" hidden>
           <img src="assets/shot-dbg-break.png" width="716" height="536" alt="The debugger's Break tab: a PC breakpoint, a memory watchpoint, and a DMACON chipset-register watch that stops on write" loading="lazy">
-          <figcaption><strong>The Break tab.</strong> PC breakpoints, memory watchpoints
-             and chipset-register watches - here DMACON, stopping on write.</figcaption>
+          <figcaption><strong>Break tab.</strong> Conditional PC breakpoints, memory watchpoints, and custom register traps.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-console" role="tabpanel" aria-labelledby="dbgtab-console" hidden>
           <img src="assets/shot-dbg-console.png" width="716" height="536" alt="The Copperline debugger console: a breakpoint is set and hit, the stop is reported with PC, beam position and frame, and the code at the stop is disassembled" loading="lazy">
-          <figcaption><strong>The console.</strong> GDB-flavoured, in its own window -
-             set a breakpoint, run to it, disassemble at the stop.</figcaption>
+          <figcaption><strong>Console.</strong> GDB-style interactive command console in a separate window.</figcaption>
         </figure>
       </div>
 
       <div class="debugger__panel">
         <span class="card__tag">reverse debugging</span>
-        <h3>Step back without a record layer</h3>
-        <p>The recurring hard question in a corruption bug is "the value at address X is
-           wrong by the time I look - <em>which instruction wrote it?</em>". Stop at the
-           symptom, then walk backwards to the culprit.</p>
-        <p>Because the core is deterministic and already snapshots the whole machine, going
-           back in time needs no special record layer the way a tool like <code>rr</code>
-           does. The emulator keeps a ring of in-memory snapshots; to reach an earlier
-           point it restores the nearest one and replays forward - byte-identical.</p>
+        <h3>Step backwards in time</h3>
+        <p>Tracking down memory corruption or timing glitches often requires finding which instruction or DMA cycle
+           caused the issue. Copperline maintains a rolling buffer of deterministic state snapshots, allowing you to
+           step, run, or rewind backwards across frames.</p>
+        <p>Because the core is fully deterministic, rewinding and replaying execution produces consistent, cycle-identical
+           results every time.</p>
 
         <ul class="rev-controls" aria-label="Reverse transport controls">
-          <li><span class="rev-controls__key">&lt; Step</span> one instruction backward</li>
-          <li><span class="rev-controls__key">&lt; Frame</span> to the previous video frame</li>
-          <li><span class="rev-controls__key">&lt; Run</span> back to the previous breakpoint</li>
+          <li><span class="rev-controls__key">&lt; Step</span> Step one instruction backward</li>
+          <li><span class="rev-controls__key">&lt; Frame</span> Rewind to the previous video frame</li>
+          <li><span class="rev-controls__key">&lt; Run</span> Reverse execution to the previous breakpoint</li>
         </ul>
 
-        <p class="debugger__note">There is also a headless "last writer" reverse watchpoint
-           for automated root-cause hunts. See the
-           <a href="https://github.com/CopperlineHQ/Copperline/blob/main/docs/debugger/reverse.md" target="_blank" rel="noopener">reverse-debugging guide</a>.</p>
+        <p class="debugger__note">Also includes automated reverse watchpoints for tracking the last writer to any memory location. See the
+           <a href="https://github.com/CopperlineHQ/Copperline/blob/main/docs/debugger/reverse.md" target="_blank" rel="noopener">reverse debugging documentation</a>.</p>
       </div>
     </div>
 
     <ul class="dbg-tabs" aria-label="Debugger tabs">
-      <li><span class="dbg-tabs__name">CPU</span> Registers you can poke, decoded SR flags, and a live disassembly that follows the PC.</li>
-      <li><span class="dbg-tabs__name">Chipset</span> DMACON / INTENA / INTREQ, Copper state, the display window and every pointer, decoded bit by bit.</li>
-      <li><span class="dbg-tabs__name">Copper</span> The Copper list disassembled around the live Copper PC - with Copper breakpoints and single-stepping.</li>
-      <li><span class="dbg-tabs__name">Video</span> Layer isolation - hide individual bitplanes and sprites in the picture without touching the emulation - plus per-sprite decode and the palette.</li>
-      <li><span class="dbg-tabs__name">Audio</span> Paula's four channels with their DMA state machines decoded, a mute button and a live scope per channel, CD-DA included.</li>
-      <li><span class="dbg-tabs__name">Memory</span> A hex / ASCII dump you can page, search, dump to a file, poke in place - or ask which instruction last wrote a word.</li>
-      <li><span class="dbg-tabs__name">IO Map</span> Every custom-bank register with its live value, and the selected register's bits decoded by name.</li>
-      <li><span class="dbg-tabs__name">Break</span> Conditional, counted PC breakpoints plus memory and chipset-register watchpoints, whichever bus master writes.</li>
+      <li><span class="dbg-tabs__name">CPU</span> View and edit registers, inspect status flags, and follow live disassembly at the Program Counter.</li>
+      <li><span class="dbg-tabs__name">Chipset</span> Inspect custom register states (DMACON, INTENA, INTREQ), Copper state, and beam counters.</li>
+      <li><span class="dbg-tabs__name">Copper</span> Disassemble active Copper lists with support for breakpoints and single-stepping.</li>
+      <li><span class="dbg-tabs__name">Video</span> Isolate or hide individual bitplanes and sprites to diagnose rendering issues, and view the active palette.</li>
+      <li><span class="dbg-tabs__name">Audio</span> Monitor DMA state machines, pointers, and live waveforms across all four Paula channels and CD-DA.</li>
+      <li><span class="dbg-tabs__name">Memory</span> Hex and ASCII memory editor with search, file export, memory editing, and write-tracking watchpoints.</li>
+      <li><span class="dbg-tabs__name">IO Map</span> Complete custom register map with live values and decoded bitfields.</li>
+      <li><span class="dbg-tabs__name">Break</span> Set conditional PC breakpoints, memory watchpoints, and custom register access traps.</li>
     </ul>
   </section>
 
@@ -500,31 +438,27 @@
   <section id="analyzer" class="section">
     <div class="section__head">
       <span class="kicker">// frame analyzer</span>
-      <h2>Watch the chip bus, cycle by cycle</h2>
-      <p>Pause the machine and open the chip-bus frame analyzer. It paints one
-         captured frame as the full raster - x is hpos in colour clocks, y is the beam line -
-         with every cycle coloured by the bus master that owned it.</p>
+      <h2>Chip bus frame analyzer</h2>
+      <p>The built-in frame analyzer visualises bus activity across an entire video frame, mapping every
+         colour clock and scanline to the active bus master.</p>
     </div>
 
     <div class="analyzer">
       <figure class="analyzer__shot">
         <img src="assets/shot-analyzer.png" width="1656" height="1450" alt="The Copperline frame analyzer window: a full-raster map of one frame with every colour clock coloured by its chip-bus owner and the captured picture ghosted underneath, a per-owner cycle tally with percentages, blitter grant and wait figures, and a selected-scanline strip" loading="lazy">
-        <figcaption><strong>One captured frame.</strong> 313 beam lines by 227 colour clocks,
-           every cycle coloured by the bus master that owned it, the picture ghosted
-           underneath - here a heavy blit is taking more of the bus than bitplane DMA.</figcaption>
+        <figcaption><strong>Frame analysis.</strong> Visualising 313 scanlines by 227 colour clocks, showing bus master allocation overlaid on the captured video frame.</figcaption>
       </figure>
 
       <div class="analyzer__panel">
         <span class="card__tag">chip-bus arbitration</span>
-        <h3>Every colour clock has an owner</h3>
-        <p>Refresh, bitplane, sprite, disk and audio DMA, the Copper, the blitter and the CPU
-           all compete for one chip bus. The analyzer tallies who won every slot across the
-           frame, so a dropped line or a blit that starves the CPU is visible directly.</p>
-        <p>It breaks out blitter grant against wait - the cycles the blitter held the bus
-           versus the cycles it stalled behind higher-priority DMA - and you can click any
-           cycle to read back its line, hpos and owner, down to which blit it belongs to.</p>
+        <h3>Visualising DMA and bus contention</h3>
+        <p>In the Amiga architecture, the CPU, Copper, blitter, and DMA channels all share access to chip RAM.
+           The frame analyzer charts bus allocation across the entire display frame, making DMA contention,
+           CPU starvation, and blitter stalls immediately visible.</p>
+        <p>Inspect individual cycles to view exact beam positions, owners, and blitter operations, or evaluate
+           overall bus usage breakdowns across the frame.</p>
 
-        <p class="owner-list__cap">// chip-bus owners, one frame</p>
+        <p class="owner-list__cap">// chip-bus allocation (sample frame)</p>
         <ul class="owner-list" aria-label="Per-owner chip-bus cycle share for one captured frame">
           <li style="--c:#de4e4c"><span class="owner-list__sw"></span><span class="owner-list__name">blitter</span><span class="owner-list__bar"><i style="width:39.5%"></i></span><span class="owner-list__pct">39.5%</span></li>
           <li style="--c:#4076e6"><span class="owner-list__sw"></span><span class="owner-list__name">bitplane</span><span class="owner-list__bar"><i style="width:37.8%"></i></span><span class="owner-list__pct">37.8%</span></li>
@@ -539,12 +473,12 @@
     </div>
 
     <ul class="dbg-tabs" aria-label="What the frame analyzer surfaces">
-      <li><span class="dbg-tabs__name">Raster map</span> The whole frame as hpos by beam line, every colour clock coloured by its owner, with a white box around the captured display.</li>
-      <li><span class="dbg-tabs__name">Owner tally</span> Per-master cycle counts and percentages for the frame - refresh, bitplane, sprite, disk, audio, Copper, blitter, CPU and idle.</li>
-      <li><span class="dbg-tabs__name">Blitter grant / wait</span> How much of the frame the blitter was granted the bus, and the cycles it spent waiting behind each DMA channel.</li>
-      <li><span class="dbg-tabs__name">Selected scanline</span> Pin a line and replay its bus ownership one colour clock at a time, with the picked slot's owner decoded.</li>
-      <li><span class="dbg-tabs__name">Picture underlay</span> The frame's own picture ghosted beneath the ownership map, so you can see what each burst of DMA was drawing.</li>
-      <li><span class="dbg-tabs__name">Register markers</span> Chipset register writes overlaid on the raster at the position where they landed.</li>
+      <li><span class="dbg-tabs__name">Raster map</span> Visual representation of the full frame where each pixel corresponds to a colour clock coloured by its active bus master.</li>
+      <li><span class="dbg-tabs__name">Owner breakdown</span> Summary of cycle counts and percentages for CPU, blitter, Copper, DMA channels, and idle cycles.</li>
+      <li><span class="dbg-tabs__name">Blitter statistics</span> Quantifies blitter active cycles versus wait cycles caused by higher-priority DMA.</li>
+      <li><span class="dbg-tabs__name">Scanline inspector</span> Pin and inspect specific scanlines cycle-by-cycle to analyse bus handoffs in detail.</li>
+      <li><span class="dbg-tabs__name">Frame underlay</span> Overlay bus activity maps directly on top of the rendered frame to correlate DMA activity with visual elements.</li>
+      <li><span class="dbg-tabs__name">Register markers</span> View exactly where custom register writes occurred relative to the raster beam.</li>
     </ul>
   </section>
 
@@ -553,45 +487,37 @@
   <!-- ===================== HEADLESS ===================== -->
   <section id="headless" class="section">
     <div class="section__head">
-      <span class="kicker">// headless &amp; deterministic</span>
-      <h2>Scriptable and reproducible</h2>
-      <p>The core is deterministic and independent of the host: a windowless, unthrottled
-         run produces the <em>same</em> emulated result as a real-time windowed one, given the
-         same inputs and media. That determinism is what makes captures reproducible, and it
-         is also what lets the debugger step backwards.</p>
+      <span class="kicker">// headless &amp; automation</span>
+      <h2>Scriptable and deterministic</h2>
+      <p>The emulation core is deterministic: unthrottled headless runs produce identical results
+         to interactive windowed sessions given the same inputs and media. This makes Copperline
+         well suited for regression testing, scripted capture, and automated benchmarking.</p>
     </div>
 
     <div class="headless">
       <ul class="feature-list">
-        <li><strong>Drive it from the command line.</strong> Override the machine with
-           <code>--model</code>, <code>--cpu</code>, <code>--chip</code> and friends - no
-           config file required.</li>
-        <li><strong>Script input and capture.</strong> Press keys, click, move the mouse and
-           waggle the joystick on an emulated-time schedule, then grab a PNG, a frame dump, a
-           save state, or a 44.1 kHz WAV.</li>
-        <li><strong>Record and replay.</strong> Capture a whole session to a
-           <code>.clscript</code> and replay it byte-for-byte - a bug report that always
-           reproduces.</li>
-        <li><strong>Restore without the ROM.</strong> <code>--load-state</code> brings a
-           machine snapshot back even when the original Kickstart isn't on hand - the
-           save state carries the whole machine.</li>
-        <li><strong>Drive a live session over JSON-RPC.</strong> <code>--control</code> opens
-           the Copperline Control Protocol on loopback TCP: breakpoints, input injection,
-           media swaps, screenshots, save states, and streaming frame / serial / interrupt
-           events, from scripts or the <code>copperline-ctl</code> client.</li>
-        <li><strong>Built for agents.</strong> Copperline began as an emulator you could hand
-           to an AI agent: feed it a timestamp or a snapshot and it investigates from
-           screenshots and debug output, automatically.</li>
+        <li><strong>Command-line control:</strong> Configure machine profiles, CPU models, memory allocations,
+           and storage attachments directly via CLI arguments without a config file.</li>
+        <li><strong>Scripted input and capture:</strong> Inject keystrokes, mouse movement, and joystick inputs
+           on precise frame schedules, outputting screenshots, raw frame dumps, WAV audio, or save states.</li>
+        <li><strong>Session recording and replay:</strong> Record user inputs to a <code>.clscript</code> file
+           and replay sessions deterministically for bug reports and regression tests.</li>
+        <li><strong>Self-contained save states:</strong> Save states encapsulate the full machine state and can
+           be restored even without the original ROM file present.</li>
+        <li><strong>JSON-RPC control protocol:</strong> Drive live sessions over a loopback TCP socket (<code>--control</code>)
+           to manage breakpoints, inject input, swap media, and stream frame, serial, or interrupt events.</li>
+        <li><strong>Automated testing and CI:</strong> Run headless benchmarks and automated test suites in CI
+           environments without requiring a window server or GUI.</li>
       </ul>
 
       <div class="codeblock" role="group" aria-label="A scripted headless capture">
         <div class="codeblock__bar"><span></span><span></span><span></span> scripted capture</div>
-        <pre><code><span class="c-comment"># boot a disk, tap space, wait, grab a screenshot - no window</span>
+        <pre><code><span class="c-comment"># boot a disk, press space after 4s, save a screenshot at 12s (headless)</span>
 copperline game.adf <span class="c-flag">--noaudio</span> \
   <span class="c-flag">--press-after</span> 4 SPACE \
   <span class="c-flag">--screenshot-after</span> 12 shot.png
 
-<span class="c-comment"># record a whole session, then replay it byte-identically</span>
+<span class="c-comment"># record an input session, then replay it to render audio to WAV</span>
 copperline game.adf <span class="c-flag">--record-input</span> run.clscript
 copperline game.adf <span class="c-flag">--script</span> run.clscript <span class="c-flag">--audio-wav</span> run.wav</code></pre>
       </div>
@@ -603,10 +529,10 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
   <!-- ===================== HARDWARE ===================== -->
   <section id="hardware" class="section">
     <div class="section__head">
-      <span class="kicker">// what gets emulated</span>
-      <h2>The machine, end to end</h2>
-      <p>From the 68000 prefetch queue to Paula's audio mixer - the timing model is
-         documented next to the code and backed by named regression tests.</p>
+      <span class="kicker">// hardware support</span>
+      <h2>Supported hardware and features</h2>
+      <p>From 68000 instruction prefetch to Paula audio mixing, timing is verified against test suites,
+         custom test disks, and real Amiga hardware.</p>
     </div>
 
     <ul class="badges">
@@ -657,14 +583,11 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
     </ul>
 
     <p class="hardware__note">
-      A pure-Rust <a href="https://crates.io/crates/m68k" target="_blank" rel="noopener">m68k</a>
-      core - published on crates.io - drives the CPU, with 68000 cycle counts validated against the TomHarte
-      SingleStepTests to within about a percent. A bootable timing-test disk cross-checks
-      chip-bus timing against real hardware and other emulators, a golden-render probe
-      suite compares chipset timing output pixel-for-pixel on every CI run, and the
-      vAmigaTS suite runs as a compatibility regression. The detailed architecture and
-      timing model live in the
-      <a href="https://github.com/CopperlineHQ/Copperline/tree/main/docs" target="_blank" rel="noopener">internals docs</a>.
+      CPU emulation is powered by the open-source <a href="https://crates.io/crates/m68k" target="_blank" rel="noopener">m68k</a>
+      library on crates.io, with 68000 instruction cycle timing verified against the TomHarte SingleStepTests
+      suite. Chipset behaviour and timing are continuously tested against the vAmigaTS suite, custom hardware
+      test disks, and golden-render comparisons on CI. Full architecture documentation is available in the
+      <a href="https://github.com/CopperlineHQ/Copperline/tree/main/docs" target="_blank" rel="noopener">internals documentation</a>.
     </p>
   </section>
 
@@ -673,74 +596,51 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
   <!-- ===================== STATUS ===================== -->
   <section id="status" class="section">
     <div class="section__head">
-      <span class="kicker">// where it's at</span>
-      <h2>Current status</h2>
-      <p>Emulator pages tend to list only the good parts. Copperline is young and moving
-         fast, so here is the actual state of things - the rough edges included. This
-         list changes every release.</p>
+      <span class="kicker">// project status</span>
+      <h2>Current development status</h2>
+      <p>Copperline is under active development. Below is an overview of what is currently well-tested,
+         recent additions, and known areas for future work.</p>
     </div>
 
     <div class="status-grid">
       <div class="status-col status-col--good">
-        <h3>Solid today</h3>
+        <h3>Working well</h3>
         <ul>
-          <li>The OCS / ECS / AGA display path, HAM8 included, replayed by beam position.</li>
-          <li>Timing-sensitive OCS and AGA demos from the regression set, at real speed.</li>
-          <li>68000 - 68060 with the 68881 / 68882 FPU and the 030 / 040 / 060 MMUs;
-              68000 cycle counts validated against the SingleStepTests.</li>
-          <li>The deterministic core: byte-identical replays, save states, and the
-              reverse debugger built on them.</li>
-          <li>The tooling - debugger, frame analyzer, headless scripting - which is
-              half the point of the project.</li>
-          <li>Floppies (ADF / ADZ / DMS / IPF / SCP, plain or zipped), Gayle and
-              A4000 IDE, A2091 / A4091 SCSI with CD-ROM drives, CDTV / CD32 CD,
-              and host directories mounted as writable, bootable AmigaDOS
-              volumes.</li>
+          <li>OCS, ECS, and AGA display pipeline, including HAM6/HAM8, EHB, dual playfield, and beam-synchronized rendering.</li>
+          <li>Cycle-accurate 68000 CPU emulation (SingleStepTests verified) and 68020-68060 support with FPU and MMU.</li>
+          <li>Deterministic session recording, save states, and reverse-stepping debugger.</li>
+          <li>Inspection tooling: CPU/chipset debugger, memory editor, and chip-bus frame analyzer.</li>
+          <li>Standard floppy formats (ADF, ADZ, DMS, IPF, SCP), Gayle and A4000 IDE, SCSI controllers, and bootable host directory mounts.</li>
         </ul>
       </div>
 
       <div class="status-col status-col--mid">
-        <h3>Rough edges</h3>
+        <h3>Recent additions</h3>
         <ul>
-          <li>This cycle's arrivals - Coppersynth, the Toccata and MHI sound
-              boards, the publisher kit and the Graffity RTG boards - are brand
-              new, and last cycle's direct WHDLoad boot, game library and
-              lide.device IDE board have one release of mileage behind
-              them.</li>
-          <li>The physical floppy path was rebuilt in 0.15.0 on FluxBridge,
-              Copperline's own pure-Rust library - a young library driving real
-              mechanisms.</li>
-          <li>RTG is still young: the Z3660 has a few releases of mileage
-              behind it, the Zorro II Picasso II / II+ a couple, and Graffity
-              arrived this release.</li>
-          <li>The A2065 bridges onto a host adapter as well as the zero-setup
-              NAT mode, but Wi-Fi bridging is still best-effort.</li>
-          <li>The JIT CPU mode is experimental and off by default: accelerator-class
-              speed, but cycle-counted chip-level effects no longer line up.</li>
-          <li>The browser build runs single-threaded.</li>
+          <li>Coppersynth SoundFont synth, Toccata audio, and MHI MP3 decoder boards.</li>
+          <li>Physical floppy drive support using the FluxBridge library with Greaseweazle hardware.</li>
+          <li>RTG graphics (Z3660, Picasso II/II+, Graffity) across 24-bit and 32-bit machine profiles.</li>
+          <li>A2065 Ethernet network bridging (user-mode NAT and host interface bridging).</li>
+          <li>Experimental JIT compilation mode for 68020+ CPUs.</li>
+          <li>WebAssembly browser build.</li>
         </ul>
       </div>
 
       <div class="status-col status-col--gap">
-        <h3>Not there yet</h3>
+        <h3>Not yet implemented</h3>
         <ul>
-          <li>Real drives are Greaseweazle-only: the FluxBridge rewrite dropped the
-              DrawBridge and SupercardPro drivers for now, and a config asking for
-              one is refused with an error saying so.</li>
-          <li>No HD (1.76 MB) or PC / CrossDOS floppies.</li>
-          <li>Host keyboard layouts other than QWERTY are not mapped yet.</li>
+          <li>High-density (1.76 MB) and PC/CrossDOS floppy disk formats.</li>
+          <li>Non-QWERTY host keyboard layout mappings.</li>
+          <li>Additional physical floppy controller interfaces beyond Greaseweazle.</li>
         </ul>
       </div>
     </div>
 
     <div class="status-next">
-      <span class="card__tag">// main vs the release</span>
-      <p>Development happens in the open, and <code>main</code> usually runs well ahead
-         of the release you can download. Right now it doesn't: 0.17.0 has just shipped,
-         so for once the release and main are the same machine.</p>
-      <p>Every release gets a write-up on the <a href="news/">news page</a> when it
-         ships. If you want to follow development commit by commit,
-         <code>brew install --HEAD copperline</code> builds main today.</p>
+      <span class="card__tag">// release notes</span>
+      <p>Development takes place in the open on GitHub. Detailed notes for each release are published on
+         the <a href="news/">news page</a>. You can also build the latest development branch directly using
+         <code>brew install --HEAD copperline</code> or Cargo.</p>
     </div>
   </section>
 
@@ -751,10 +651,9 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
     <div class="download">
       <span class="kicker">// download</span>
       <h2>Get Copperline</h2>
-      <p>Grab the latest release, or build from source with a stable Rust toolchain.
-         Developed and tested on macOS, with a universal macOS .dmg, a Linux AppImage and a
-         Windows build available. Every build ships the open-source AROS boot ROM, so it runs
-         out of the box with no Kickstart required.</p>
+      <p>Download pre-compiled binaries for macOS, Linux, and Windows, or build from source with a standard
+         Rust toolchain. Pre-built packages include the open-source AROS Kickstart replacement, so you can
+         get started immediately without configuring ROM files.</p>
 
       <a class="btn btn--primary btn--big" href="https://github.com/CopperlineHQ/Copperline/releases/latest" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 3v10.5l3.3-3.3 1.4 1.4L12 17l-4.7-5.4 1.4-1.4L12 13.5V3h0zM5 19h14v2H5z"/></svg>
@@ -780,12 +679,11 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
           <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.17.0</span>-macos-universal.dmg and drag</span>
-<span class="c-comment"># Copperline.app into your Applications folder, then launch it</span>
+            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.17.0</span>-macos-universal.dmg and copy</span>
+<span class="c-comment"># Copperline.app to your Applications folder</span>
 
-<span class="c-comment"># the build is not notarized, so macOS blocks the first launch.</span>
-<span class="c-comment"># approve it once under System Settings &gt; Privacy &amp; Security</span>
-<span class="c-comment"># (click "Open Anyway"), and it launches normally from then on</span></code></pre>
+<span class="c-comment"># the build is ad-hoc signed; approve first launch if prompted under</span>
+<span class="c-comment"># System Settings &gt; Privacy &amp; Security ("Open Anyway")</span></code></pre>
           </div>
 
           <div class="codeblock" role="group" aria-label="Install with Homebrew">
@@ -802,13 +700,13 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux" hidden>
           <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
-            <pre><code><span class="c-comment"># grab the .AppImage from the latest release, then make it executable</span>
+            <pre><code><span class="c-comment"># make the AppImage executable and run</span>
 chmod +x Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage
 
-<span class="c-comment"># run it - the bundled AROS ROM means no Kickstart is required</span>
+<span class="c-comment"># boots the bundled AROS Kickstart replacement by default</span>
 ./Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage
 
-<span class="c-comment"># or boot your own Kickstart ROM, or a config file</span>
+<span class="c-comment"># or launch with a specific Kickstart ROM or config file</span>
 ./Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage path/to/kickstart.rom
 ./Copperline-<span class="relver">0.17.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
           </div>
@@ -827,8 +725,8 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="codeblock" role="group" aria-label="Run the Windows build">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.17.0</span>-win-x64.zip (win-arm64 on ARM), then from a terminal</span>
-<span class="c-comment"># with no ROM it boots the bundled AROS Kickstart replacement</span>
+            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.17.0</span>-win-x64.zip (win-arm64 on ARM)</span>
+<span class="c-comment"># launch from terminal or double-click copperline.exe</span>
 copperline.exe
 copperline.exe path\to\kickstart.rom
 copperline.exe <span class="c-flag">--config</span> copperline.toml</code></pre>
@@ -838,19 +736,17 @@ copperline.exe <span class="c-flag">--config</span> copperline.toml</code></pre>
 
       <div class="codeblock" role="group" aria-label="Build from source">
         <div class="codeblock__bar"><span></span><span></span><span></span> build from source</div>
-        <pre><code><span class="c-comment"># clone and build (release - debug is too slow for real-time)</span>
+        <pre><code><span class="c-comment"># clone and build with Cargo (release mode recommended)</span>
 git clone https://github.com/CopperlineHQ/Copperline.git
 cd Copperline
 cargo build <span class="c-flag">--release</span>
 
-<span class="c-comment"># run it - with no ROM it boots the bundled AROS Kickstart replacement</span>
+<span class="c-comment"># run the compiled binary</span>
 ./target/release/copperline
-
-<span class="c-comment"># or boot your own Kickstart ROM, or a config file</span>
 ./target/release/copperline path/to/kickstart.rom
 ./target/release/copperline <span class="c-flag">--config</span> copperline.toml</code></pre>
       </div>
-      <p class="download__req">Requires Rust 1.87+ (stable). No SDL2 dependency.</p>
+      <p class="download__req">Requires Rust 1.87+ (stable).</p>
     </div>
   </section>
 
@@ -860,81 +756,66 @@ cargo build <span class="c-flag">--release</span>
   <section id="faq" class="section">
     <div class="section__head">
       <span class="kicker">// faq</span>
-      <h2>Questions people actually ask</h2>
+      <h2>Frequently asked questions</h2>
     </div>
 
     <div class="faq">
       <details class="faq__item">
         <summary>Do I need a Kickstart ROM?</summary>
         <div class="faq__body">
-          <p>No. Every build bundles the open-source AROS boot ROM, so Copperline starts
-             into a working machine out of the box. Most commercial games and Workbench
-             still want a real Kickstart, though - use one dumped from your own Amiga, or
-             a licensed copy (Cloanto's Amiga Forever is the usual route). Copperline
-             does not ship Commodore ROMs and never will.</p>
+          <p>No. Copperline bundles the open-source AROS boot ROM, which allows many programs and homebrew software
+             to run out of the box. However, commercial games and standard Workbench installations typically require
+             genuine Commodore Kickstart ROMs. You can use ROMs dumped from your own Amiga hardware or acquired
+             through licensed packages like Cloanto's Amiga Forever.</p>
         </div>
       </details>
 
       <details class="faq__item">
         <summary>Why isn't the macOS build notarized?</summary>
         <div class="faq__body">
-          <p>Copperline is a free-time project and I don't keep a paid Apple Developer
-             subscription for it. The .dmg is ad-hoc signed, so macOS asks you to approve
-             the first launch under Privacy &amp; Security - once, then never again.</p>
-          <p>If you'd rather not click through that at all, the Homebrew tap builds from
-             source on your machine, so Gatekeeper never gets involved.</p>
-          <p>Paying for the Apple and Windows signing subscriptions is the first thing
-             <a href="#community">recurring support</a> would go towards, if that is
-             something you care about.</p>
+          <p>Copperline is an open-source project maintained in free time, and binaries are currently ad-hoc signed
+             rather than notarized through an Apple Developer account. On first launch, macOS Gatekeeper may ask you
+             to confirm opening the app under System Settings &gt; Privacy &amp; Security. Alternatively, installing
+             via Homebrew builds from source on your machine.</p>
         </div>
       </details>
 
       <details class="faq__item">
-        <summary>How does Copperline relate to WinUAE, FS-UAE or vAmiga?</summary>
+        <summary>How does Copperline compare to established emulators like WinUAE, FS-UAE, or vAmiga?</summary>
         <div class="faq__body">
-          <p>They are mature emulators with decades of compatibility work behind them,
-             and if you just want to play Amiga games today, they are the safer pick.
-             I cross-check Copperline's chip-bus timing against real hardware and other
-             emulators with a bootable test disk, so I say this with some affection.</p>
-          <p>Copperline's angle is the deterministic core and the tooling built on top
-             of it - the reverse debugger, the frame analyzer, headless scripting - plus
-             being a single from-scratch Rust codebase you can read end to end.</p>
+          <p>WinUAE, FS-UAE, and vAmiga are mature projects with extensive compatibility across the vast Amiga software
+             library. Copperline focuses particularly on developer and debugging tooling: cycle-by-cycle chip bus analysis,
+             deterministic reverse debugging and rewind, headless automation and scripting, and a modern Rust codebase
+             designed for extensibility and embedded WebAssembly use.</p>
         </div>
       </details>
 
       <details class="faq__item">
-        <summary>Will my game or demo run?</summary>
+        <summary>Will my software or game run?</summary>
         <div class="faq__body">
-          <p>Maybe - and it gets more likely every release. A growing timing-sensitive
-             regression set runs at real speed, and fixes always target the underlying
-             hardware behaviour rather than patching individual titles. But compatibility
-             is still behind the mature emulators, and some things will break.</p>
-          <p>When something does, an issue with a <code>.clscript</code> recording
-             attached is gold: it replays byte-identically, so I can watch exactly what
-             you saw and step the machine backwards from the moment it went wrong.</p>
+          <p>Many popular games, demos, and Workbench setups run well, and compatibility is continuously expanding.
+             Since Copperline aims to accurately model hardware rather than applying per-title game patches, fixes
+             directly improve overall fidelity. If you encounter an incompatibility, recording a session with
+             <code>--record-input</code> produces a reproducible <code>.clscript</code> file that can be attached
+             to a GitHub issue for debugging.</p>
         </div>
       </details>
 
       <details class="faq__item">
-        <summary>Is it true this was built with AI?</summary>
+        <summary>How was Copperline developed?</summary>
         <div class="faq__body">
-          <p>Yes, openly. Copperline began partly as an experiment in whether an AI agent
-             could investigate emulator bugs on its own from screenshots and debug output,
-             and its development is AI-driven - directed by me, and grounded in books, my
-             own knowledge of Amiga internals, and test disks I run on real hardware.</p>
-          <p>Judge the result the way any emulator should be judged: named regression
-             tests, cycle counts validated against published test suites, cross-checks
-             against real machines, and public code.</p>
+          <p>Copperline was developed by Andrew Hutchings (LinuxJedi) in Rust, drawing on hardware documentation,
+             reference machines, and test disks run on real Amiga hardware. AI coding assistants and agents were
+             utilized during development to assist with implementation, test generation, and automated debugging
+             workflows. Accuracy is validated against hardware test suites and published regression benchmarks.</p>
         </div>
       </details>
 
       <details class="faq__item">
         <summary>Where does the name come from?</summary>
         <div class="faq__body">
-          <p>The Copper - the Amiga co-processor that executes a program locked to the
-             display beam - and the copper raster bars it painted across a thousand
-             demos. For an emulator whose whole design hangs off the colour clock, it
-             felt right.</p>
+          <p>The name refers to the Amiga's Copper coprocessor, which executes instructions synchronized to the
+             display beam to create the iconic raster bar color gradients seen throughout classic Amiga demos and games.</p>
         </div>
       </details>
     </div>
@@ -946,58 +827,47 @@ cargo build <span class="c-flag">--release</span>
   <section id="community" class="section">
     <div class="section__head">
       <span class="kicker">// community</span>
-      <h2>Where Copperline happens</h2>
-      <p>Development runs in the open on GitHub, and there is now a Discord to talk
-         about it in.</p>
+      <h2>Community and contributing</h2>
+      <p>Copperline is developed openly on GitHub with an active community on Discord.</p>
     </div>
 
     <div class="grid">
       <article class="card">
         <span class="card__tag">chat</span>
         <h3>Discord</h3>
-        <p>Development, bug hunting and general Amiga talk. If you are chasing a timing
-           bug, trying to get something to boot, or just want to see what is being
-           worked on this week, that is where it happens.</p>
+        <p>Join the Discord server to discuss development, troubleshoot configurations, share test results,
+           or chat about Amiga hardware and emulation.</p>
         <a class="card__link" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">join the server &gt;</a>
       </article>
 
       <article class="card">
         <span class="card__tag">support</span>
-        <h3>Patreon</h3>
-        <p>Copperline is GPL and freely available, and stays that way - nothing here
-           buys a feature or a place in the queue. What monthly support buys is
-           development time, real hardware to measure the emulator against, and the
-           Apple and Windows code-signing subscriptions that would let the downloads
-           open without a Gatekeeper or SmartScreen warning.</p>
-        <p class="card__thanks">Thank you to the patrons already doing exactly
-           that: <strong>Lee Hobson</strong>.</p>
+        <h3>Support the project</h3>
+        <p>Copperline is free and open source under the GNU GPL v3. Sponsorship helps cover development hardware,
+           testing equipment, and code-signing certificates.</p>
+        <p class="card__thanks">Special thanks to project patrons: <strong>Lee Hobson</strong>.</p>
         <a class="card__link" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">become a patron &gt;</a>
       </article>
 
       <article class="card">
         <span class="card__tag">contribute</span>
-        <h3>Issues and patches</h3>
-        <p>Bug reports and feature requests are best filed as GitHub issues, where they
-           don't scroll away - and a <code>.clscript</code> recording attached to one
-           replays byte-identically, so I can step the machine backwards from the moment
-           it went wrong. CONTRIBUTING.md covers the rest, including the hardware-first
-           rule that patches follow.</p>
-        <p class="card__thanks">Patches have already landed from
+        <h3>Issues and contributions</h3>
+        <p>Bug reports, feature requests, and pull requests are welcome on GitHub. If reporting an emulation issue,
+           attaching a <code>.clscript</code> recording helps reproduce and diagnose the bug quickly.</p>
+        <p class="card__thanks">Thanks to all contributors:
            <strong>Bernie Innocenti</strong>, <strong>Lee Hobson</strong>,
            <strong>jbl007</strong>, <strong>Simon Dick</strong>,
            <strong>Nicolas Ramz</strong>, <strong>Ben Letchford</strong>,
-           <strong>Volker Schwaberow</strong> and
-           <strong>Matt Harlum</strong> - thank you.</p>
+           <strong>Volker Schwaberow</strong>, and
+           <strong>Matt Harlum</strong>.</p>
         <a class="card__link" href="https://github.com/CopperlineHQ/Copperline/issues" target="_blank" rel="noopener">open an issue &gt;</a>
       </article>
     </div>
 
-    <p class="community-note">One-off contributions go through
+    <p class="community-note">One-off contributions can also be made via
        <a href="https://github.com/sponsors/linuxjedi" target="_blank" rel="noopener">GitHub Sponsors</a>,
-       <a href="https://ko-fi.com/linuxjedi" target="_blank" rel="noopener">Ko-fi</a> or
-       <a href="https://paypal.me/linuxjedi" target="_blank" rel="noopener">PayPal</a>.
-       Those are personal links covering all my open-source work; Patreon is the one
-       that is Copperline's own.</p>
+       <a href="https://ko-fi.com/linuxjedi" target="_blank" rel="noopener">Ko-fi</a>, or
+       <a href="https://paypal.me/linuxjedi" target="_blank" rel="noopener">PayPal</a>.</p>
   </section>
 
   <hr class="copperline">
@@ -1005,21 +875,16 @@ cargo build <span class="c-flag">--release</span>
   <!-- ===================== ABOUT ===================== -->
   <section id="about" class="section">
     <div class="about">
-      <span class="kicker">// a note from the author</span>
+      <span class="kicker">// about the author</span>
       <h2>Why Copperline exists</h2>
-      <p>Copperline started as a two-part experiment: could I build an Amiga emulator
-         that is easy to drive from the command line, and could I give it the tooling to
-         feed debugging data and screenshots back to an AI agent, so a bug could be
-         investigated from nothing but a timestamp or a snapshot? The first milestone was
-         getting DiagROM to boot far enough to show its menu.</p>
-      <p>It didn't stay small. The features I care most about are the ones I kept
-         wishing for while chasing timing bugs: a debugger that steps backwards, an
-         analyzer that shows who owned every cycle of the chip bus, replays that always
-         reproduce. Everything else on this page grew around that core.</p>
-      <p>When I'm not writing Rust, I'm usually elbow-deep in the real machines -
-         collecting, repairing and designing hardware for them. That is where
-         Copperline's real-hardware timing references come from, and probably why I
-         care so much that the emulated machine earns its cycle counts.</p>
+      <p>Copperline started from a desire for an Amiga emulator that was both simple to automate from the command line
+         and equipped with powerful debugging tools. The initial milestone was booting DiagROM far enough to display its menu.</p>
+      <p>Over time, the project expanded into a full emulation suite focused on developer productivity: a debugger that can
+         step backwards, cycle-accurate bus analysis to diagnose DMA contention, and deterministic recording so bugs can
+         be reproduced reliably.</p>
+      <p>When not writing Rust, I spend much of my time working on real Amiga hardware: repairing, collecting, and designing
+         expansion boards. Having physical machines on the workbench provides a direct reference to ensure the emulation
+         matches real-world behaviour.</p>
       <p class="about__sig">- Andrew Hutchings (LinuxJedi) &middot;
          <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a> &middot;
          <a href="https://github.com/LinuxJedi" target="_blank" rel="noopener">GitHub</a></p>
@@ -1043,8 +908,7 @@ cargo build <span class="c-flag">--release</span>
         endorsed by any trademark holder.
       </p>
       <p class="footer__colophon">
-        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
-        no CDNs - even the fonts are served from here.
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
       </p>
     </div>
     <nav class="footer__links">

@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projects - Copperline</title>
-<meta name="description" content="External projects built with or around Copperline, the cycle-driven Amiga emulator written in Rust.">
+<meta name="description" content="Projects and tools built with or around the Copperline Amiga emulator.">
 <meta name="theme-color" content="#0a0d16">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Projects using Copperline">
-<meta property="og:description" content="External projects built with or around Copperline, the cycle-driven Amiga emulator written in Rust.">
+<meta property="og:description" content="Projects and tools built with or around the Copperline Amiga emulator.">
 <meta property="og:url" content="https://copperline.dev/projects/">
 <meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
 
@@ -63,34 +63,27 @@
     <div class="section__head">
       <span class="kicker">// projects</span>
       <h2>Projects using Copperline</h2>
-      <p>Things other people have built with or around Copperline. These are
-         independent projects with their own maintainers, so issues and pull
-         requests belong with them. Built something yourself? Open an issue on
-         the <a href="https://github.com/CopperlineHQ/copperline.github.io/issues" target="_blank" rel="noopener">site repository</a>
-         and I'll add it here.</p>
+      <p>Community projects and tools built with or around Copperline. If you have created
+         something using Copperline and would like it listed here, please open an issue on the
+         <a href="https://github.com/CopperlineHQ/copperline.github.io/issues" target="_blank" rel="noopener">site repository</a>.</p>
     </div>
 
     <ul class="news-list">
       <li class="news-list__item">
         <span class="news-list__date">by Retro32</span>
         <h2><a href="https://retro32.com/bbs-copperline/" target="_blank" rel="noopener">Retro32 BBS</a></h2>
-        <p>Retro gaming store Retro32 host the browser build of Copperline
-           on their site as the front door to their BBS. The page uses the
-           serial/internet bridging in the browser build to wire the
-           emulated Amiga's serial port through to the BBS, so one press of
-           Connect and you're dialling in from a virtual Amiga right there
-           in the page - nothing to install.</p>
+        <p>Retro gaming store Retro32 uses the WebAssembly build of Copperline as a web-based client
+           for their dial-up BBS. Utilizing the emulator's serial-over-WebSocket bridging, visitors can
+           connect directly to the BBS from an emulated Amiga terminal right in the browser without
+           any local setup.</p>
         <a class="news-list__more" href="https://retro32.com/bbs-copperline/" target="_blank" rel="noopener">dial in &gt;</a>
       </li>
       <li class="news-list__item">
         <span class="news-list__date">by Simon Dick</span>
         <h2><a href="https://github.com/sidick/copperline-docker" target="_blank" rel="noopener">copperline-docker</a></h2>
-        <p>The browser build of Copperline, self-hosted: a single Docker
-           container that compiles the WebAssembly bundle and serves it with
-           nginx. Pre-built multi-arch images (amd64 / arm64) are on GHCR -
-           <code>docker run</code>, open localhost:8080, and it boots the
-           bundled AROS ROM. Mount a host directory into the container and it
-           serves your own Kickstart and disk images to the emulator by URL.</p>
+        <p>A self-hosted Docker container for running the WebAssembly build of Copperline via nginx.
+           Pre-built multi-arch images (amd64 and arm64) are available on GitHub Container Registry,
+           with support for mounting host directories containing custom Kickstart ROMs and disk images.</p>
         <a class="news-list__more" href="https://github.com/sidick/copperline-docker" target="_blank" rel="noopener">view on GitHub &gt;</a>
       </li>
     </ul>
@@ -106,8 +99,7 @@
         <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
       </p>
       <p class="footer__colophon">
-        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
-        no CDNs - even the fonts are served from here.
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
       </p>
     </div>
     <nav class="footer__links">
