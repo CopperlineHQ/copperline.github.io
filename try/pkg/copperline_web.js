@@ -81,7 +81,8 @@ export class WebEmu {
         return v1;
     }
     /**
-     * Whether DFn is wired up: DF0 always, DF1-DF3 when configured.
+     * Whether DFn is wired up. CDTV/CD32 start with none; other profiles
+     * start with DF0, and an explicit constructor count overrides either.
      * @param {number} drive
      * @returns {boolean}
      */
@@ -388,10 +389,10 @@ export class WebEmu {
      * `video` picks the video standard ("PAL" or "NTSC", the desktop's
      * `[chipset] video` key) on top of whatever the profile chose; omitted
      * or empty keeps the profile's own standard (PAL for every offered
-     * profile). `floppy_drives` fits one to four drives, matching the
+     * profile). `floppy_drives` fits zero to four drives, matching the
      * desktop's `[floppy] drives` setting; omitted, the profile default stays
-     * in place (one drive for the offered models). An unknown name or invalid
-     * drive count throws.
+     * in place (zero for CDTV/CD32, one for the other profiles). An unknown
+     * name or invalid drive count throws.
      * @param {string | null} [model]
      * @param {string | null} [video]
      * @param {number | null} [floppy_drives]
