@@ -8,6 +8,14 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.18.0: The CD32 FMV module, calibrated drive timing, a modem on Paula, and import-uae</title>
+    <link>https://copperline.dev/news/copperline-0-18-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-18-0.html</guid>
+    <pubDate>Sat, 29 Aug 2026 10:23:00 +0000</pubDate>
+    <description>Commodore's CD32 Full Motion Video MPEG cartridge is emulated end to end, the CD32 drive model is calibrated against real PAL hardware with a probe disc and filmed cold boots, CDXL video streams from cooked ISOs, a Hayes AT modem with WiModem232 compatibility answers on the serial port, copperline-import-uae converts configurations with zero guesswork, run-ahead cuts input latency, and AGA sprite and palette fidelity reaches 0.000% error against vAmigaTS.</description>
+  </item>
+
+  <item>
     <title>Copperline 0.17.0: Coppersynth, two sound boards, and CD32 discs that boot without a Kickstart</title>
     <link>https://copperline.dev/news/copperline-0-17-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-17-0.html</guid>

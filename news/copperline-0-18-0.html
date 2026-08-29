@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 0.18.0: The CD32 FMV module, calibrated drive timing, a modem on Paula, and import-uae - Copperline News</title>
+<meta name="description" content="Copperline 0.18.0 is the CD release: the CD32 Full Motion Video MPEG cartridge emulated end-to-end, drive timings calibrated against a real PAL CD32, CDXL from cooked ISOs, a Hayes modem on Paula, UAE config import, run-ahead latency reduction, and pixel-exact AGA sprite and palette fidelity.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 0.18.0: The CD32 FMV module, calibrated drive timing, a modem on Paula, and import-uae">
+<meta property="og:description" content="The CD32's MPEG FMV module emulated end-to-end, drive timings calibrated against real hardware with a probe disc, CDXL from cooked ISOs, a Hayes modem on Paula, UAE config import, run-ahead, and pixel-exact AGA fidelity.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-0-18-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
+    <span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu">
+    <a href="../">Home</a>
+    <a href="./">News</a>
+    <a href="feed.xml">RSS</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../#download">Download</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
+    </a>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
+      <span class="nav__burger" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <article class="post">
+      <a class="post__back" href="./">&lt; all news</a>
+      <span class="post__date">29 August 2026 &middot; release</span>
+      <h1>Copperline 0.18.0: The CD32 FMV module, calibrated drive timing, a modem on Paula, and import-uae</h1>
+
+      <p>Copperline 0.18.0 is the CD release. The CD32's Full Motion Video module -
+         Commodore's MPEG cartridge - is emulated end to end, so Video CDs play
+         and FMV-aware games run their MPEG sequences on an emulated CD32 exactly
+         as they do with the real hardware cartridge plugged into the rear expansion bay.
+         Underneath it, the CD32 drive model has been calibrated against a real
+         PAL CD32 with a purpose-built probe disc and a filmed cold boot: spin-up,
+         seek times, and command pacing are now measured quantities, and the emulated
+         cold boot tracks the real machine's to within 50 milliseconds - close enough
+         that <em>Fightin' Spirit</em>, which relies on the exact boot-time memory layout,
+         boots from its unmodified disc for the very first time.</p>
+
+      <p>Around the optical drive story: CDXL video plays from cooked ISOs, Nero NRG
+         images mount directly, cue sheets accept WAVE and MP3 audio tracks, a new
+         <code>copperline-import-uae</code> tool converts WinUAE, Amiberry, and FS-UAE
+         configurations with zero guesswork, a Hayes-compatible modem answers on the
+         serial port, run-ahead trims input latency, and AGA sprite, fetch, and palette
+         fidelity has been pushed to pixel-exact against the vAmigaTS references. As
+         always, it is a hardware-behaviour release: compatibility fixes model the
+         underlying Amiga subsystems rather than applying per-title hacks.</p>
+
+      <h2>The CD32 Full Motion Video module</h2>
+
+      <p>Setting <code>[machine] fmv_rom</code> fits Commodore's MPEG cartridge as the
+         first Zorro II board in a CD32. We model the C-Cube CL450 video processor and
+         LSI Logic L64111 audio decoder interfaces, the module's onboard RAM and ROM,
+         and the analogue video keying path that mixes decoded MPEG video with Denise's
+         native graphics output, scaling Video CD frames across the full capture aperture.</p>
+
+      <p>MPEG-1 video is decoded through a safe pure-Rust port of plmpeg
+         (<a href="https://github.com/CopperlineHQ/plmpeg" target="_blank" rel="noopener">CopperlineHQ/plmpeg</a>)
+         and MPEG Layer II audio through Symphonia. Video CDs play smoothly, and FMV
+         titles run their full video sequences - <em>Cannon Fodder</em>'s famous filmed
+         intro plays before the game loads and runs to gameplay completely
+         deterministically. MODE2/2336 and MODE2/2352 tracks are handled seamlessly
+         across CUE, NRG, and CHD images alike.</p>
+
+      <p>The 256 KiB v40.30 cartridge ROM is yours to supply, just like a Kickstart ROM.
+         One note for now: booting a CD with the module fitted requires a genuine
+         Commodore Kickstart ROM, because the cartridge carries its own Kickstart-era
+         <code>cd.device</code> that takes over the boot path from the bundled AROS ROM;
+         an upstream AROS update to handle this is in progress.</p>
+
+      <h2>A CD32 drive calibrated against real hardware</h2>
+
+      <p>Until now, CD32 drive timing in emulators has mostly been based on rough
+         estimates. For this release, we built a dedicated probe disc
+         (<code>tools/cd32-probe</code>, included in the repository along with the
+         measurement tables in its README) and filmed cold boots on a real PAL CD32
+         to turn guesswork into hard measurements.</p>
+
+      <p>The new drive model includes:</p>
+      <ul>
+        <li>A measured spin-up gate on the first lead-in dump (8.8 seconds cold, 3.5 seconds warm).</li>
+        <li>TOC dumps that complete before subsequent queued commands can act.</li>
+        <li>A measured seek curve that replaces the old single-slot seek approximation.</li>
+        <li>TX DMA that folds to its 256-byte page the way Kickstart's producer expects.</li>
+        <li>Unmapped address space billed at its measured bus cost.</li>
+      </ul>
+
+      <p>The emulated cold boot now enters the <code>startup-sequence</code> at 14.36
+         emulated seconds against 14.31 filmed seconds on real hardware. And because the
+         boot animation never runs while a bootable disc is spinning up, chip RAM is laid
+         out exactly as on the real machine: <em>Fightin' Spirit</em> boots unpatched to the
+         credits, and discs inserted at the idle screen or mid-animation now boot cleanly,
+         just like closing the physical CD lid.</p>
+
+      <h2>CDXL from cooked ISOs and expanded CD formats</h2>
+
+      <p>Reading from a bare <code>.iso</code> image now synthesizes complete raw Mode 1
+         sectors - including EDC and P/Q parity bytes - on the fly. This means CDXL video
+         streams cleanly from cooked ISO files, and CDTV-trademark boots work properly on
+         the CD32 profile, with cached TOC transport paced independently of optical
+         sector delivery.</p>
+
+      <p>Image support is also broader: Nero <code>.nrg</code> images can now be mounted
+         anywhere a CUE sheet is accepted, and CUE sheets can reference compressed WAVE
+         and MP3 audio tracks with full support for <code>PREGAP</code> and <code>POSTGAP</code>
+         directives. Ripped games with compressed soundtracks play without needing manual
+         decompression or re-mastering.</p>
+
+      <h2>Import UAE configurations: <code>copperline-import-uae</code></h2>
+
+      <p>Switching emulators shouldn't mean re-creating dozens of configurations by hand.
+         Simon Dick (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>)
+         contributed <code>copperline-import-uae</code>, a standalone conversion tool that
+         translates WinUAE, Amiberry, and FS-UAE configurations into native Copperline TOML.</p>
+
+      <p>It maps machine models, CPU and FPU choices, RAM layouts, chipsets, Kickstart ROMs,
+         floppy drives (converting FS-UAE swap lists into playlists), hard drives, directory
+         mounts, CD images, RTC, audio, joystick port mappings, and expansion boards like
+         <code>[lide]</code>, <code>[scsi]</code>, and <code>[toccata]</code>.</p>
+
+      <p>Best of all, it is completely transparent: approximations are commented directly
+         above the generated lines, and any unsupported options are enumerated at the bottom
+         of the output file so you can easily see what was intentionally skipped versus what
+         might need manual attention. The generated configuration is validated against
+         Copperline's own configuration loader before writing. See
+         <a href="../docs/import-uae/">docs/import-uae</a> for usage instructions.</p>
+
+      <h2>A Hayes modem on Paula's serial port</h2>
+
+      <p><code>[serial] mode = "modem"</code> attaches a full Hayes AT-command modem to
+         Paula's serial port. Terminal software like Term and NComm, as well as BBS doors
+         expecting real AT dial commands, result codes, carrier detection, and the classic
+         <code>+++</code> escape sequence, now get authentic modem responses rather than a
+         raw byte pipe.</p>
+
+      <p>The modem handles inbound connections (<code>RING</code>, S0 auto-answer, <code>ATA</code>),
+         dials outbound destinations from a config-file phonebook, negotiates Telnet NVT for
+         connecting to modern BBS servers over TCP, and persists <code>AT&amp;W</code> profiles
+         to a sidecar file. It also includes a WiModem232 compatibility layer verified against
+         the original hardware manual, allowing published community setup guides to work
+         without changes. For automated testing, a scripted-session transport
+         (<code>--serial-session</code>) replays dial-out sessions byte-for-byte in headless
+         runs. Contributed by Simon Dick (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>);
+         see the <a href="../docs/modem/">modem documentation</a> for details.</p>
+
+      <h2>Run-ahead input latency reduction</h2>
+
+      <p>For demanding action games where every millisecond counts,
+         <code>[emulation] run_ahead_frames</code> (0 to 4 frames, selectable via
+         <code>--run-ahead</code> or under Emulation Settings &gt; Run Ahead) trims perceived
+         input latency below that of real CRT hardware. Each display refresh commits one
+         normal frame, takes an in-memory snapshot, silently executes the requested future
+         frames with the latest controller inputs, presents the final result, and rolls
+         back to the snapshot.</p>
+
+      <p>Safety is built-in: whenever an emulated frame could touch host state that cannot be
+         rewound (such as writable floppy or hard disk images, an active serial connection,
+         session recording, or connected CCP clients), run-ahead is automatically paused and
+         the reason is displayed in the menu. If a speculative burst cannot restore its anchor,
+         the feature safely disables itself rather than corrupting the timeline.</p>
+
+      <h2>AGA and display fidelity</h2>
+
+      <p>Lisa's sprite serializer is now modeled in 35 ns clock samples. SuperHires (SHRES)
+         sprites (<code>SPRES=11</code>) are now distinctly separated from hires sprites,
+         reproducing the exact 4:4:2:1 width staircase photographed on a real Amiga 1200.
+         Both SHRES playfield halves also survive priority sorting and pixel composition.</p>
+
+      <p>Alice's wide-fetch address phases are fully modeled - including FMODE 10 page-mode
+         duplication and unaligned aliasing - along with per-resolution DMA bandwidth
+         ceilings, Lisa's banked <code>BPLCON2.RDRAM</code> palette readback, and the
+         one-hires-pixel <code>COLOR</code> write delay. In the vAmigaTS test sweep, the two
+         worst AGA test cases dropped from 16.179% and 70.931% mismatch down to a clean
+         <strong>0.000%</strong>, and all AGA golden probe tests in the repository are now
+         cross-validated against vAmiga 5.0b1.</p>
+
+      <h2>The browser build grows a second writable drive</h2>
+
+      <p>The WebAssembly build at <a href="../try/">copperline.dev/try</a> now wires up DF1
+         alongside DF0 and keeps floppy images writable in browser memory. Multi-disk
+         installations and disk-to-disk saves work completely client-side in your browser
+         session, with modified disk images downloadable at any time.</p>
+
+      <h2>Hardware accuracy fixes</h2>
+
+      <ul>
+        <li><strong>Vertical display window set/reset flop:</strong> DIWSTRT.V sets the window,
+            DIWSTOP.V clears it, and the last raster line resets it against standard line limits.
+            Empty windows (<code>DIWSTRT.V == DIWSTOP.V</code>) never open, and flop state survives
+            save states and frame wraps. <em>Kang Fu</em>'s interlaced CD32 menus and
+            <em>Nexus 7</em>'s scene transitions now render cleanly.</li>
+        <li><strong>AGA sprite palette banks:</strong> Corrected a transposition where even sprites
+            read colors through BPLCON4's ESPRM nibble and odd/attached pairs through OSPRM.
+            Copper fetches can now ride the line-end refresh slot, and the blitter deadline predictor
+            mirrors the refresh carve-out (verified against <em>Nexus 7</em>).</li>
+        <li><strong>DDFSTRT rewrite timing:</strong> Repositioning DDFSTRT behind the beam mid-line
+            prevents comparator matching so that the line fetch drops properly, fixing plane desyncs
+            in <em>Microcosm</em>'s control panel.</li>
+        <li><strong>Dual-playfield sprite priority:</strong> Sprites are judged against the winning
+            playfield's <code>BPLCON2</code> priority code rather than a fixed field, fixing the
+            bin Junior hides behind in <em>Chuck Rock II</em>.</li>
+        <li><strong>COPJMP strobe reads:</strong> Strobe reads now fire correctly and return
+            floating-bus residue, smoothing animations in <em>Sleepwalker</em>. First-line
+            BPLCON1 scrolling fills bitplane DMA blocks from pre-window fetches, eliminating the
+            corner notches in <em>Super Skidmarks</em> on CD32.</li>
+        <li><strong>HAM8 resolver:</strong> Preserved the history-dependent resolver, fixing a
+            0.17.0 regression where an indexed-cache shortcut broke HAM8 scenes.</li>
+        <li><strong>Paula disk sync:</strong> WORDSYNC reads re-frame on every DSKSYNC match,
+            and disk DMA armed without an inserted disk remains pending until real flux transitions
+            arrive rather than completing on phantom data.</li>
+        <li><strong>Akiko &amp; AROS:</strong> <code>CDINTREQ</code> reads return raw latches, RX DMA
+            wraps within its 256-byte page, and data-track audio plays return real firmware errors.
+            The bundled AROS ROM was updated with upstream fixes for <code>cd.device</code> interrupts,
+            <code>ciab.resource</code> handshakes, and stale IORequest handling.</li>
+        <li><strong>Picasso II BitBLT:</strong> Corrected transposed NOR and NAND raster op encodings,
+            BLT address counter stopping positions, and source-end derivation (contributed by Bernie Innocenti).</li>
+      </ul>
+
+      <h2>Desktop, tooling and platform</h2>
+
+      <ul>
+        <li><strong>Fuzzing &amp; parser hardening:</strong> New fuzz targets for untrusted media
+            headers (CHD) and save-state streams prevent unbounded allocations and safely validate
+            compressed maps.</li>
+        <li><strong>Supply-chain CI:</strong> Added <code>cargo deny</code> checks for dependency
+            licenses and advisories, automated MSRV builds, and scheduled workspace dependency updates.</li>
+        <li><strong>cputest conformance:</strong> Nightly WinUAE CPU test suites now propagate their
+            verdict directly to CI exit codes.</li>
+        <li><strong>m68k 0.11.6:</strong> Core update with driveless machine smoke testing in CI.</li>
+        <li><strong>Launcher improvements:</strong> Reorganized Storage, Video/Display, and Serial
+            tabs (boot priorities grouped with drives, proper host/port inputs for serial).</li>
+        <li><strong>Gamepad &amp; UI:</strong> Added a Quit entry to the main menu, hold-Select to
+            quit on standard pads, and alternate directional bindings during calibration.</li>
+      </ul>
+
+      <h2>Contributed this cycle</h2>
+
+      <p>Simon Dick (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>)
+         built two major headliners this release: the <code>copperline-import-uae</code> configuration
+         converter and the Hayes/WiModem232 serial modem, along with bundling the open-source
+         <code>lide.device</code> boot ROMs and adding per-slot drive settings.</p>
+
+      <p>Lee Hobson (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>)
+         overhauled the launcher's Storage, Video/Display, and Serial pages, aligning SCSI rows,
+         separating window and picture controls, and refining gamepad navigation.</p>
+
+      <p>Bernie Innocenti (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>)
+         fixed the Picasso II RTG BitBLT NOR/NAND raster operations and address-counter semantics.</p>
+
+      <h2>Compatibility notes</h2>
+
+      <p><strong>Save states from 0.17.0 do not load in 0.18.0.</strong> The FMV module, calibrated
+         drive timing, and display window flip-flop all changed the serialized machine state,
+         incrementing the state version from 61 to 70. Please re-create snapshots after upgrading.</p>
+
+      <p><strong>CD32 and CDTV default to zero floppy drives</strong> (<code>[floppy] drives = 0</code>),
+         matching original hardware. If you need a floppy drive on these models, add <code>drives = 1</code>
+         in your config or pass <code>--floppy-drives 1</code>.</p>
+
+      <p><strong>lide.device IDE boards now autoboot out of the box.</strong> Fitted boards default to
+         the bundled open-source ROMs by Matt Harlum (LIV2). Each drive slot now uses its own
+         <code>drive0</code>..<code>drive3</code> key with individual boot priorities.</p>
+
+      <p><strong>Configuration keys are strictly additive:</strong> No existing keys were removed or
+         renamed. New options include <code>[machine] fmv_rom</code>, <code>[emulation] run_ahead_frames</code>,
+         <code>[serial] mode = "modem"</code>, and <code>.nrg</code> / WAVE / MP3 cue audio tracks.</p>
+
+      <h2>Get it</h2>
+
+      <p>Pre-built packages for macOS, Linux, and Windows (including Windows on ARM) are available on the
+         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.18.0" target="_blank" rel="noopener">GitHub release page</a>,
+         and the Homebrew tap has been updated. You can also run the emulator directly in your browser at
+         <a href="../try/">copperline.dev/try</a>.</p>
+
+      <p>If you enjoy Copperline and want to support ongoing development, hardware testing equipment, and
+         benchmarking discs, please consider supporting the project on
+         <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>.</p>
+
+      <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
+         <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
+        no CDNs - even the fonts are served from here.
+      </p>
+    </div>
+    <nav class="footer__links">
+      <a href="./">News</a>
+      <a href="feed.xml">RSS</a>
+      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
