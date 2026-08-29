@@ -86,10 +86,28 @@
     <loc>http://localhost:3000/video</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/audio</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/cpu</loc>
   </url>
   <url>
     <loc>http://localhost:3000/peripherals</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/toccata</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/mhi</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/zz9k</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/picasso2</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/graffity</loc>
   </url>
   <url>
     <loc>http://localhost:3000/savestate</loc>

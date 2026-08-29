@@ -17,8 +17,16 @@ contend for the slots it leaves free. (The function tests audio before
 disk, which is equivalent because their fixed slots never overlap.)
 
 1. **Memory refresh** -- fixed odd slots 1/3/5 plus the line-end refresh
-   slot (E2, or E3 on NTSC long lines). Refresh only ever uses odd slots,
-   which is why it never collides with the Copper's even-slot cadence.
+   slot (E2, or E3 on NTSC long lines). The 1/3/5 slots sit on the odd
+   parity the Copper never fetches from; the line-end slot lands on the
+   Copper's even-slot cadence but stalls only the CPU and blitter -- the
+   refresh RGA strobe overlaps a concurrent Copper transfer on the real
+   chip, so the arbiter lets a Copper fetch through it
+   (`line_end_refresh_slot` in `src/bus/dma_slots.rs`). A Copper stream
+   that saturates the line needs that clock: Nexus 7's plasma-zoom text
+   reloads 128+3 palette entries per 3-line band between two beam WAITs,
+   and blocking E2 slips the chain ~6 cck per band until its BPLCON4
+   sprite-bank flip drifts into the sprite window.
 2. **Disk DMA** -- fixed slots 7/9/B, when DSKEN is set and a transfer is
    live.
 3. **Audio DMA** -- one fixed slot per Paula channel (D/F/11/13), claimed
@@ -90,6 +98,22 @@ unchanged line.
 Wide-FMODE lo-res slots are packed into the first eight CCKs of each
 16/32-CCK fetch unit; the rest of the unit remains available to later
 arbitration priorities.
+The value-window model still honours the DDF start comparator's single-cycle
+match. A DDFSTRT write that moves the match position to the current colour
+clock or behind the beam, before the position it replaces has fired, leaves
+that line with no start at all: the counter never returns to the new value
+before the horizontal wrap, so the line fetches nothing and no bitplane
+pointer advances. A write landing after the flop has set cannot un-start the
+run -- only DDFSTOP ends it. Restarting the fetch from the moved comparator
+instead truncates the first unit, so only the planes whose lo-res slot number
+survives it fetch, and those pointers stay one wide-fetch word ahead of the
+rest for the remainder of the display. Microcosm's CD32 status panel is the
+regression example: its Copper repoints seven bitplanes and drops DDFSTRT
+`$2C` to `$18` in one burst that overruns the line, committing the new value
+at hpos ~`$1E` on the panel's first line, which desynchronised BPL5 and BPL1
+(lo-res slots 6 and 7) from the other five planes and speckled the whole
+panel. Covered by the `ddfprobe-ddfmiss` golden probe, verified against
+vAmiga 5.0b1's `A1200_2MB` AGA setup.
 
 Slow RAM at `$C00000` is arbitrated through Agnus *like chip RAM*: a CPU
 access to slow RAM contends with DMA even though the RAM is outside the
@@ -358,6 +382,17 @@ wait for the blitter to go idle.
 - A CPU write to COPJMP1/COPJMP2 loads the Copper program counter
   immediately, but the target list has no visible effect until the Copper
   gets DMA slots to fetch it.
+- A CPU *read* of COPJMP1/COPJMP2 fires the same strobe: the register
+  decode acts on the address alone (reading a write-only register performs
+  a bus write of the floating data-bus residue into it -- the UAE/vAmiga
+  model), while the CPU reads back the undriven bus. Vertical-blank
+  handlers rely on this (`move.l #list,COP1LC` + `tst.w COPJMP1`) to make
+  a double-buffered list swap take effect in the same frame, before
+  display fetch begins (regression example: the Sleepwalker CD32
+  logo/intro double-buffer flip, which without the read strobe shows each
+  new pose one frame early in the still-displayed buffer). Test:
+  `copjmp_strobe_fires_on_read_access`; golden probe:
+  `timing-test/copprobe-jmpread.asm` (vAmiga-verified).
 - A Copper MOVE can update COP1LC/COP2LC; a later COPJMP strobe branches
   through the *current* value. A Copper MOVE to COPJMP1/COPJMP2 spends its
   second word fetch on the strobe, then two more bus-free Copper cycles
@@ -657,7 +692,7 @@ debits a per-frame instruction budget one of two ways, selected by
   tails, chip-bus grants and contention waits -- so the slice's elapsed bus
   CCK is the true hardware cost (`real_slice_accounting` in
   `src/emulator.rs`). Because the m68k core's 68000 cycle totals are exact
-  across its [SingleStepTests validation corpus](https://github.com/benletchford/m68k-rs/tree/m68k-v0.10.13#validation--testing),
+  across its [SingleStepTests validation corpus](https://github.com/benletchford/m68k-rs/tree/m68k-v0.11.0#validation--testing),
   this matches a stock PAL 68000.
 - `instructions`: a flat cycles-per-instruction quota
   (`COPPERLINE_REAL_CPU_CPI`, default 4.0), debited by retired

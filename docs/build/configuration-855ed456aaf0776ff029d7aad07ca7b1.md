@@ -68,9 +68,26 @@ range checks as the equivalent TOML fields:
 | `--port1 DEVICE` | `[input] port1` | `mouse` (default), `joystick`, `cd32`, `analogue`, `none` |
 | `--port2 DEVICE` | `[input] port2` | same devices; default `joystick` (`cd32` on the CD32 profile) |
 | `--autofire HZ` | `[input] autofire_hz` | `0` (off, the default) to `30` |
+| `--run-ahead FRAMES` | `[emulation] run_ahead_frames` | run-ahead latency reduction: `0` (off) to `4` |
 | `--full-screen` / `--windowed` | `[display] full_screen` | open fullscreen or windowed at start (default windowed) |
 | `--show-status-bar` / `--hide-status-bar` | `[display] status_bar` | status bar at start (default shown) |
+| `--perf-overlay` | `[display] perf_overlay` | show performance overlay at start |
 | `--menu-scale SIZE` | `[display] menu_scale` | size of the pop-up menu: `1x` (default) or `2x` |
+| `--rtc-time TIME` | `[machine] rtc_time` | seed battery clock with Unix seconds or `"YYYY-MM-DD HH:MM[:SS]"` |
+| `--rtc-frozen` | `[machine] rtc_frozen` | stop seeded clock at `--rtc-time` exactly |
+| `--audio` / `--noaudio` | `[audio] output_enabled` | enable (default) or disable real-time audio |
+| `--audio-device NAME` | `[audio] output_device` | host audio output device (substring match) |
+| `--audio-channel-mode MODE` | `[audio] channel_mode` | `stereo` (default) or `mono` |
+| `--audio-stereo-separation PCT` | `[audio] stereo_separation` | stereo width `0`-`100` (`100` default, `0` = mono) |
+| `--audio-filter MODE` | `[audio] audio_filter` | Paula filter: `auto` (default), `on`, `off` |
+| `--serial MODE` | `[serial] mode` | `off`, `stdout`, `midi`, `tcp`, `tcp-connect`, `pty`, `modem` |
+| `--parallel DEVICE` | `[parallel] device` | `none`, `printer`, `sampler` |
+| `--a2065-net BACKEND` | `[a2065] net` | `none`, `loopback`, `nat`, `bridge` |
+| `--a2065-interface NAME` | `[a2065] interface` | bridge adapter name (implies `--a2065-net bridge`) |
+| `--hostsocket-net BACKEND` | `[hostsocket] net` | `none`, `loopback`, `nat`, `bridge`, `host` |
+| `--hostsocket-interface NAME` | `[hostsocket] interface` | bridge adapter name (implies `--hostsocket-net bridge`) |
+| `--host-disk DEVICE [ATTACH]` | `[[host_disk]]` | attach host storage device read-write |
+| `--host-disk-read-only DEVICE [ATTACH]` | `[[host_disk]]` | attach host storage device read-only (default) |
 
 For example, to boot a stock A1200 profile but with 8 MB of fast RAM and a
 faster CPU, with no config file at all:
@@ -859,7 +876,7 @@ display, one line per data point (see
 Cmd+P (macOS) / Alt+P toggles it live for the rest of the session without
 touching the config, `--perf-overlay` shows it for one run, and
 `COPPERLINE_PERF_OVERLAY=1|0` overrides the config for a single run; the
-launcher's *Perf overlay* row (*A/V & Emu*, *Video*) writes it. Like the
+launcher's *Perf overlay* row (*A/V & Emu*, *Display*) writes it. Like the
 transient message overlay it is presentation only: screenshots, frame
 dumps, and recordings never include it.
 
@@ -987,7 +1004,7 @@ shader never fails the config, and never stops the machine from running.
 whole menu, rows and text together. It is a start-up preference:
 *Video Settings > Menu Size* changes it live without altering the saved
 value, `--menu-scale` sets it on the command line, and the launcher's A/V &
-Emu page (Video category) has a *Menu size* picker for the same.
+Emu page (Display category) has a *Menu size* picker for the same.
 
 `full_screen` opens the window fullscreen at start (borderless), and
 `status_bar` chooses whether the status bar starts visible. Both are start-up
@@ -995,7 +1012,7 @@ preferences; the runtime toggles -- `Cmd+F` / `Alt+F` for fullscreen and
 `Cmd+Shift+F` / `Alt+Shift+F` for the status bar, plus their menu items --
 still flip either live without changing the saved value. On the command line
 `--full-screen` / `--windowed` set the fullscreen state and `--show-status-bar` /
-`--hide-status-bar` set the status bar; the launcher's A/V & Emu page (Video
+`--hide-status-bar` set the status bar; the launcher's A/V & Emu page (Display
 category) has *Start fullscreen* and *Status bar* toggles for the same. Left
 unset they keep the defaults: windowed, status bar shown.
 
@@ -1325,11 +1342,12 @@ session (and implies `mode = "modem"`), and `--midi-out NAME`/
 `--midi-in NAME` imply `mode = "midi"`. The launcher's **I/O Ports** tab
 (Serial Port page) sets all
 of this interactively: **Device / Mode** picks the mode, and the mode brings
-its own address box with it -- **Connect** under `tcp-connect` for the
-remote to dial, **Listen** under `tcp` for the local bind address (it shows
-the `127.0.0.1:1234` default until something else is typed). Either box
-takes a `host:port`, with an IPv6 literal in brackets
-(`[::1]:1337`); clearing it unsets the key. The in-window
+its own address with it -- **Connect** under `tcp-connect` for the
+remote to dial, **Listen** under `tcp` for the local bind address -- as a
+pair of boxes, host and port. A box left empty shows its greyed default
+(host `127.0.0.1` on Listen, port `1234`) and an emptied box reverts to it;
+an IPv6 literal is typed bare or in brackets, and the saved key spells it
+bracketed (`[::1]:1337`). Emptying both boxes unsets the key. The in-window
 **MIDI In / MIDI Out** menu items select the MIDI endpoints. Under `modem`,
 the page shows the same **Listen** box (the incoming-call address above)
 plus a **Telnet** toggle for `telnet`; the phonebook has no row and stays
