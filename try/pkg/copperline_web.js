@@ -431,6 +431,22 @@ export class WebEmu {
         return ret !== 0;
     }
     /**
+     * The latched autocrop envelope in presentation-buffer pixels, as
+     * `[x, y, width, height]`, or empty while no content has been seen
+     * since the last presentation discontinuity. Tracked whether or not
+     * autocrop is on (it is what `present_layout` crops to), and it can
+     * change between frames like `present_width`: it grows at once when
+     * a program opens a larger display and tightens only after a smaller
+     * one has held steady for about half a second.
+     * @returns {Uint32Array}
+     */
+    present_content_rect() {
+        const ret = wasm.webemu_present_content_rect(this.__wbg_ptr);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
      * Emulated field lines the presentation buffer shows, for a page-side
      * CRT shader pass to key its scanline pitch: 270 on the standard 50 Hz
      * TV aperture, 214 on a 60 Hz scan (285 and 235 under the tube
@@ -446,6 +462,36 @@ export class WebEmu {
         return ret;
     }
     /**
+     * Where the presentation buffer lands on an `avail_w` x `avail_h`
+     * device-pixel viewport under the scaling and autocrop settings, for
+     * a page that draws the buffer itself: `[sx, sy, sw, sh, dx, dy, dw,
+     * dh, columns, lines]` -- the buffer sub-rect to show (the autocrop
+     * envelope, or the whole buffer), where to draw it (the viewport
+     * outside it is black), and the whole-number factors of an integer
+     * draw as device pixels per buffer column and per scan line (0, 0
+     * for a smooth fit). Empty until a frame has been presented.
+     *
+     * The buffer's pixel shape is the 4:3 glass's, read off the buffer
+     * itself (the page shows the whole buffer in a 4:3 element): drawn
+     * smooth, the whole buffer fills such a viewport exactly as the
+     * page's stretch does, and a crop keeps that shape in a letterbox;
+     * drawn integer, a standard scan takes a whole number per axis
+     * approximating that shape -- the desktop's per-axis fit, 4:5 pixels
+     * for a 200-line NTSC game on a 1080p screen -- and a programmable
+     * scan the uniform multiple. The page decides when to ask: the
+     * hosted page keeps its plain stretch while both settings are off,
+     * and while a bezel mode's fixed opening owns the glass.
+     * @param {number} avail_w
+     * @param {number} avail_h
+     * @returns {Uint32Array}
+     */
+    present_layout(avail_w, avail_h) {
+        const ret = wasm.webemu_present_layout(this.__wbg_ptr, avail_w, avail_h);
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
      * Presentation buffer: RGBA bytes in memory order, `present_width() x
      * present_rows()` pixels, directly viewable as canvas ImageData. The
      * pointer is only valid until the next `run` call (the buffer may
@@ -458,6 +504,11 @@ export class WebEmu {
         return ret >>> 0;
     }
     /**
+     * Rows of the presentation buffer. The 50 Hz TV aperture's row count
+     * for a standard scan under the default smooth scaling (a 60 Hz
+     * aperture is resampled onto it, so both fill the same 4:3 glass),
+     * the aperture's own woven rows under integer scaling (see
+     * `set_scaling`), the whole field's rows in full overscan.
      * @returns {number}
      */
     present_rows() {
@@ -622,6 +673,21 @@ export class WebEmu {
         return v1;
     }
     /**
+     * The desktop's `[display] autocrop` (default off): `present_layout`
+     * crops the presentation to the display window the hardware actually
+     * programs -- the rows and columns that carry fetched bitplane data,
+     * smoothed across frames exactly as the desktop smooths its crop --
+     * instead of the fixed TV aperture, so a 200-line game fills far
+     * more of a 16:9 screen, and under integer scaling earns the larger
+     * whole multiple the cropped picture fits. A layout setting alone:
+     * the buffer, screenshots and `present_content_rect` are unchanged,
+     * so the page redraws its held picture rather than re-presenting.
+     * @param {boolean} autocrop
+     */
+    set_autocrop(autocrop) {
+        wasm.webemu_set_autocrop(this.__wbg_ptr, autocrop);
+    }
+    /**
      * The CD32 pad's extra buttons on either port (red/blue arrive through
      * `set_joystick_port` as fire/button2).
      * @param {number} port
@@ -776,6 +842,28 @@ export class WebEmu {
         const ptr0 = passStringToWasm0(device, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         wasm.webemu_set_port_device(this.__wbg_ptr, port, ptr0, len0);
+    }
+    /**
+     * Presentation scaling, the desktop's `[display] scaling` knob:
+     * "smooth" (the default) or "integer" -- whole-number device pixels
+     * per buffer column and per scan line, centred in black, the look
+     * WinUAE and Amiberry call integer scaling. Unknown names are
+     * ignored, like `set_overscan`. The page draws the picture, so the
+     * setting mostly shapes `present_layout`'s answer; it also changes
+     * the buffer itself for a standard 60 Hz scan, whose captured
+     * aperture is presented at its own woven rows rather than resampled
+     * onto the 50 Hz aperture's row count (the desktop draws its
+     * unresampled canvas under integer scaling the same way), so the
+     * factors carry every scan line to the screen as one exact block.
+     * The last completed frame is re-presented under the new setting,
+     * like `set_overscan`, so a paused page repaints without stepping
+     * the machine.
+     * @param {string} mode
+     */
+    set_scaling(mode) {
+        const ptr0 = passStringToWasm0(mode, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.webemu_set_scaling(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * Centre the TV presentation on the glass, the desktop's `[display]
@@ -972,6 +1060,11 @@ function getArrayJsValueFromWasm0(ptr, len) {
     return result;
 }
 
+function getArrayU32FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
+}
+
 function getArrayU8FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
@@ -995,6 +1088,14 @@ function getFloat32ArrayMemory0() {
 
 function getStringFromWasm0(ptr, len) {
     return decodeText(ptr >>> 0, len);
+}
+
+let cachedUint32ArrayMemory0 = null;
+function getUint32ArrayMemory0() {
+    if (cachedUint32ArrayMemory0 === null || cachedUint32ArrayMemory0.byteLength === 0) {
+        cachedUint32ArrayMemory0 = new Uint32Array(wasm.memory.buffer);
+    }
+    return cachedUint32ArrayMemory0;
 }
 
 let cachedUint8ArrayMemory0 = null;
@@ -1095,6 +1196,7 @@ function __wbg_finalize_init(instance, module) {
     wasmModule = module;
     cachedDataViewMemory0 = null;
     cachedFloat32ArrayMemory0 = null;
+    cachedUint32ArrayMemory0 = null;
     cachedUint8ArrayMemory0 = null;
     wasm.__wbindgen_start();
     return wasm;
