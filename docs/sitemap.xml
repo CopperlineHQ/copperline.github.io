@@ -38,6 +38,9 @@
     <loc>http://localhost:3000/import-uae</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/winuae-state</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/headless</loc>
   </url>
   <url>
@@ -48,6 +51,9 @@
   </url>
   <url>
     <loc>http://localhost:3000/zorro</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/index-1</loc>
   </url>
   <url>
     <loc>http://localhost:3000/window</loc>
@@ -65,7 +71,19 @@
     <loc>http://localhost:3000/waveform</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/profiling</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/vscode</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/vscode-bartman</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/gdb</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/dap</loc>
   </url>
   <url>
     <loc>http://localhost:3000/control</loc>
@@ -99,6 +117,9 @@
   </url>
   <url>
     <loc>http://localhost:3000/mhi</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/copperhf</loc>
   </url>
   <url>
     <loc>http://localhost:3000/zz9k</loc>
