@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Try it in your browser - Copperline</title>
 <meta name="description" content="Copperline Amiga emulator compiled to WebAssembly running directly in your browser. Boots the bundled AROS ROM, with support for custom Kickstart ROMs and disk images.">
+<!-- Room service URL is configured here; service credentials stay server-side. -->
+<meta name="copperline-netplay-service" content="https://copperline-netplay.andrew-879.workers.dev">
 <meta name="theme-color" content="#0a0d16">
 <link rel="manifest" href="./manifest.webmanifest">
 <!-- Pre-16.4 iOS ignores the manifest's display mode; these keep
@@ -612,12 +614,10 @@
         and writable disks. Host or join starts a fresh machine, replacing any running game.
       </p>
       <ol class="try-note">
-        <li>The host opens <strong>Netplay</strong>, chooses the controller type and clicks
-          <strong>Host game</strong>. Use <strong>Copy code</strong> to send the offer to the other player.</li>
-        <li>The other player pastes the offer into <strong>Code from the other player</strong>,
-          clicks <strong>Join offer</strong>, and sends their answer code back.</li>
-        <li>The host pastes that answer and clicks <strong>Connect answer</strong>.
-          Both machines boot once the connection and matching settings are checked.</li>
+        <li>The host opens <strong>Netplay</strong> and clicks <strong>Host game</strong>.
+          Share the invitation link, or let the other player scan the QR code.</li>
+        <li>The other player opens the invitation, loads the same ROMs and disks, and clicks
+          <strong>Join game</strong>. Both machines boot once their settings are checked.</li>
       </ol>
       <p class="try-note">
         The host controls port 1; the joining player controls port 2. Each player's keyboard
@@ -625,7 +625,10 @@
         disabled; switch <strong>Joystick</strong> off to type on the shared Amiga keyboard.
         Keep both pages open. <strong>Disconnect</strong> ends the session and discards its disk writes.
         Browser sessions connect to other browsers only. If the connection cannot be made,
-        try a shared LAN or VPN. Exchange codes privately; ROMs and disks stay on your own devices.
+        use <strong>Copy diagnostics</strong> to save the connection report. Room connections
+        include relay fallback; <strong>Advanced</strong> has a relay-only option and manual
+        connection codes. Share invitations privately. They expire after 15 minutes;
+        an established game can continue. ROMs and disks stay on your own devices.
       </p>
 
       <p class="try-note">

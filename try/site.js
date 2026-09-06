@@ -26,8 +26,10 @@ if (netplay) {
       openNetplay();
     });
   });
+  const hasInvitation = () => location.hash === '#netplay-panel'
+    || new URLSearchParams(location.hash.slice(1)).has('room');
   window.addEventListener('hashchange', () => {
-    if (location.hash === '#netplay-panel') openNetplay();
+    if (hasInvitation()) openNetplay();
   });
-  if (location.hash === '#netplay-panel') openNetplay();
+  if (hasInvitation()) openNetplay();
 }
