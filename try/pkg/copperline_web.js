@@ -376,6 +376,24 @@ export class WebEmu {
     mouse_delta(dx, dy) {
         wasm.webemu_mouse_delta(this.__wbg_ptr, dx, dy);
     }
+    netplay_apply_disk() {
+        const ret = wasm.webemu_netplay_apply_disk(this.__wbg_ptr);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * Freeze at the current frame while the reliable channel negotiates a
+     * common boundary. Input packets continue to reconcile and acknowledge.
+     * @returns {number}
+     */
+    netplay_hold() {
+        const ret = wasm.webemu_netplay_hold(this.__wbg_ptr);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return ret[0];
+    }
     /**
      * [protocol version, maximum packet bytes, header bytes, input record bytes].
      * @returns {Uint32Array}
@@ -403,6 +421,25 @@ export class WebEmu {
     netplay_release_input() {
         wasm.webemu_netplay_release_input(this.__wbg_ptr);
     }
+    netplay_resume() {
+        const ret = wasm.webemu_netplay_resume(this.__wbg_ptr);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * @param {number} drive
+     * @param {Uint8Array} bytes
+     * @param {boolean} writable
+     */
+    netplay_stage_disk(drive, bytes, writable) {
+        const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_netplay_stage_disk(this.__wbg_ptr, drive, ptr0, len0, writable);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
     /**
      * [connected, frame, confirmed, acknowledged, rollbacks, replayed, checked].
      * Counters are exact JavaScript numbers for any practical session duration.
@@ -415,6 +452,37 @@ export class WebEmu {
         return v1;
     }
     /**
+     * Both stopped peers catch up to the greater of their two frame numbers.
+     * @param {number} frame
+     */
+    netplay_stop_at(frame) {
+        const ret = wasm.webemu_netplay_stop_at(this.__wbg_ptr, frame);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * Digests before and after the change are compared over the reliable
+     * channel; neither peer resumes on a mismatch.
+     * @returns {Uint8Array}
+     */
+    netplay_swap_digest() {
+        const ret = wasm.webemu_netplay_swap_digest(this.__wbg_ptr);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
+     * @returns {boolean}
+     */
+    netplay_swap_ready() {
+        const ret = wasm.webemu_netplay_swap_ready(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
      * Empty means there is no outgoing packet. Drain after every run call.
      * @returns {Uint8Array}
      */
@@ -423,6 +491,20 @@ export class WebEmu {
         var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
         return v1;
+    }
+    /**
+     * Validate an image without touching the live drive. Empty bytes mean eject.
+     * @param {number} drive
+     * @param {Uint8Array} bytes
+     * @param {boolean} writable
+     */
+    netplay_validate_disk(drive, bytes, writable) {
+        const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_netplay_validate_disk(this.__wbg_ptr, drive, ptr0, len0, writable);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Build a machine with a placeholder ROM; `load_rom` supplies the real
