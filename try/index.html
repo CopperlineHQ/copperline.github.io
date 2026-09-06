@@ -609,15 +609,16 @@
 
       <p class="try-note">
         Play a two-player floppy game with someone in another browser using
-        <a href="#netplay-panel">Netplay</a>. Both players need the same Copperline build,
-        ROMs, disks and machine settings, including video mode, floppy speed, drive sounds
-        and writable disks. Host or join starts a fresh machine, replacing any running game.
+        <a href="#netplay-panel">Netplay</a>. The host shares their ROMs, inserted disks
+        and machine configuration with the guest. Both players need the same Copperline
+        build. Host or join starts a fresh machine, replacing any running game.
       </p>
       <ol class="try-note">
         <li>The host opens <strong>Netplay</strong> and clicks <strong>Host game</strong>.
           Share the invitation link, or let the other player scan the QR code.</li>
-        <li>The other player opens the invitation, loads the same ROMs and disks, and clicks
-          <strong>Join game</strong>. Both machines boot once their settings are checked.</li>
+        <li>The other player opens the invitation and clicks <strong>Join game</strong>.
+          The host's files and settings transfer automatically. Both machines boot after
+          the received files are verified.</li>
       </ol>
       <p class="try-note">
         The host controls port 1; the joining player controls port 2. Each player's keyboard
@@ -628,7 +629,9 @@
         use <strong>Copy diagnostics</strong> to save the connection report. Room connections
         include relay fallback; <strong>Advanced</strong> has a relay-only option and manual
         connection codes. Share invitations privately. They expire after 15 minutes;
-        an established game can continue. ROMs and disks stay on your own devices.
+        an established game can continue. Files travel over the encrypted peer connection.
+        The guest's received files are used only for the session; their saved ROM and
+        local setup are kept.
       </p>
 
       <p class="try-note">
