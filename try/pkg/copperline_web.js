@@ -239,7 +239,8 @@ export class WebEmu {
         return ret !== 0;
     }
     /**
-     * Forward an Amiga raw key transition straight to the keyboard MCU.
+     * Forward an Amiga raw key transition to the keyboard MCU, or update the
+     * held keys sampled by the rollback timeline during netplay.
      * The page's on-screen keyboard draws Amiga keys, so its keys already
      * are rawkeys and a `KeyboardEvent.code` round trip would be a lossy
      * detour: $2B, the key beside Return on an ISO Amiga keyboard, has no
@@ -374,6 +375,54 @@ export class WebEmu {
      */
     mouse_delta(dx, dy) {
         wasm.webemu_mouse_delta(this.__wbg_ptr, dx, dy);
+    }
+    /**
+     * [protocol version, maximum packet bytes, header bytes, input record bytes].
+     * @returns {Uint32Array}
+     */
+    static netplay_packet_layout() {
+        const ret = wasm.webemu_netplay_packet_layout();
+        var v1 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @param {Uint8Array} packet
+     */
+    netplay_receive(packet) {
+        const ptr0 = passArray8ToWasm0(packet, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_netplay_receive(this.__wbg_ptr, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * Release this peer's held keys/controller without touching the guest directly.
+     */
+    netplay_release_input() {
+        wasm.webemu_netplay_release_input(this.__wbg_ptr);
+    }
+    /**
+     * [connected, frame, confirmed, acknowledged, rollbacks, replayed, checked].
+     * Counters are exact JavaScript numbers for any practical session duration.
+     * @returns {Float64Array}
+     */
+    netplay_status() {
+        const ret = wasm.webemu_netplay_status(this.__wbg_ptr);
+        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+        return v1;
+    }
+    /**
+     * Empty means there is no outgoing packet. Drain after every run call.
+     * @returns {Uint8Array}
+     */
+    netplay_take_packet() {
+        const ret = wasm.webemu_netplay_take_packet(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
     }
     /**
      * Build a machine with a placeholder ROM; `load_rom` supplies the real
@@ -728,7 +777,10 @@ export class WebEmu {
      * @param {boolean} enabled
      */
     set_floppy_sounds(enabled) {
-        wasm.webemu_set_floppy_sounds(this.__wbg_ptr, enabled);
+        const ret = wasm.webemu_set_floppy_sounds(this.__wbg_ptr, enabled);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Drive-sound level, 0-100, relative to Paula's output (the desktop's
@@ -736,7 +788,10 @@ export class WebEmu {
      * @param {number} percent
      */
     set_floppy_sounds_volume(percent) {
-        wasm.webemu_set_floppy_sounds_volume(this.__wbg_ptr, percent);
+        const ret = wasm.webemu_set_floppy_sounds_volume(this.__wbg_ptr, percent);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Emulated floppy drive speed (the desktop's `[floppy] speed`): a
@@ -746,7 +801,10 @@ export class WebEmu {
      * @param {number} percent
      */
     set_floppy_speed(percent) {
-        wasm.webemu_set_floppy_speed(this.__wbg_ptr, percent);
+        const ret = wasm.webemu_set_floppy_speed(this.__wbg_ptr, percent);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Digital joystick state for either port (1 or 2): the page's
@@ -841,7 +899,10 @@ export class WebEmu {
     set_port_device(port, device) {
         const ptr0 = passStringToWasm0(device, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.webemu_set_port_device(this.__wbg_ptr, port, ptr0, len0);
+        const ret = wasm.webemu_set_port_device(this.__wbg_ptr, port, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Presentation scaling, the desktop's `[display] scaling` knob:
@@ -886,6 +947,25 @@ export class WebEmu {
      */
     set_volume_percent(percent) {
         wasm.webemu_set_volume_percent(this.__wbg_ptr, percent);
+    }
+    /**
+     * Call after loading ROM/disks into a fresh WebEmu, before any run/state load.
+     * Connection codes and data-channel setup are handled by the page.
+     * @param {number} player
+     * @param {string} code
+     * @param {number} delay
+     * @param {number} window
+     * @param {string} controller
+     */
+    start_netplay(player, code, delay, window, controller) {
+        const ptr0 = passStringToWasm0(code, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(controller, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_start_netplay(this.__wbg_ptr, player, ptr0, len0, delay, window, ptr1, len1);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * Drain the mixed audio: interleaved stereo f32 at 44.1 kHz, one PAL
@@ -1049,6 +1129,11 @@ function getArrayF32FromWasm0(ptr, len) {
     return getFloat32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
 }
 
+function getArrayF64FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getFloat64ArrayMemory0().subarray(ptr / 8, ptr / 8 + len);
+}
+
 function getArrayJsValueFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     const mem = getDataViewMemory0();
@@ -1084,6 +1169,14 @@ function getFloat32ArrayMemory0() {
         cachedFloat32ArrayMemory0 = new Float32Array(wasm.memory.buffer);
     }
     return cachedFloat32ArrayMemory0;
+}
+
+let cachedFloat64ArrayMemory0 = null;
+function getFloat64ArrayMemory0() {
+    if (cachedFloat64ArrayMemory0 === null || cachedFloat64ArrayMemory0.byteLength === 0) {
+        cachedFloat64ArrayMemory0 = new Float64Array(wasm.memory.buffer);
+    }
+    return cachedFloat64ArrayMemory0;
 }
 
 function getStringFromWasm0(ptr, len) {
@@ -1196,6 +1289,7 @@ function __wbg_finalize_init(instance, module) {
     wasmModule = module;
     cachedDataViewMemory0 = null;
     cachedFloat32ArrayMemory0 = null;
+    cachedFloat64ArrayMemory0 = null;
     cachedUint32ArrayMemory0 = null;
     cachedUint8ArrayMemory0 = null;
     wasm.__wbindgen_start();
