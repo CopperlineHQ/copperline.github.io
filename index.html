@@ -102,7 +102,7 @@
         </a>
       </div>
       <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-18-0.html">Version 0.18.0 released &middot; read the release notes</a>
+        <a href="news/copperline-0-19-0.html">Version 0.19.0 released &middot; read the release notes</a>
       </p>
       <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
         <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
@@ -360,7 +360,10 @@
       <h2>Interactive and reverse debugging</h2>
       <p>Pause emulation at any time (<kbd>Cmd</kbd>+<kbd>B</kbd> / <kbd>Ctrl</kbd>+<kbd>B</kbd>) to inspect CPU registers,
          custom chipset state, memory, the Copper list, and audio channels. A dedicated GDB-style console
-         (<kbd>Cmd</kbd>+<kbd>K</kbd> / <kbd>Ctrl</kbd>+<kbd>K</kbd>) is available for command-driven debugging.</p>
+         (<kbd>Cmd</kbd>+<kbd>K</kbd> / <kbd>Ctrl</kbd>+<kbd>K</kbd>) is available for command-driven debugging.
+         Source-level debugging from Visual Studio Code works through the Debug Adapter Protocol server
+         (<code>copperline-ctl --dap</code>) and through Bartman's Amiga C/C++ extension; see
+         <a href="docs/vscode/">the VS Code chapter</a>.</p>
     </div>
 
     <div class="debugger">
@@ -617,12 +620,12 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       <div class="status-col status-col--mid">
         <h3>Recent additions</h3>
         <ul>
-          <li>CD32 Full Motion Video (FMV) module with pure-Rust MPEG-1 playback.</li>
-          <li>Calibrated CD32 drive timing model and CDXL playback from raw Mode 1 sectors.</li>
-          <li>Hayes-compatible serial modem with WiModem232 support and Telnet NVT.</li>
-          <li>UAE configuration converter (<code>copperline-import-uae</code>) for WinUAE, Amiberry, and FS-UAE.</li>
-          <li>Run-ahead latency reduction mode (<code>[emulation] run_ahead_frames</code>).</li>
-          <li>Pixel-exact AGA sprite serialization, wide-fetch address phasing, and palette bank fidelity.</li>
+          <li>Source-level debugging from Visual Studio Code through a Debug Adapter Protocol server (<code>copperline-ctl --dap</code>), with Step Back and every custom register.</li>
+          <li>Bartman's Amiga C/C++ extension running on Copperline, its profiler fed by per-colour-clock bus captures.</li>
+          <li>MCP server (<code>copperline-ctl --mcp</code>), uaelib trap, HRTMon freezer cartridge, and WinUAE save-state import.</li>
+          <li>Open-source CD32 FMV cartridge and A2091/A590 boot ROMs; no Commodore dump needed.</li>
+          <li><code>copperhf.device</code>, an emulator-native autoboot hard-disk controller.</li>
+          <li>Uncapped integer scaling with per-axis pixel-aspect fitting and display-window autocrop.</li>
         </ul>
       </div>
 
@@ -679,7 +682,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
           <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.18.0</span>-macos-universal.dmg and copy</span>
+            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.19.0</span>-macos-universal.dmg and copy</span>
 <span class="c-comment"># Copperline.app to your Applications folder</span>
 
 <span class="c-comment"># the build is ad-hoc signed; approve first launch if prompted under</span>
@@ -701,14 +704,14 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
           <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
             <pre><code><span class="c-comment"># make the AppImage executable and run</span>
-chmod +x Copperline-<span class="relver">0.18.0</span>-x86_64.AppImage
+chmod +x Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage
 
 <span class="c-comment"># boots the bundled AROS Kickstart replacement by default</span>
-./Copperline-<span class="relver">0.18.0</span>-x86_64.AppImage
+./Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage
 
 <span class="c-comment"># or launch with a specific Kickstart ROM or config file</span>
-./Copperline-<span class="relver">0.18.0</span>-x86_64.AppImage path/to/kickstart.rom
-./Copperline-<span class="relver">0.18.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
+./Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage path/to/kickstart.rom
+./Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
           </div>
 
           <div class="codeblock" role="group" aria-label="Install with Homebrew on Linux">
@@ -725,7 +728,7 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="codeblock" role="group" aria-label="Run the Windows build">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.18.0</span>-win-x64.zip (win-arm64 on ARM)</span>
+            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.19.0</span>-win-x64.zip (win-arm64 on ARM)</span>
 <span class="c-comment"># launch from terminal or double-click copperline.exe</span>
 copperline.exe
 copperline.exe path\to\kickstart.rom

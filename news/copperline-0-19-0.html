@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 0.19.0: Amiga debugging from VS Code, Bartman's profiler on Copperline, and two open ROMs - Copperline News</title>
+<meta name="description" content="Copperline 0.19.0 is the developer release: source-level debugging of Amiga programs from Visual Studio Code through a Debug Adapter Protocol server, Bartman's Amiga C/C++ extension running on Copperline, per-colour-clock chip-bus tracing, an MCP server, an HRTMon freezer cartridge, open CD32 FMV and A2091 ROMs, copperhf.device, integer scaling and autocrop.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 0.19.0: Amiga debugging from VS Code, Bartman's profiler on Copperline, and two open ROMs">
+<meta property="og:description" content="Debug Amiga games and demos from VS Code on a cycle-driven machine: breakpoints, Step Back, every custom register, and a profiler fed by real per-colour-clock bus captures. Plus open FMV and A2091 ROMs, copperhf.device, and integer scaling with autocrop.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-0-19-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/news/0-19-0/01-source-breakpoint-and-live-demo.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
+    <span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu">
+    <a href="../">Home</a>
+    <a href="./">News</a>
+    <a href="feed.xml">RSS</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../#download">Download</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
+    </a>
+    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
+    </a>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
+      <span class="nav__burger" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <article class="post">
+      <a class="post__back" href="./">&lt; all news</a>
+      <span class="post__date">6 September 2026 &middot; release</span>
+      <h1>Copperline 0.19.0: Amiga debugging from VS Code, Bartman's profiler on Copperline, and two open ROMs</h1>
+
+      <p>Copperline 0.19.0 is the developer release. An Amiga program can now be
+         debugged at source level from Visual Studio Code - breakpoints, stepping,
+         Step Back, variables, custom-chip registers and source-mapped CPU profiles -
+         through a new Debug Adapter Protocol server, and Bartman's Amiga C/C++
+         extension runs on Copperline with its visual CPU/DMA, Copper, bitmap and
+         blitter profiler fed by the emulator's own per-colour-clock bus captures.</p>
+
+      <p>Around that: an MCP server so AI coding agents can drive a live machine, a
+         WinUAE-compatible uaelib trap with <code>KPrintF</code> and on-screen debug
+         overlays, an HRTMon freezer cartridge, CPU chip-bus wait attribution and live
+         Kickstart symbols in the Frame Analyzer, warp boot, and WinUAE save-state
+         import. Away from the debugger: open-source replacements for the CD32 FMV
+         cartridge ROM and the A2091/A590 boot ROM, Simon Dick's emulator-native
+         <code>copperhf.device</code> hard-disk controller, uncapped integer scaling
+         with autocrop, <code>--run</code> on a bare Kickstart 1.3, and a bundled AROS
+         ROM refresh. As always, the compatibility fixes model the Amiga's chips
+         rather than individual titles.</p>
+
+      <h2>Source-level debugging in VS Code</h2>
+
+      <p><code>copperline-ctl --dap</code> is a Debug Adapter Protocol server built on
+         the control protocol, and <code>tools/vscode-copperline</code> packages it as a
+         VS Code extension. A <code>launch.json</code> names the executable and the
+         machine; F5 boots the bundled AROS ROM or a Kickstart from 1.3 up, warp-boots
+         to the program and stops at <code>main</code> with the source open.</p>
+
+      <figure class="shot" style="margin: 1.6rem 0">
+        <img src="../assets/news/0-19-0/05-relocatable-dwarf-source-and-disassembly.png" width="1600" height="793" alt="Copperline's native debugger in VS Code stopped in a C worker function, with the parameter and globals, the cross-file call stack, and the matching 68000 disassembly" loading="lazy">
+        <figcaption>The native adapter stopped in a C function of a two-file relocatable ELF build: parameter, globals, call stack and the matching 68000 instructions. Step Back had just been used to get here.</figcaption>
+      </figure>
+
+      <p>From there it works like debugging anything else in VS Code: source, function,
+         instruction, data and exception breakpoints with conditions the machine
+         evaluates itself (<code>d0 == 5</code>, <code>[$DFF006] != 0</code>); Step
+         Over, Into and Out by statement or instruction; Registers (FPU included),
+         Locals and Globals; hovers and watch expressions; Memory and Disassembly views
+         with per-instruction cycle counts and ROM addresses named live from the
+         running guest (<code>[exec] AllocMem+$12</code>). Two things are specific to
+         Copperline: <strong>Step Back</strong> and <strong>Reverse Continue</strong>
+         work, because the machine is deterministic and keeps a ring of snapshots; and
+         a Chipset scope plus a Custom Registers tree document every custom register's
+         bit fields and access rules, from a new reference covering all 237 of them.</p>
+
+      <p>Debug information comes from vasm's <code>LINE</code> hunks, the DWARF that
+         amiga-gcc 6.5 leaves in the executable, or an ELF sibling from Bartman's
+         <code>m68k-amiga-elf-gcc</code>, including relocatable multi-file builds whose
+         relocations the reader applies itself. The Profile button captures frames as a
+         source-mapped <code>.cpuprofile</code> with a <code>[Bus wait]</code> child
+         separating chip-DMA contention from CPU work. nvim-dap and any other DAP client
+         can use the same adapter. See the <a href="../docs/vscode/">VS Code chapter</a>
+         and the <a href="../docs/dap/">DAP reference</a>.</p>
+
+      <h2>Bartman's extension, running on Copperline</h2>
+
+      <p>Bartman's Amiga C/C++ extension - compiler, patched GDB, source annotations and
+         the visual profiler - only spoke to its own WinUAE build. A
+         <a href="https://github.com/LinuxJedi/vscode-amiga-debug/tree/copperline-backend" target="_blank" rel="noopener">public fork</a>
+         adds a Copperline backend (proposed upstream as
+         <a href="https://github.com/BartmanAbyss/vscode-amiga-debug/pull/307" target="_blank" rel="noopener">PR 307</a>;
+         the fork is pinned and documented, so nothing waits on the merge).</p>
+
+      <figure class="shot" style="margin: 1.6rem 0">
+        <img src="../assets/news/0-19-0/01-source-breakpoint-and-live-demo.png" width="1600" height="1004" alt="VS Code paused on a C breakpoint in the demo's frame loop with 68000 registers shown, beside the Copperline window running the demo with a guest-drawn debug overlay" loading="lazy">
+        <figcaption>Paused on a breakpoint in the template's frame loop, with the demo still on screen in Copperline and a debug overlay drawn by the guest.</figcaption>
+      </figure>
+
+      <p>Copperline grew the other half: <code>--gdb-gui</code> attaches the GDB stub to
+         the interactive window, so the screen stays visible and the audio plays;
+         <code>--gdb-dialect bartman</code> speaks the patched GDB's wire contract
+         (hunk offsets, the return-from-ROM breakpoint, <code>monitor reset</code>,
+         <code>DBG:</code> output); <code>monitor profile</code> writes the extension's
+         profile format from Copperline's precise sampler and full bus trace; and a
+         windowed launch waits paused until GDB connects, because on the first attempt
+         the guest finished loading before the debugger arrived.</p>
+
+      <figure class="shot" style="margin: 1.6rem 0">
+        <img src="../assets/news/0-19-0/03-blitter-channels-and-copper.png" width="1600" height="1004" alt="Bartman's profiler showing a frame timeline, blitter A, B, C and D channel images for each blit, and the Copper instruction list" loading="lazy">
+        <figcaption>The blitter view: A, B, C and D channel images for every blit in the frame, next to the Copper list.</figcaption>
+      </figure>
+
+      <p>The result is Bartman's profiler on a cycle-driven machine. Capture a frame and
+         the timeline shows the CPU call stack against DMA and blitter activity; the
+         Resources view reconstructs the displayed bitmap from the recorded Copper
+         writes (or shows a bitmap the guest registered by name); the Blitter view
+         renders any channel of any blit from the exact DMA words it moved, honouring
+         shifts, masks, modulos and the latched <code>BLTxDAT</code> inputs; and the
+         Copper list traces back to the frame and beam position of each MOVE.</p>
+
+      <figure class="shot" style="margin: 1.6rem 0">
+        <img src="../assets/news/0-19-0/06-live-copper-bitmap.png" width="1600" height="1004" alt="A captured CPU and DMA timeline above the Copper bitmap inferred from the captured custom registers, with the Copper instruction list alongside" loading="lazy">
+        <figcaption>The Resources view reconstructing the 320x256 display from captured custom registers and Copper writes.</figcaption>
+      </figure>
+
+      <p>The walkthrough, with a reproducible install of the fork, is
+         <a href="../docs/vscode-bartman/">Bartman with Copperline</a>.</p>
+
+      <h2>Profiling and chip-bus tracing</h2>
+
+      <p>None of the above needs VS Code. <code>profile.start</code> over the control
+         protocol writes one JSON record per committed frame: chip-bus ownership per
+         Agnus owner, blit records, the guest's idle clocks, and optionally the
+         per-colour-clock owner grid in vAmiga's DMA-debugger letter code and a
+         screenshot per frame. <code>"samples": true</code> records every retired
+         instruction with its PC and colour-clock cost, plus live call stacks from an
+         unwind table, and <code>copperline-ctl profile-report</code> converts a capture
+         to a Chrome <code>.cpuprofile</code>.</p>
+
+      <figure class="shot" style="margin: 1.6rem 0">
+        <img src="../assets/news/0-19-0/04-cpu-and-dma-profile.png" width="1600" height="1004" alt="Source-mapped CPU call timing above and chip-bus DMA usage by bitplane, blitter, CPU, refresh and Copper below" loading="lazy">
+        <figcaption>Source-mapped CPU call timing and chip-bus DMA usage for one frame.</figcaption>
+      </figure>
+
+      <p><code>frame.slots</code> and the <code>bus</code> event family expose a full
+         24-byte record per raster colour clock: register, DMA kind and subtype, size,
+         IPL, CIA E-clock phase, address, data, and a hardware-event mask (blitter
+         start and finish, Copper WAIT wake, DDF strobes, vertical blank, CIA IRQ pins,
+         STOP entry and wake). The Frame Analyzer's Beam tab gains a
+         <strong>CPU wait</strong> view (<kbd>W</kbd>) that attributes every colour
+         clock the 68000 lost to the DMA class that held the bus, with a per-line
+         stall gutter and the top stalled PCs. ROM addresses in call stacks,
+         disassembly and profiles are resolved from the running guest's library and
+         resident lists, so names follow <code>SetFunction()</code> patches and work on
+         any Kickstart or AROS revision.</p>
+
+      <h2>uaelib, MCP, and a freezer cartridge</h2>
+
+      <p>A WinUAE-compatible uaelib trap at <code>$F0FF60</code> answers the calls
+         Bartman's template makes: <code>warpmode()</code> unpaces the window,
+         <code>KPrintF</code> lands on stdout and in the debugger console, the
+         <code>debug_register_*</code> markers feed a new Frame Analyzer Resources tab
+         with decoded bitmap previews and palette swatches, and the overlay commands
+         are drawn on the window without ever reaching a screenshot. It is 32 bytes of
+         real 68k code decoded on the bus; there is no A-line or TRAP hook.</p>
+
+      <p><code>copperline-ctl --mcp</code> exposes every control-protocol method as a
+         Model Context Protocol tool - 95 of them, plus session launch and attach - so
+         Claude Code, Cursor or any MCP client can boot a machine, set breakpoints,
+         step, read memory and receive screenshots as images.
+         <code>claude mcp add copperline -- copperline-ctl --mcp</code> is the whole
+         setup.</p>
+
+      <p><code>[cartridge] model = "hrtmon"</code> fits an Action Replay-style freezer
+         with HRTMon 2.39 built reproducibly from the upstream GPL source: a 1 MiB bank
+         at <code>$A10000</code>, a shadow of every custom and CIA register copied into
+         it on a freeze, and the freeze itself as a level-7 NMI through the current VBR
+         that the 68000 takes at the next instruction boundary whatever the SR mask.
+         <strong>Tools &gt; Freeze</strong> in the window, <code>--freeze-after</code>
+         headless, <code>x</code> in the monitor to carry on.</p>
+
+      <h2>Two open ROMs</h2>
+
+      <p>Last release added the CD32 FMV cartridge but needed Commodore's cartridge ROM.
+         0.19.0 ships a clean-room GPL replacement: it installs
+         <code>cd32mpeg.device</code>, reads MPEG sectors through the host
+         <code>cd.device</code> and feeds the CL450 and L64111 ports, with no firmware
+         copied, plus a <code>videocd.library</code> and boot strap that cold-boot a
+         White Book Video CD into a track player under Kickstart. Under AROS the
+         matching driver merged upstream this cycle. Cannon Fodder's filmed intro plays
+         on both paths, and the CD32 profile now fits the cartridge by default
+         (<code>fmv_rom = ""</code> gives a stock machine).</p>
+
+      <p>The A2091 and A590 get a clean-room 64 KiB autoboot ROM: <code>scsi.device</code>
+         42.40 derived from the open A4091 software, an RDB automounter with Kickstart
+         1.3 support, and a WD33C93 transport that uses the board's DMAC for
+         even-aligned chip-side buffers and bounces through chip RAM otherwise. The
+         build also emits split U13/U12 EPROM halves for a real board.</p>
+
+      <h2>copperhf.device</h2>
+
+      <p>Simon Dick (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>)
+         built <code>copperhf.device</code>, Copperline's own hard-disk controller and
+         the analogue of WinUAE's <code>uaehf.device</code>: a Zorro II board with a
+         doorbell and completion-queue register block, an autoboot ROM whose RDB mounter
+         works from Kickstart 1.3 to AROS, the full trackdisk family (TD64, NSD,
+         <code>HD_SCSICMD</code> with autosense, disk-change interrupts), and a
+         completion time that is a pure function of emulated time, so host disk speed
+         never reaches the guest. <code>[copperhf] unit0</code>..<code>unit6</code> take
+         RDB hardfiles, bare images, <code>.hdz</code> and host directories; the launcher
+         gains a Copperline HD page; and <code>copperline-import-uae</code> maps WinUAE's
+         <code>uaeN</code> drives onto it.</p>
+
+      <h2>Scaling, autocrop, warp boot</h2>
+
+      <p>A new WGSL scaler pass replaces the <code>pixels</code> crate's built-in draw, so
+         integer scaling is no longer capped at 4x on a 5K or 6K display. Under the
+         default TV pixel aspect it now presents the unresampled canvas with a separate
+         whole-number factor per axis chosen to approximate the glass's pixel shape.
+         <code>[display] autocrop</code> crops the window to the display window the
+         program actually sets up - the renderer's own per-line DIW bounds, never a
+         title list - with a latch that grows immediately and shrinks after half a
+         second of stability, and it works for DblPAL and Multiscan screens too. The
+         <a href="../try/">browser build</a> gains both controls.</p>
+
+      <p><code>--warp-boot</code> runs any configuration unpaced from power-on until its
+         disks have been idle for ten seconds, then re-paces with audio;
+         <code>--warp-until</code> warps to an emulated timestamp. Lee Hobson's
+         <code>[emulation] auto_launch</code> makes a saved default boot straight past
+         the launcher, and he moved the host data directory out of the hidden config
+         tree into Documents. <code>--load-uss</code> imports a WinUAE
+         <code>.uss</code> state as an approximate interchange for resident code, and
+         <code>--run</code> now works on a bare Kickstart 1.3 because the staged boot
+         volume carries its own small GPL shell commands.</p>
+
+      <h2>Hardware accuracy fixes</h2>
+
+      <ul>
+        <li><strong>Floppy motor latch:</strong> every drive, DF0 included, clocks /MTR on
+            its own /SEL edge; DF0 was level-sensitive, which stopped a motor a loader
+            had just started. Alongside it the 68000 IPL recognition pipe keeps one
+            deadline per source and bounds an idle <code>STOP</code> nap, pre-display
+            sprite DMA is replayed at its own beam time, and a loader parked on DSKSYNC
+            no longer costs a whole-revolution scan per idle slice (<em>Spooky Town</em>
+            under Kickstart 1.3).</li>
+        <li><strong>DSKBYTR and IPF density:</strong> DSKBYTR is framed by the read shifter's
+            bit counter rather than the track's byte grid, WORDEQUAL is a one-cell level,
+            and IPF density models for Copylock, Speedlock and Brierley tracks decode with
+            their mastered cell timing (<em>Lemmings</em>' key-track check).</li>
+        <li><strong>Akiko:</strong> subcode frames with a regenerated Q position are delivered
+            during CD audio play (<em>Liberation</em>'s intro waits on them), and the TX DMA
+            keeps draining the command ring while a lead-in dump streams, so a 39-track
+            disc no longer laps it (<em>Pinball Illusions</em>).</li>
+        <li><strong>Agnus:</strong> a bitplane fetch run carried past the last display line is
+            cancelled with the vertical window, removing a phantom row the refreshed AROS
+            boot screen exposed; a new <code>ddfprobe-vspill</code> golden pins it.</li>
+        <li><strong>68030 and 68040 timing</strong> were recalibrated against a real A4000 with
+            three CPU boards and a new bootable probe: the 68030 now runs on the
+            MC68020UM tables and the 68040 gets a single-issue pipeline model, replacing a
+            scaled-68000 approximation that over-billed plain 68040 execution about 2x.</li>
+        <li><strong>Toccata:</strong> the mixer no longer holds the last DAC sample forever after
+            the codec stops (Simon Dick).</li>
+        <li><strong>Bundled AROS ROM</strong> refreshed to upstream master with the open
+            <code>cd32mpeg.device</code>, the CD32 chip-memory savings and CDXL
+            presentation series, and a locally patched 8 KiB process-stack floor.</li>
+      </ul>
+
+      <h2>Compatibility notes</h2>
+
+      <p><strong>Save states from 0.18.0 do not load in 0.19.0.</strong> The state format
+         moves from 70 to 79. Saves are now written atomically, so a failed save no
+         longer destroys the previous snapshot.</p>
+
+      <p><strong>Your host data moved to Documents, with no automatic migration.</strong>
+         Configs, save states, screenshots, recordings, NVRAM, gamepad calibrations and
+         the WHDLoad library now live in <code>~/Documents/Copperline/</code> (macOS,
+         Linux) or <code>Documents\Copperline\</code> (Windows). Copy your old
+         <code>~/.config/copperline</code> or <code>%APPDATA%\copperline</code> there
+         once, or Copperline starts at factory settings.</p>
+
+      <p><strong>Two defaults changed.</strong> The CD32 profile fits the open FMV cartridge
+         unless <code>fmv_rom = ""</code>, and an A2091 with no named ROM loads the
+         bundled one instead of refusing to start. An explicit ROM path is honoured as
+         before. The uaelib trap is on by default (<code>[emulation] uaelib = false</code>
+         turns it off), and emulated 68030/68040 speed changed with the recalibration.</p>
+
+      <p><strong>No configuration keys were removed or renamed.</strong></p>
+
+      <h2>Contributed this cycle</h2>
+
+      <p>Simon Dick (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>)
+         built <code>copperhf.device</code> end to end and fixed the Toccata's stopped-codec
+         DC offset. Lee Hobson (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>)
+         added auto-launch and the Documents move. Bartman wrote the extension this
+         release leans on, and the AROS developers merged the open FMV driver upstream.</p>
+
+      <h2>Get it</h2>
+
+      <p>Pre-built packages for macOS, Linux, and Windows (including Windows on ARM) are on the
+         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.19.0" target="_blank" rel="noopener">GitHub release page</a>,
+         and the Homebrew tap has been updated. You can also run the emulator in your browser at
+         <a href="../try/">copperline.dev/try</a>.</p>
+
+      <p>Copperline is funded by its patrons, who pay for the hardware every timing model
+         is measured against. If it is useful to you, consider supporting it on
+         <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>.</p>
+
+      <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
+         <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        This site is hand-written HTML and CSS. No trackers, no analytics, no cookies,
+        no CDNs - even the fonts are served from here.
+      </p>
+    </div>
+    <nav class="footer__links">
+      <a href="./">News</a>
+      <a href="feed.xml">RSS</a>
+      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

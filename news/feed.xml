@@ -8,6 +8,13 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.19.0: Amiga debugging from VS Code, Bartman's profiler on Copperline, and two open ROMs</title>
+    <link>https://copperline.dev/news/copperline-0-19-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-19-0.html</guid>
+    <pubDate>Sun, 06 Sep 2026 09:00:00 +0000</pubDate>
+    <description>The developer release: source-level debugging of Amiga programs from Visual Studio Code through a Debug Adapter Protocol server, with breakpoints, Step Back, variables and every custom register; Bartman's Amiga C/C++ extension running on Copperline with its visual profiler fed by per-colour-clock bus captures; an MCP server, a WinUAE-compatible uaelib trap, an HRTMon freezer cartridge, open-source CD32 FMV and A2091 ROMs, copperhf.device, uncapped integer scaling with autocrop, and floppy, Akiko and 68030/68040 timing fixes measured against real hardware.</description>
+  </item>
+  <item>
     <title>Copperline 0.18.0: The CD32 FMV module, calibrated drive timing, a modem on Paula, and import-uae</title>
     <link>https://copperline.dev/news/copperline-0-18-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-18-0.html</guid>
