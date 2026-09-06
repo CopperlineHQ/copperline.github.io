@@ -265,6 +265,16 @@
     text-transform: uppercase;
     color: var(--ink-mute);
   }
+  /* Netplay is supplied by the WASM publish; keep its site presentation
+     here so the next emulator update preserves it. */
+  #sidebar #netplay-panel { display: block; min-width: 0; font-size: 0.88rem; scroll-margin-top: 80px; }
+  #sidebar #netplay-panel summary { color: var(--copper-hi); scroll-margin-top: 80px; }
+  #sidebar #netplay-panel input,
+  #sidebar #netplay-panel textarea,
+  #sidebar #netplay-panel select { min-width: 0; max-width: 100%; }
+  #sidebar #netplay-panel textarea { font-size: 0.8rem; }
+  #sidebar #netplay-panel .btn { font-size: 0.88rem; padding: 0.5rem 0.6rem; }
+  #sidebar #netplay-panel :focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
   .try-side-row { display: flex; gap: 0.45rem; }
   .try-side-row .btn { flex: 1 1 0; min-width: 0; }
   .try-sidebar .btn {
@@ -498,6 +508,8 @@
                  raised, and try.js un-hides the button there. -->
             <button class="btn btn--ghost" id="devkeyboard" hidden>Device keys</button>
             <button class="btn btn--ghost" id="fullscreen">Fullscreen</button>
+            <button class="btn btn--ghost" id="netplay-open" type="button"
+                    aria-controls="sidebar netplay-panel" hidden>Netplay</button>
             <button class="btn btn--ghost" id="sidebar-toggle"
                     aria-controls="sidebar" aria-expanded="false">Controls</button>
             <span id="stat"></span>
@@ -594,6 +606,29 @@
       </p>
 
       <p class="try-note">
+        Play a two-player floppy game with someone in another browser using
+        <a href="#netplay-panel">Netplay</a>. Both players need the same Copperline build,
+        ROMs, disks and machine settings, including video mode, floppy speed, drive sounds
+        and writable disks. Host or join starts a fresh machine, replacing any running game.
+      </p>
+      <ol class="try-note">
+        <li>The host opens <strong>Netplay</strong>, chooses the controller type and clicks
+          <strong>Host game</strong>. Use <strong>Copy code</strong> to send the offer to the other player.</li>
+        <li>The other player pastes the offer into <strong>Code from the other player</strong>,
+          clicks <strong>Join offer</strong>, and sends their answer code back.</li>
+        <li>The host pastes that answer and clicks <strong>Connect answer</strong>.
+          Both machines boot once the connection and matching settings are checked.</li>
+      </ol>
+      <p class="try-note">
+        The host controls port 1; the joining player controls port 2. Each player's keyboard
+        joystick, first gamepad or touch controls drive their assigned port. Mouse input is
+        disabled; switch <strong>Joystick</strong> off to type on the shared Amiga keyboard.
+        Keep both pages open. <strong>Disconnect</strong> ends the session and discards its disk writes.
+        Browser sessions connect to other browsers only. If the connection cannot be made,
+        try a shared LAN or VPN. Exchange codes privately; ROMs and disks stay on your own devices.
+      </p>
+
+      <p class="try-note">
         Save states allow you to snapshot the complete emulated machine state. <strong>Quick save</strong>
         keeps a state in browser storage that persists across visits, while <strong>Save state</strong>
         downloads a standard <code>.clstate</code> snapshot file compatible with Copperline desktop
@@ -612,7 +647,7 @@
       </p>
 
       <p class="try-note">
-        Floppy disks are write-protected in the browser build. Official Commodore Kickstart ROMs
+        Official Commodore Kickstart ROMs
         are copyrighted and not included; please use ROMs dumped from your own hardware. The
         bundled AROS ROMs are distributed under the <a href="aros/LICENSE">AROS Public License</a>.
         If you encounter an issue, click <strong>Report a bug</strong> in the top navigation to
@@ -697,7 +732,7 @@
     setPos(document.documentElement.dataset.sidebarPos || 'side', false);
   })();
 </script>
-<script type="module" src="./try.js"></script>
+<script type="module" src="./site.js"></script>
 <script>
   // Installability and offline: the service worker precaches the page, the
   // wasm bundle and the AROS ROMs. Registered after load so its precache
