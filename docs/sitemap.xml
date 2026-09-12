@@ -41,10 +41,16 @@
     <loc>http://localhost:3000/winuae-state</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/netplay</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/headless</loc>
   </url>
   <url>
     <loc>http://localhost:3000/browser</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/libretro</loc>
   </url>
   <url>
     <loc>http://localhost:3000/publishing</loc>
@@ -84,6 +90,9 @@
   </url>
   <url>
     <loc>http://localhost:3000/dap</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/diverge</loc>
   </url>
   <url>
     <loc>http://localhost:3000/control</loc>
@@ -129,6 +138,9 @@
   </url>
   <url>
     <loc>http://localhost:3000/graffity</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/netplay-1</loc>
   </url>
   <url>
     <loc>http://localhost:3000/savestate</loc>
