@@ -933,3 +933,9 @@ kbd {
   * { animation: none !important; transition: none !important; scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Full workspace captures need the page width to keep inspector text legible. */
+.debugger--workspace, .analyzer--workspace { grid-template-columns: minmax(0, 1fr); }
+.debugger--workspace .debugger__panel, .analyzer--workspace .analyzer__panel { max-width: 76ch; }
+.release-video { aspect-ratio: 16 / 9; margin: 1.6rem 0; }
+.release-video iframe { width: 100%; height: 100%; border: 0; border-radius: 10px; }

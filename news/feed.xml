@@ -8,6 +8,13 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.20.0: Netplay, a new debugging workspace, and RetroArch</title>
+    <link>https://copperline.dev/news/copperline-0-20-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-20-0.html</guid>
+    <pubDate>Sat, 12 Sep 2026 06:09:51 +0000</pubDate>
+    <description>Two-player Amiga Netplay on desktop and in the browser, a rebuilt debugging workspace, and a RetroArch core. Plus save-state thumbnails, GIF clips, new hardware and cleaner Paula audio.</description>
+  </item>
+  <item>
     <title>Copperline 0.19.0: Amiga debugging from VS Code, Bartman's profiler on Copperline, and two open ROMs</title>
     <link>https://copperline.dev/news/copperline-0-19-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-19-0.html</guid>

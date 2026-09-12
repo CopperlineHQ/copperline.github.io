@@ -83,10 +83,9 @@
         <img src="assets/copperline-logo.png" alt="Copperline" width="620" height="128">
       </h1>
       <p class="hero__tag reveal" style="--d:2">
-        An open-source Amiga emulator focusing on cycle-level accuracy,
-        developer tooling, and inspection. Features an interactive reverse-stepping
-        debugger, a chip-bus frame analyzer, deterministic session replay, and
-        headless automation.
+        An open-source, cycle-driven Amiga emulator for games, demos and development.
+        Play together with rollback Netplay, explore the machine in the Debug workspace,
+        or load Copperline as a core in RetroArch. Runs on macOS, Linux, Windows and in your browser.
       </p>
       <div class="hero__cta reveal" style="--d:3">
         <a class="btn btn--primary" href="#download">
@@ -102,7 +101,7 @@
         </a>
       </div>
       <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-19-0.html">Version 0.19.0 released &middot; read the release notes</a>
+        <a href="news/copperline-0-20-0.html">Version 0.20.0 released &middot; read the release notes</a>
       </p>
       <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
         <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
@@ -142,7 +141,7 @@
         <span class="quickstart__num">3</span>
         <h3>Load software</h3>
         <p>Insert disk images (ADF, IPF, etc.) via the status bar or pass files on
-           the command line: <code>copperline game.adf</code>. WHDLoad archives can also
+           the command line: <code>copperline --insert-disk-after 0 df0 game.adf</code>. WHDLoad archives can also
            be launched directly: <code>copperline --whdload game.lha</code>.</p>
       </li>
     </ol>
@@ -163,6 +162,17 @@
     </div>
 
     <div class="grid">
+      <article class="card">
+        <span class="card__tag">multiplayer</span><h3>Rollback Netplay</h3>
+        <p>Two-player games across two desktops or two browsers, with invitations, automatic setup transfer
+           and synchronized floppy changes. Joysticks and two mice are supported.
+           <a href="docs/netplay/">Set up a game</a>.</p>
+      </article>
+      <article class="card">
+        <span class="card__tag">retroarch</span><h3>A libretro core</h3>
+        <p>A500, A1200 and CD32 games, WHDLoad, playlists, save states and RetroArch Netplay.
+           AROS is embedded. <a href="docs/libretro/">Install the core</a>.</p>
+      </article>
       <article class="card">
         <span class="card__tag">timing core</span>
         <h3>Cycle-level chip bus</h3>
@@ -190,10 +200,10 @@
       <article class="card">
         <span class="card__tag">peripherals</span>
         <h3>Audio and input</h3>
-        <p>Four-channel Paula audio with the hardware low-pass filter, plus Toccata sound cards
+        <p>Band-limited four-channel Paula audio with the hardware low-pass filter, plus Toccata sound cards
            and MHI MP3 decoders. Built-in MIDI routing supporting host MIDI, emulated Roland MT-32,
            and Coppersynth (SoundFont GM synth). Full input support for mice, joysticks, CD32 pads,
-           and USB gamepads.</p>
+           USB gamepads, a four-player adapter, light pens and light guns.</p>
       </article>
 
       <article class="card">
@@ -201,7 +211,8 @@
         <h3>Storage and media</h3>
         <p>Up to four floppy drives supporting ADF, ADZ, DMS, IPF, and SCP formats, plus real floppy
            drives via Greaseweazle. Hard disk and CD-ROM support via Gayle IDE, A4000 IDE, Zorro IDE,
-           and A2091/A3000/A4091 SCSI. Mount host directories as bootable AmigaDOS volumes or attach physical host drives.</p>
+           and A2091/A3000/A4091 SCSI. Compressed CHD hard disks, A600/A1200 PCMCIA cards,
+           copperhf and SF2000 SD controllers. Mount host directories as bootable AmigaDOS volumes.</p>
       </article>
 
       <article class="card">
@@ -359,16 +370,16 @@
   <section id="debugger" class="section">
     <div class="section__head">
       <span class="kicker">// debugger</span>
-      <h2>Interactive and reverse debugging</h2>
-      <p>Pause emulation at any time (<kbd>Cmd</kbd>+<kbd>B</kbd> / <kbd>Ctrl</kbd>+<kbd>B</kbd>) to inspect CPU registers,
-         custom chipset state, memory, the Copper list, and audio channels. A dedicated GDB-style console
-         (<kbd>Cmd</kbd>+<kbd>K</kbd> / <kbd>Ctrl</kbd>+<kbd>K</kbd>) is available for command-driven debugging.
-         Source-level debugging from Visual Studio Code works through the Debug Adapter Protocol server
-         (<code>copperline-ctl --dap</code>) and through Bartman's Amiga C/C++ extension; see
-         <a href="docs/vscode/">the VS Code chapter</a>.</p>
+      <h2>The Debug workspace</h2>
+      <p>Keep the Amiga display beside the CPU debugger, Frame Analyzer and Console.
+         <kbd>Cmd</kbd>+<kbd>B</kbd> on macOS or <kbd>Alt</kbd>+<kbd>B</kbd> on Linux/Windows
+         opens Debug; the Play / Debug switch changes layouts. Resize the panes, copy readouts,
+         edit memory and follow addresses between inspectors. Their state stays ready when you return to Play.
+         <a href="docs/window/">Explore the workspace</a>, or debug source code with
+         <a href="docs/vscode/">VS Code</a>.</p>
     </div>
 
-    <div class="debugger">
+    <div class="debugger debugger--workspace">
       <div class="dbg-gallery">
         <div class="dbg-gallery__tabs" role="tablist" aria-label="Debugger screens">
           <button class="dbg-tab" id="dbgtab-cpu" role="tab" aria-selected="true" aria-controls="dbgshot-cpu">CPU</button>
@@ -380,28 +391,28 @@
         </div>
 
         <figure class="dbg-gallery__shot" id="dbgshot-cpu" role="tabpanel" aria-labelledby="dbgtab-cpu">
-          <img src="assets/shot-dbg-cpu.png" width="716" height="536" alt="The debugger's CPU tab: the register file, decoded status register, a live 68000 disassembly at the PC, and transport controls including the reverse Frame, Step and Run buttons">
-          <figcaption><strong>CPU tab.</strong> Editable registers, decoded status register flags, live disassembly, and reverse execution controls.</figcaption>
+          <a href="assets/news/0-20-0/debug-workspace.jpg"><img src="assets/news/0-20-0/debug-workspace.jpg" width="1224" height="768" alt="State of the Art beside CPU registers, disassembly and memory in Copperline 0.20.0" loading="lazy"></a>
+          <figcaption><strong>CPU workspace.</strong> The Amiga display, editable registers, disassembly and memory in one window. Click for the full-size image.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-video" role="tabpanel" aria-labelledby="dbgtab-video" hidden>
-          <img src="assets/shot-dbg-video.png" width="716" height="536" alt="The debugger's Video tab: a decoded BPLCON0, per-plane and per-sprite isolation toggles, sprite DMA positions, and the 256-entry palette" loading="lazy">
-          <figcaption><strong>Video tab.</strong> Plane and sprite isolation toggles, sprite DMA decode, and active palette viewer.</figcaption>
+          <a href="assets/news/0-20-0/debug-video.jpg"><img src="assets/news/0-20-0/debug-video.jpg" width="1224" height="768" alt="Copperline 0.20.0 Video inspector beside the Amiga display" loading="lazy"></a>
+          <figcaption><strong>Video inspector.</strong> Bitplane and sprite controls, decoded display settings and the active palette. Click for the full-size image.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-audio" role="tabpanel" aria-labelledby="dbgtab-audio" hidden>
-          <img src="assets/shot-dbg-audio.png" width="716" height="536" alt="The debugger's Audio tab: Paula's four channels with decoded DMA state, latches and pointers, per-channel mute buttons and live oscilloscopes, plus a CD-DA row" loading="lazy">
-          <figcaption><strong>Audio tab.</strong> Decoded Paula DMA channels, per-channel mutes, live waveforms, and CD-DA status.</figcaption>
+          <a href="assets/news/0-20-0/debug-audio.jpg"><img src="assets/news/0-20-0/debug-audio.jpg" width="1224" height="768" alt="Copperline 0.20.0 Audio inspector with Paula channel state and waveforms" loading="lazy"></a>
+          <figcaption><strong>Audio inspector.</strong> Paula channel state, volume, period, pointers and waveforms. Click for the full-size image.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-iomap" role="tabpanel" aria-labelledby="dbgtab-iomap" hidden>
-          <img src="assets/shot-dbg-iomap.png" width="716" height="536" alt="The debugger's IO Map tab: the custom register bank with live values, with BPLCON0 selected and its bits decoded by name" loading="lazy">
-          <figcaption><strong>IO Map tab.</strong> Custom register viewer with live values and decoded bitfields.</figcaption>
+          <a href="assets/news/0-20-0/debug-iomap.jpg"><img src="assets/news/0-20-0/debug-iomap.jpg" width="1224" height="768" alt="Copperline 0.20.0 IO Map with custom-chip register values and documentation" loading="lazy"></a>
+          <figcaption><strong>IO Map.</strong> Custom registers with live values and their access rules. Click for the full-size image.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-break" role="tabpanel" aria-labelledby="dbgtab-break" hidden>
-          <img src="assets/shot-dbg-break.png" width="716" height="536" alt="The debugger's Break tab: a PC breakpoint, a memory watchpoint, and a DMACON chipset-register watch that stops on write" loading="lazy">
-          <figcaption><strong>Break tab.</strong> Conditional PC breakpoints, memory watchpoints, and custom register traps.</figcaption>
+          <a href="assets/news/0-20-0/debug-break.jpg"><img src="assets/news/0-20-0/debug-break.jpg" width="1224" height="768" alt="Copperline 0.20.0 Break inspector beside the Amiga display" loading="lazy"></a>
+          <figcaption><strong>Breakpoints.</strong> PC breakpoints, memory watchpoints and register traps. Click for the full-size image.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-console" role="tabpanel" aria-labelledby="dbgtab-console" hidden>
-          <img src="assets/shot-dbg-console.png" width="716" height="536" alt="The Copperline debugger console: a breakpoint is set and hit, the stop is reported with PC, beam position and frame, and the code at the stop is disassembled" loading="lazy">
-          <figcaption><strong>Console.</strong> GDB-style interactive command console in a separate window.</figcaption>
+          <a href="assets/news/0-20-0/debug-console.jpg"><img src="assets/news/0-20-0/debug-console.jpg" width="1224" height="768" alt="Copperline 0.20.0 Console in the shared Debug workspace" loading="lazy"></a>
+          <figcaption><strong>Console.</strong> Selectable output, command history and text editing alongside the Amiga display. Click for the full-size image.</figcaption>
         </figure>
       </div>
 
@@ -448,10 +459,10 @@
          colour clock and scanline to the active bus master.</p>
     </div>
 
-    <div class="analyzer">
+    <div class="analyzer analyzer--workspace">
       <figure class="analyzer__shot">
-        <img src="assets/shot-analyzer.png" width="1656" height="1450" alt="The Copperline frame analyzer window: a full-raster map of one frame with every colour clock coloured by its chip-bus owner and the captured picture ghosted underneath, a per-owner cycle tally with percentages, blitter grant and wait figures, and a selected-scanline strip" loading="lazy">
-        <figcaption><strong>Frame analysis.</strong> Visualising 313 scanlines by 227 colour clocks, showing bus master allocation overlaid on the captured video frame.</figcaption>
+        <a href="assets/news/0-20-0/frame-analyzer.jpg"><img src="assets/news/0-20-0/frame-analyzer.jpg" width="1224" height="768" alt="Copperline 0.20.0 Frame Analyzer with chip-bus ownership and the Amiga display" loading="lazy"></a>
+        <figcaption><strong>Frame analysis.</strong> Chip-bus ownership across a captured frame, with the Amiga display beside the analyzer.</figcaption>
       </figure>
 
       <div class="analyzer__panel">
@@ -518,13 +529,13 @@
       <div class="codeblock" role="group" aria-label="A scripted headless capture">
         <div class="codeblock__bar"><span></span><span></span><span></span> scripted capture</div>
         <pre><code><span class="c-comment"># boot a disk, press space after 4s, save a screenshot at 12s (headless)</span>
-copperline game.adf <span class="c-flag">--noaudio</span> \
+copperline <span class="c-flag">--factory --model</span> A500 <span class="c-flag">--insert-disk-after</span> 0 df0 game.adf <span class="c-flag">--noaudio</span> \
   <span class="c-flag">--press-after</span> 4 SPACE \
   <span class="c-flag">--screenshot-after</span> 12 shot.png
 
 <span class="c-comment"># record an input session, then replay it to render audio to WAV</span>
-copperline game.adf <span class="c-flag">--record-input</span> run.clscript
-copperline game.adf <span class="c-flag">--script</span> run.clscript <span class="c-flag">--audio-wav</span> run.wav</code></pre>
+copperline --insert-disk-after 0 df0 game.adf <span class="c-flag">--record-input</span> run.clscript
+copperline --insert-disk-after 0 df0 game.adf <span class="c-flag">--script</span> run.clscript <span class="c-flag">--audio-wav</span> run.wav</code></pre>
       </div>
     </div>
   </section>
@@ -620,14 +631,14 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
       </div>
 
       <div class="status-col status-col--mid">
-        <h3>Recent additions</h3>
+        <h3>New in 0.20.0</h3>
         <ul>
-          <li>Source-level debugging from Visual Studio Code through a Debug Adapter Protocol server (<code>copperline-ctl --dap</code>), with Step Back and every custom register.</li>
-          <li>Bartman's Amiga C/C++ extension running on Copperline, its profiler fed by per-colour-clock bus captures.</li>
-          <li>MCP server (<code>copperline-ctl --mcp</code>), uaelib trap, HRTMon freezer cartridge, and WinUAE save-state import.</li>
-          <li>Open-source CD32 FMV cartridge and A2091/A590 boot ROMs; no Commodore dump needed.</li>
-          <li><code>copperhf.device</code>, an emulator-native autoboot hard-disk controller.</li>
-          <li>Uncapped integer scaling with per-axis pixel-aspect fitting and display-window autocrop.</li>
+          <li>Desktop and browser rollback Netplay, invitations and synchronized floppy changes.</li>
+          <li>A shared Debug workspace with the Amiga screen, debugger, Frame Analyzer and Console.</li>
+          <li>A libretro core for RetroArch: A500, A1200, CD32 and WHDLoad.</li>
+          <li>Save-state thumbnails, versioned subsystem chunks and GIF clips.</li>
+          <li>Four-player adapter, light pen, PCMCIA cards, CHD hard disks, host serial and SF2000 SD.</li>
+          <li>Band-limited Paula audio, guest code coverage and headless screenshot checks.</li>
         </ul>
       </div>
 
@@ -684,7 +695,7 @@ copperline game.adf <span class="c-flag">--script</span> run.clscript <span clas
         <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
           <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.19.0</span>-macos-universal.dmg and copy</span>
+            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.20.0</span>-macos-universal.dmg and copy</span>
 <span class="c-comment"># Copperline.app to your Applications folder</span>
 
 <span class="c-comment"># the build is ad-hoc signed; approve first launch if prompted under</span>
@@ -706,14 +717,14 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
           <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
             <pre><code><span class="c-comment"># make the AppImage executable and run</span>
-chmod +x Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage
+chmod +x Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage
 
 <span class="c-comment"># boots the bundled AROS Kickstart replacement by default</span>
-./Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage
+./Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage
 
 <span class="c-comment"># or launch with a specific Kickstart ROM or config file</span>
-./Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage path/to/kickstart.rom
-./Copperline-<span class="relver">0.19.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
+./Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage path/to/kickstart.rom
+./Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
           </div>
 
           <div class="codeblock" role="group" aria-label="Install with Homebrew on Linux">
@@ -730,7 +741,7 @@ brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
         <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="codeblock" role="group" aria-label="Run the Windows build">
             <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.19.0</span>-win-x64.zip (win-arm64 on ARM)</span>
+            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.20.0</span>-win-x64.zip (win-arm64 on ARM)</span>
 <span class="c-comment"># launch from terminal or double-click copperline.exe</span>
 copperline.exe
 copperline.exe path\to\kickstart.rom
@@ -751,7 +762,9 @@ cargo build <span class="c-flag">--release</span>
 ./target/release/copperline path/to/kickstart.rom
 ./target/release/copperline <span class="c-flag">--config</span> copperline.toml</code></pre>
       </div>
-      <p class="download__req">Requires Rust 1.87+ (stable).</p>
+      <p><strong>RetroArch:</strong> download the platform's libretro ZIP from the release page and
+         follow the <a href="docs/libretro/">installation guide</a>. The core is installed manually.</p>
+      <p class="download__req">Building from source requires Rust 1.95+ (stable).</p>
     </div>
   </section>
 
