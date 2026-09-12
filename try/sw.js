@@ -12,7 +12,7 @@
 // no version dance beyond bumping CACHE when the precache list changes
 // shape.
 
-const CACHE = 'copperline-try-v0.20.0';
+const CACHE = 'copperline-try-v0.20.0-site-1';
 
 const PRECACHE = [
   './',
@@ -38,6 +38,7 @@ const PRECACHE = [
   './aros/LICENSE',
   '../style.css',
   '../assets/nav.js',
+  '../assets/theme.js',
   '../assets/copperline-icon.png',
   '../assets/fonts/ibm-plex-sans-var.woff2',
   '../assets/fonts/chakra-petch-700.woff2',

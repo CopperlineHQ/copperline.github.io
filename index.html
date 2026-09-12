@@ -25,362 +25,167 @@
 <link rel="preload" href="assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 
+<script src="assets/theme.js"></script>
 <link rel="stylesheet" href="style.css">
 <script src="assets/nav.js" defer></script>
 <script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#top">Skip to content</a>
 
 <div class="scanlines" aria-hidden="true"></div>
 
 <header class="nav">
-  <a class="nav__brand" href="#top">
-    <img src="assets/copperline-icon.png" alt="" width="34" height="34">
-    <span>Copperline</span>
+  <a class="nav__brand" href="./">
+    <img src="assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
   </a>
-  <nav class="nav__links" id="nav-menu">
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
     <a href="#features">Features</a>
-    <a class="nav__extra" href="#shots">Screenshots</a>
-    <a href="#debugger">Debugger</a>
-    <a href="#analyzer">Analyzer</a>
-    <a class="nav__extra" href="#status">Status</a>
     <a href="#download">Download</a>
-    <a class="nav__extra" href="#faq">FAQ</a>
-    <a class="nav__extra" href="#community">Community</a>
     <a href="try/">Try</a>
     <a href="docs/">Docs</a>
     <a href="news/">News</a>
-    <a href="projects/">Projects</a>
+    <a class="nav__extra" href="#community">Community</a>
+    <a class="nav__extra" href="projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
   </nav>
   <div class="nav__social">
     <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
     </a>
-    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
-    </a>
-    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
-    </a>
-    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
-      <span class="nav__burger" aria-hidden="true"></span>
-    </button>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
   </div>
 </header>
 
 <main id="top">
-
-  <!-- ===================== HERO ===================== -->
-  <section class="hero">
-    <div class="hero__bars" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <div class="hero__glow" aria-hidden="true"></div>
-
-    <div class="hero__inner">
-      <p class="eyebrow reveal">Amiga Emulation &middot; OCS / ECS / AGA &middot; Written in Rust</p>
-      <h1 class="hero__logo reveal" style="--d:1">
-        <img src="assets/copperline-logo.png" alt="Copperline" width="620" height="128">
-      </h1>
-      <p class="hero__tag reveal" style="--d:2">
-        An open-source, cycle-driven Amiga emulator for games, demos and development.
-        Play together with rollback Netplay, explore the machine in the Debug workspace,
-        or load Copperline as a core in RetroArch. Runs on macOS, Linux, Windows and in your browser.
-      </p>
-      <div class="hero__cta reveal" style="--d:3">
-        <a class="btn btn--primary" href="#download">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 3v10.5l3.3-3.3 1.4 1.4L12 17l-4.7-5.4 1.4-1.4L12 13.5V3h0zM5 19h14v2H5z"/></svg>
-          Download
-        </a>
-        <a class="btn btn--ghost" href="try/">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
-          Try in your browser
-        </a>
-        <a class="btn btn--ghost" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">
-          View source
-        </a>
+  <section class="hero hero--home">
+    <div class="hero__bars" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="home-hero">
+      <div class="home-hero__copy">
+        <p class="eyebrow">Amiga emulation · Written in Rust</p>
+        <h1 class="hero__logo"><img src="assets/copperline-logo.png" alt="Copperline" width="620" height="128"></h1>
+        <p class="hero__tag">An open-source Amiga emulator for games, demos and development.</p>
+        <p class="home-hero__platforms">For macOS, Linux, Windows and your browser.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="#download">Download Copperline</a>
+          <a class="btn btn--ghost" href="try/">Try in your browser</a>
+        </div>
+        <p class="home-hero__detail">OCS, ECS and AGA · A1000 through A4000 · CDTV and CD32</p>
       </div>
-      <p class="hero__release reveal" style="--d:4">
-        <a href="news/copperline-0-20-0.html">Version 0.20.0 released &middot; read the release notes</a>
-      </p>
-      <ul class="hero__chips reveal" style="--d:5" aria-label="Supported hardware">
-        <li>68000 - 68060</li><li>OCS</li><li>ECS</li><li>AGA</li><li>RTG</li>
-        <li>A1000 - A4000</li><li>CDTV</li><li>CD32</li><li>HAM8</li>
-      </ul>
+      <figure class="home-hero__shot">
+        <a href="assets/news/0-20-0/debug-workspace.jpg"><img src="assets/news/0-20-0/debug-workspace.jpg" width="1224" height="768" alt="Copperline 0.20.0 running State of the Art beside its CPU debugger and memory inspector" fetchpriority="high"></a>
+        <figcaption>The Amiga display and Debug workspace. <a href="#shots">More screenshots</a></figcaption>
+      </figure>
     </div>
   </section>
 
-  <hr class="copperline">
+  <aside class="release-strip" aria-label="Latest release">
+    <p><strong>New in 0.20.0</strong> Two-player Netplay, a shared Debug workspace and a RetroArch core.</p>
+    <a href="news/copperline-0-20-0.html">Read the release notes</a>
+  </aside>
 
-  <!-- ===================== QUICKSTART ===================== -->
-  <section id="quickstart" class="section section--quickstart">
+  <section id="download" class="section">
     <div class="section__head">
-      <span class="kicker">// quickstart</span>
-      <h2>Getting started</h2>
-      <p>Download a native build for desktop platforms or <a href="try/">try it directly in your browser</a>
-         via WebAssembly. It includes the open-source AROS ROM, allowing you to test configurations
-         immediately without needing your own Kickstart files. You can also
-         <a href="try/#netplay-panel">play a two-player floppy game across two browsers</a>
-         using matching ROMs and disks.</p>
+      <span class="kicker">// get started</span>
+      <h2>Download and run</h2>
+      <p>AROS, an open-source Kickstart replacement, is included. Bring your disk images;
+         some software needs an original Kickstart ROM. <a href="#status">Check compatibility</a>.</p>
     </div>
-
-    <ol class="quickstart__steps">
-      <li>
-        <span class="quickstart__num">1</span>
-        <h3>Download or install</h3>
-        <p>Grab pre-built packages for macOS, Linux, and Windows from
-           <a href="#download">the downloads section</a>, or install with Homebrew.</p>
-      </li>
-      <li>
-        <span class="quickstart__num">2</span>
-        <h3>Launch</h3>
-        <p>Run Copperline to open the configuration GUI, or launch from the terminal
-           to boot the built-in AROS Kickstart replacement.</p>
-      </li>
-      <li>
-        <span class="quickstart__num">3</span>
-        <h3>Load software</h3>
-        <p>Insert disk images (ADF, IPF, etc.) via the status bar or pass files on
-           the command line: <code>copperline --insert-disk-after 0 df0 game.adf</code>. WHDLoad archives can also
-           be launched directly: <code>copperline --whdload game.lha</code>.</p>
-      </li>
-    </ol>
-
-    <p class="quickstart__note">Standard Commodore Kickstart ROMs (1.3, 2.05, 3.1) and custom ROMs like
-       DiagROM are fully supported. Simply select your ROM in the launcher or pass it on the command line.</p>
+    <div class="start-layout">
+      <div class="tabs">
+        <div class="tabs__list" role="tablist" aria-label="Choose your platform">
+          <button class="tab" id="tab-macos" role="tab" aria-selected="true" aria-controls="panel-macos" data-os="macos">macOS</button>
+          <button class="tab" id="tab-linux" role="tab" aria-selected="false" aria-controls="panel-linux" data-os="linux" tabindex="-1">Linux</button>
+          <button class="tab" id="tab-windows" role="tab" aria-selected="false" aria-controls="panel-windows" data-os="windows" tabindex="-1">Windows</button>
+        </div>
+        <div class="tab-panel install-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
+          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.20.0/Copperline-0.20.0-macos-universal.dmg">Download for macOS</a>
+          <p>For Apple Silicon and Intel Macs. Open the DMG and copy <strong>Copperline.app</strong> to Applications.</p>
+          <p class="install-note">The app is ad-hoc signed. If macOS blocks the first launch, use <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>.</p>
+          <details class="install-more">
+            <summary>Install with Homebrew</summary>
+            <pre><code>brew tap CopperlineHQ/copperline https://github.com/CopperlineHQ/Copperline
+brew install copperline</code></pre>
+          </details>
+        </div>
+        <div class="tab-panel install-panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux" hidden>
+          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.20.0/Copperline-0.20.0-x86_64.AppImage">Download for Linux</a>
+          <p>AppImage for x86-64. Make it executable, then launch it:</p>
+          <pre><code>chmod +x Copperline-0.20.0-x86_64.AppImage
+./Copperline-0.20.0-x86_64.AppImage</code></pre>
+          <p class="install-note">A Vulkan driver is required. See <a href="docs/getting-started/">Linux setup and Flatpak instructions</a>.</p>
+        </div>
+        <div class="tab-panel install-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
+          <div class="install-actions">
+            <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.20.0/Copperline-0.20.0-win-x64.zip">Download for Windows x64</a>
+            <a href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.20.0/Copperline-0.20.0-win-arm64.zip">Windows ARM64</a>
+          </div>
+          <p>Extract the whole ZIP, then open <strong>copperline.exe</strong>. Keep the bundled ROMs and assets alongside it.</p>
+        </div>
+      </div>
+      <ol class="start-steps" id="quickstart">
+        <li><h3>Install Copperline</h3><p>Choose the download for your system, or <a href="try/">open the browser version</a>.</p></li>
+        <li id="launcher"><h3>Choose your Amiga</h3><p>The launcher starts with an A500 and AROS. Choose another machine or your own Kickstart ROM, then start it. <a href="docs/configuration/">Configuration guide</a>.</p></li>
+        <li><h3>Load your software</h3><p>On desktop, drag a disk image into the window or insert it from the status bar. <a href="docs/whdload/">WHDLoad archives</a> can launch directly too.</p></li>
+      </ol>
+    </div>
+    <p class="upgrade-note"><strong>Upgrading to 0.20?</strong> Recreate save states from 0.19 and earlier. Disk images and ordinary in-game saves are unaffected.</p>
+    <div class="download-links">
+      <a href="https://github.com/CopperlineHQ/Copperline/releases/latest">All release downloads</a>
+      <a href="docs/libretro/">Install the RetroArch core</a>
+      <a href="docs/getting-started/">Full installation guide</a>
+    </div>
+    <details class="install-more source-build">
+      <summary>Build from source or try the development branch</summary>
+      <p>Source builds require Rust 1.95 or newer and the <a href="docs/getting-started/">dependencies for your platform</a>.</p>
+      <pre><code>git clone https://github.com/CopperlineHQ/Copperline.git
+cd Copperline
+cargo build --release
+./target/release/copperline</code></pre>
+      <p>With the Homebrew tap installed, <code>brew install --HEAD copperline</code> builds the latest development version.</p>
+    </details>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== FEATURES ===================== -->
   <section id="features" class="section">
     <div class="section__head">
       <span class="kicker">// features</span>
-      <h2>Features and architecture</h2>
-      <p>Accurate chip-level emulation validated against test suites, custom test disks, and real hardware,
-         combined with rich inspection and debugging tools.</p>
+      <h2>Play, explore and build</h2>
     </div>
-
-    <div class="grid">
-      <article class="card">
-        <span class="card__tag">multiplayer</span><h3>Rollback Netplay</h3>
-        <p>Two-player games across two desktops or two browsers, with invitations, automatic setup transfer
-           and synchronized floppy changes. Joysticks and two mice are supported.
-           <a href="docs/netplay/">Set up a game</a>.</p>
-      </article>
-      <article class="card">
-        <span class="card__tag">retroarch</span><h3>A libretro core</h3>
-        <p>A500, A1200 and CD32 games, WHDLoad, playlists, save states and RetroArch Netplay.
-           AROS is embedded. <a href="docs/libretro/">Install the core</a>.</p>
-      </article>
-      <article class="card">
-        <span class="card__tag">timing core</span>
-        <h3>Cycle-level chip bus</h3>
-        <p>Chip bus arbitration is scheduled per colour clock across the CPU, Copper,
-           blitter, and DMA channels (display, sprite, audio, disk, and refresh), with
-           hardware bus sequencing and modelled interrupt latency.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">chipsets</span>
-        <h3>OCS, ECS &amp; AGA</h3>
-        <p>Configurable Agnus and Denise/Lisa revisions covering the A1000, A500, A500+,
-           A600, A1200, A3000, A4000, CDTV, and CD32. Supports Kickstart 1.2 through 3.1,
-           DiagROM, and the bundled AROS ROMs.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">cpu</span>
-        <h3>68000 through 68060</h3>
-        <p>Configurable 68000 to 68060 CPU models with accurate 68000 cycle counts, MMU support
-           (030/040/060), on-chip caches, 68060 dual-issue execution, and 68881/68882 FPU
-           emulation. An experimental JIT compiler is available for fast 68020+ execution.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">peripherals</span>
-        <h3>Audio and input</h3>
-        <p>Band-limited four-channel Paula audio with the hardware low-pass filter, plus Toccata sound cards
-           and MHI MP3 decoders. Built-in MIDI routing supporting host MIDI, emulated Roland MT-32,
-           and Coppersynth (SoundFont GM synth). Full input support for mice, joysticks, CD32 pads,
-           USB gamepads, a four-player adapter, light pens and light guns.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">storage</span>
-        <h3>Storage and media</h3>
-        <p>Up to four floppy drives supporting ADF, ADZ, DMS, IPF, and SCP formats, plus real floppy
-           drives via Greaseweazle. Hard disk and CD-ROM support via Gayle IDE, A4000 IDE, Zorro IDE,
-           and A2091/A3000/A4091 SCSI. Compressed CHD hard disks, A600/A1200 PCMCIA cards,
-           copperhf and SF2000 SD controllers. Mount host directories as bootable AmigaDOS volumes.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">expansion</span>
-        <h3>Pluggable Zorro boards</h3>
-        <p>Zorro II and III autoconfig expansion architecture with support for external WebAssembly
-           plugin cards. Community or custom boards can implement memory mapping, DMA, interrupts,
-           and I/O alongside built-in cards.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">networking</span>
-        <h3>Ethernet and networking</h3>
-        <p>Commodore A2065 Ethernet emulation supporting user-mode NAT with DHCP (no host root/driver required)
-           or direct bridging to host network adapters. Includes a HostSocket expansion board for direct
-           <code>bsdsocket.library</code> integration without a guest TCP/IP stack, and serial-over-TCP/telnet support.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">rtg</span>
-        <h3>RTG graphics</h3>
-        <p>High-colour Workbench and RTG display modes via Zorro III (Z3660) and Zorro II (Picasso II / II+
-           and Graffity) graphics cards. Supports 8, 16, and 32-bit colour depths with accelerated blits
-           and Picasso96 driver compatibility.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">graphics</span>
-        <h3>Video and display path</h3>
-        <p>Accurate OCS, ECS, and AGA video pipelines: bitplanes (up to 8 in AGA), HAM6/HAM8, Extra Half-Brite (EHB),
-           dual playfield, hardware sprites, and collision registers, all rendered in sync with the raster beam.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">presentation</span>
-        <h3>CRT shaders and display</h3>
-        <p>Customisable video presentation with CRT shaders (scanlines, shadow mask, CRT curvature), custom WGSL
-           shaders, integer scaling, aspect ratio correction, and deinterlacing for laced screens. Includes optional
-           monitor bezels with reactive LEDs and amber/green/sepia monochrome screen tints.</p>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">tooling</span>
-        <h3>Debugging and reproducibility</h3>
-        <p>Built-in reverse-stepping CPU and Copper debugger, GDB-compatible console interface, chip-bus frame analyzer,
-           deterministic state recording and playback (<code>.clscript</code>), and JSON-RPC control protocol for automated testing and scripting.</p>
-      </article>
+    <div class="grid home-features">
+      <article class="card"><h3>Amiga hardware, modelled in detail</h3><p>OCS, ECS and AGA machines with 68000–68060 CPUs, expansion boards, hard disks and CD support.</p><a href="docs/configuration/">Hardware and configuration</a></article>
+      <article class="card"><h3>Play together online</h3><p>Two-player rollback Netplay across two desktops or two browsers. The host shares the setup, including ROMs and supported media.</p><a href="docs/netplay/">Set up Netplay</a></article>
+      <article class="card"><h3>Run it in RetroArch</h3><p>A libretro core for A500, A1200 and CD32 software, with WHDLoad, playlists, save states and RetroArch Netplay.</p><a href="docs/libretro/">Install the core</a></article>
+      <article class="card"><h3>Step backwards through a bug</h3><p>Inspect registers and memory beside the Amiga display. Rewind execution to find the instruction that changed a value.</p><a href="#debugger">See the Debug workspace</a></article>
+      <article class="card"><h3>See where each bus cycle goes</h3><p>The Frame Analyzer shows when the CPU, Copper, blitter and DMA channels use chip memory.</p><a href="#analyzer">Explore frame analysis</a></article>
+      <article class="card"><h3>Automate your Amiga</h3><p>Script inputs, capture frames and replay sessions for regression tests. Debug Amiga source code from VS Code.</p><a href="#headless">Scripting and development</a></article>
     </div>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== SCREENSHOTS ===================== -->
   <section id="shots" class="section">
-    <div class="section__head">
-      <span class="kicker">// screenshots</span>
-      <h2>Screenshots</h2>
-      <p>Captures from Copperline running classic demos, Workbench, and games. Screenshots can be saved
-         to PNG and video recorded to lossless AVI in sync with the emulated clock.</p>
-    </div>
-
-    <figure class="shot shot--feature">
-      <img src="assets/shot-aga.png" width="1656" height="1450" alt="Copperline window showing a 256-colour AGA HAM8 image" loading="lazy">
-      <figcaption><strong>AGA HAM8.</strong> 262,144 colours rendered through the AGA display pipeline.</figcaption>
-    </figure>
-
+    <div class="section__head"><span class="kicker">// in action</span><h2>Demos and Workbench</h2></div>
     <div class="shot-row">
-      <figure class="shot">
-        <img src="assets/shot-desktop.png" width="1656" height="1450" alt="Workbench 3.1 desktop running in Copperline" loading="lazy">
-        <figcaption><strong>Workbench 3.1.</strong> Booted from an IDE hard disk on an A1200 profile.</figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="assets/shot-dancer.png" width="716" height="537" alt="Spaceballs State of the Art demo running in Copperline" loading="lazy">
-        <figcaption><strong>State of the Art.</strong> Spaceballs' classic OCS demo running in sync.</figcaption>
-      </figure>
+      <figure class="shot"><a href="assets/shot-dancer.png"><img src="assets/shot-dancer.png" width="716" height="537" alt="Spaceballs’ State of the Art demo running in Copperline" loading="lazy"></a><figcaption><strong>State of the Art.</strong> Spaceballs’ OCS demo.</figcaption></figure>
+      <figure class="shot"><a href="assets/shot-desktop.png"><img src="assets/shot-desktop.png" width="1656" height="1450" alt="Workbench 3.1 running on an A1200 profile in Copperline" loading="lazy"></a><figcaption><strong>Workbench 3.1.</strong> An A1200 booting from an IDE disk.</figcaption></figure>
+      <figure class="shot"><a href="assets/shot-hamazing.png"><img src="assets/shot-hamazing.png" width="692" height="540" alt="Desire’s HAMazing demo showing a robot and toy monkey under a swinging lamp" loading="lazy"></a><figcaption><strong>HAMazing.</strong> Lighting effects in HAM6.</figcaption></figure>
     </div>
-
-    <div class="shot-row shot-row--after">
-      <figure class="shot">
-        <img src="assets/shot-hamazing.png" width="692" height="540" alt="A scene from Desire's HAMazing demo: a robot and a toy monkey on a couch, lit by a swinging lamp, rendered in Hold-And-Modify" loading="lazy">
-        <figcaption><strong>HAMazing.</strong> Desire's HAM-6 demo showcasing dynamic lighting.</figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="assets/shot-inside.png" width="692" height="540" alt="A scene from Desire's Inside demo: an Amiga 500 motherboard drawn as pixel art, with the CPU, Paula, Fat Agnus, ROM and RAM banks labelled" loading="lazy">
-        <figcaption><strong>Inside.</strong> Desire's pixel-art Amiga 500 motherboard.</figcaption>
-      </figure>
-    </div>
-
-    <!-- Status bar callout -->
-    <div class="statusbar-callout">
-      <div class="statusbar-callout__text">
-        <span class="kicker">// status bar</span>
-        <h3>Hardware status at a glance</h3>
-        <p>The status bar provides immediate access to hardware status and media: power and drive activity
-           LEDs, live floppy track positions, disk insert and eject controls, volume adjustment, input mode
-           switching, and shortcuts for screenshots, pause, and power.</p>
+    <details class="more-shots">
+      <summary>More screenshots</summary>
+      <div class="shot-row">
+        <figure class="shot"><a href="assets/shot-aga.png"><img src="assets/shot-aga.png" width="1656" height="1450" alt="Copperline displaying a colourful image in AGA HAM8 mode" loading="lazy"></a><figcaption><strong>AGA HAM8.</strong> 262,144 colours through the AGA display pipeline.</figcaption></figure>
+        <figure class="shot"><a href="assets/shot-inside.png"><img src="assets/shot-inside.png" width="692" height="540" alt="Desire’s Inside demo showing an Amiga 500 motherboard in pixel art" loading="lazy"></a><figcaption><strong>Inside.</strong> Desire’s pixel-art Amiga motherboard.</figcaption></figure>
       </div>
-      <figure class="statusbar-callout__img">
-        <img src="assets/shot-statusbar.png" width="1424" height="106" alt="Close-up of the Copperline status bar showing power, floppy and hard-disk LEDs, track counter, disk controls, volume slider and power buttons" loading="lazy">
-      </figure>
-    </div>
+    </details>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== LAUNCHER ===================== -->
-  <section id="launcher" class="section">
-    <div class="section__head">
-      <span class="kicker">// configuration</span>
-      <h2>Graphical machine launcher</h2>
-      <p>Configure hardware profiles, CPU models, memory expansions, and storage devices directly in the GUI.
-         Configurations can be saved to and loaded from standard TOML configuration files.</p>
-    </div>
-
-    <div class="launcher">
-      <figure class="launcher__shot">
-        <img src="assets/shot-launcher.png" width="1656" height="1450" alt="The Copperline machine-configuration launcher on the Memory tab of an A1200 profile, showing machine profile buttons across the top, a category sidebar, and Chip / Fast / Slow RAM controls" loading="lazy">
-        <figcaption><strong>Machine Configuration.</strong> Profile tabs across the top and categories down the side for memory, CPU, storage, and display.</figcaption>
-      </figure>
-
-      <div class="launcher__panel">
-        <span class="card__tag">machine configuration</span>
-        <h3>Complete hardware configuration</h3>
-        <p>Easily select base machine profiles (from the Amiga 1000 through the 4000 and CD32) and adjust CPU models,
-           memory allocations (Chip, Fast, Slow, Zorro III), Kickstart ROMs, storage controllers, and display settings.</p>
-        <p>The GUI automatically reflects options exposed by external WASM plugin boards and synchronises with TOML
-           configuration files for easy sharing and command-line use.</p>
-      </div>
-    </div>
-
-    <div class="shot-row shot-row--after">
-      <figure class="shot">
-        <img src="assets/shot-launcher-storage.png" width="716" height="536" alt="The launcher's Hard Disk tab on an A1200 profile, with an IDE master image selected and a SCSI controller selector with seven unit slots" loading="lazy">
-        <figcaption><strong>Storage.</strong> IDE master and slave drives, plus A2091 / A4091 SCSI controllers with up to seven units.</figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="assets/shot-launcher-zorro.png" width="716" height="536" alt="The launcher's Zorro tab on an A500 profile, showing an external WASM plugin board's declared settings: mode, verbose, MTU, boot ROM and MAC address" loading="lazy">
-        <figcaption><strong>Expansion.</strong> External WASM plugin board settings declared dynamically by the plugin.</figcaption>
-      </figure>
-    </div>
-
-    <ul class="dbg-tabs" aria-label="What the launcher configures">
-      <li><span class="dbg-tabs__name">Profiles</span> Start from standard presets (A1000, A500, A600, A1200, A3000, A4000, CDTV, CD32) and customise as needed.</li>
-      <li><span class="dbg-tabs__name">Chipset &amp; CPU</span> Select CPU models (68000-68060), clock speeds, FPU, MMU, caches, and chipset revisions.</li>
-      <li><span class="dbg-tabs__name">Memory &amp; ROM</span> Configure Chip, Slow, Fast, and Zorro III RAM, alongside Kickstart and extended ROM images.</li>
-      <li><span class="dbg-tabs__name">Storage</span> Manage floppy images and swap playlists, IDE/SCSI hard disks, CD images, and host directory shares.</li>
-      <li><span class="dbg-tabs__name">Zorro &amp; plugins</span> Manage autoconfig expansion boards, WASM plugin cards, and A2065 network adapters.</li>
-      <li><span class="dbg-tabs__name">A/V &amp; display</span> Configure CRT shaders, aspect ratios, scaling options, audio filters, and volume levels.</li>
-    </ul>
-  </section>
-
-  <hr class="copperline">
-
-  <!-- ===================== DEBUGGER ===================== -->
   <section id="debugger" class="section">
-    <div class="section__head">
-      <span class="kicker">// debugger</span>
-      <h2>The Debug workspace</h2>
-      <p>Keep the Amiga display beside the CPU debugger, Frame Analyzer and Console.
-         <kbd>Cmd</kbd>+<kbd>B</kbd> on macOS or <kbd>Alt</kbd>+<kbd>B</kbd> on Linux/Windows
-         opens Debug; the Play / Debug switch changes layouts. Resize the panes, copy readouts,
-         edit memory and follow addresses between inspectors. Their state stays ready when you return to Play.
-         <a href="docs/window/">Explore the workspace</a>, or debug source code with
-         <a href="docs/vscode/">VS Code</a>.</p>
-    </div>
-
-    <div class="debugger debugger--workspace">
-      <div class="dbg-gallery">
+    <div class="section__head"><span class="kicker">// debugger</span><h2>Keep the machine in view</h2><p>The Debug workspace puts registers, disassembly and memory beside the Amiga display. Resize the panes, edit values and follow addresses between inspectors.</p></div>
+          <div class="dbg-gallery">
         <div class="dbg-gallery__tabs" role="tablist" aria-label="Debugger screens">
           <button class="dbg-tab" id="dbgtab-cpu" role="tab" aria-selected="true" aria-controls="dbgshot-cpu">CPU</button>
           <button class="dbg-tab" id="dbgtab-video" role="tab" aria-selected="false" aria-controls="dbgshot-video" tabindex="-1">Video</button>
@@ -415,500 +220,60 @@
           <figcaption><strong>Console.</strong> Selectable output, command history and text editing alongside the Amiga display. Click for the full-size image.</figcaption>
         </figure>
       </div>
-
-      <div class="debugger__panel">
-        <span class="card__tag">reverse debugging</span>
-        <h3>Step backwards in time</h3>
-        <p>Tracking down memory corruption or timing glitches often requires finding which instruction or DMA cycle
-           caused the issue. Copperline maintains a rolling buffer of deterministic state snapshots, allowing you to
-           step, run, or rewind backwards across frames.</p>
-        <p>Because the core is fully deterministic, rewinding and replaying execution produces consistent, cycle-identical
-           results every time.</p>
-
-        <ul class="rev-controls" aria-label="Reverse transport controls">
-          <li><span class="rev-controls__key">&lt; Step</span> Step one instruction backward</li>
-          <li><span class="rev-controls__key">&lt; Frame</span> Rewind to the previous video frame</li>
-          <li><span class="rev-controls__key">&lt; Run</span> Reverse execution to the previous breakpoint</li>
-        </ul>
-
-        <p class="debugger__note">Also includes automated reverse watchpoints for tracking the last writer to any memory location. See the
-           <a href="https://github.com/CopperlineHQ/Copperline/blob/main/docs/debugger/reverse.md" target="_blank" rel="noopener">reverse debugging documentation</a>.</p>
-      </div>
+    <div class="detail-columns">
+      <div><h3>Step backwards</h3><p>Reverse stepping replays earlier execution from snapshots. Find the last write to a memory address or run backwards to a breakpoint.</p><a href="docs/reverse/">Reverse debugging</a></div>
+      <div><h3>Switch between Play and Debug</h3><p>Use <kbd>Cmd</kbd>+<kbd>B</kbd> on macOS or <kbd>Alt</kbd>+<kbd>B</kbd> on Linux and Windows. Your inspectors stay ready when you return to Play.</p><a href="docs/window/">Workspace controls and inspectors</a></div>
     </div>
-
-    <ul class="dbg-tabs" aria-label="Debugger tabs">
-      <li><span class="dbg-tabs__name">CPU</span> View and edit registers, inspect status flags, and follow live disassembly at the Program Counter.</li>
-      <li><span class="dbg-tabs__name">Chipset</span> Inspect custom register states (DMACON, INTENA, INTREQ), Copper state, and beam counters.</li>
-      <li><span class="dbg-tabs__name">Copper</span> Disassemble active Copper lists with support for breakpoints and single-stepping.</li>
-      <li><span class="dbg-tabs__name">Video</span> Isolate or hide individual bitplanes and sprites to diagnose rendering issues, and view the active palette.</li>
-      <li><span class="dbg-tabs__name">Audio</span> Monitor DMA state machines, pointers, and live waveforms across all four Paula channels and CD-DA.</li>
-      <li><span class="dbg-tabs__name">Memory</span> Hex and ASCII memory editor with search, file export, memory editing, and write-tracking watchpoints.</li>
-      <li><span class="dbg-tabs__name">IO Map</span> Complete custom register map with live values and decoded bitfields.</li>
-      <li><span class="dbg-tabs__name">Break</span> Set conditional PC breakpoints, memory watchpoints, and custom register access traps.</li>
-    </ul>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== ANALYZER ===================== -->
   <section id="analyzer" class="section">
-    <div class="section__head">
-      <span class="kicker">// frame analyzer</span>
-      <h2>Chip bus frame analyzer</h2>
-      <p>The built-in frame analyzer visualises bus activity across an entire video frame, mapping every
-         colour clock and scanline to the active bus master.</p>
-    </div>
-
-    <div class="analyzer analyzer--workspace">
-      <figure class="analyzer__shot">
-        <a href="assets/news/0-20-0/frame-analyzer.jpg"><img src="assets/news/0-20-0/frame-analyzer.jpg" width="1224" height="768" alt="Copperline 0.20.0 Frame Analyzer with chip-bus ownership and the Amiga display" loading="lazy"></a>
-        <figcaption><strong>Frame analysis.</strong> Chip-bus ownership across a captured frame, with the Amiga display beside the analyzer.</figcaption>
-      </figure>
-
-      <div class="analyzer__panel">
-        <span class="card__tag">chip-bus arbitration</span>
-        <h3>Visualising DMA and bus contention</h3>
-        <p>In the Amiga architecture, the CPU, Copper, blitter, and DMA channels all share access to chip RAM.
-           The frame analyzer charts bus allocation across the entire display frame, making DMA contention,
-           CPU starvation, and blitter stalls immediately visible.</p>
-        <p>Inspect individual cycles to view exact beam positions, owners, and blitter operations, or evaluate
-           overall bus usage breakdowns across the frame.</p>
-
-        <p class="owner-list__cap">// chip-bus allocation (sample frame)</p>
-        <ul class="owner-list" aria-label="Per-owner chip-bus cycle share for one captured frame">
-          <li style="--c:#de4e4c"><span class="owner-list__sw"></span><span class="owner-list__name">blitter</span><span class="owner-list__bar"><i style="width:39.5%"></i></span><span class="owner-list__pct">39.5%</span></li>
-          <li style="--c:#4076e6"><span class="owner-list__sw"></span><span class="owner-list__name">bitplane</span><span class="owner-list__bar"><i style="width:37.8%"></i></span><span class="owner-list__pct">37.8%</span></li>
-          <li style="--c:#e6e8e0"><span class="owner-list__sw"></span><span class="owner-list__name">cpu</span><span class="owner-list__bar"><i style="width:11.2%"></i></span><span class="owner-list__pct">11.2%</span></li>
-          <li style="--c:#39404a"><span class="owner-list__sw"></span><span class="owner-list__name">idle</span><span class="owner-list__bar"><i style="width:7.5%"></i></span><span class="owner-list__pct">7.5%</span></li>
-          <li style="--c:#44b4be"><span class="owner-list__sw"></span><span class="owner-list__name">refresh</span><span class="owner-list__bar"><i style="width:1.8%"></i></span><span class="owner-list__pct">1.8%</span></li>
-          <li style="--c:#be7a36"><span class="owner-list__sw"></span><span class="owner-list__name">disk</span><span class="owner-list__bar"><i style="width:1.3%"></i></span><span class="owner-list__pct">1.3%</span></li>
-          <li style="--c:#48be60"><span class="owner-list__sw"></span><span class="owner-list__name">audio</span><span class="owner-list__bar"><i style="width:0.8%"></i></span><span class="owner-list__pct">0.8%</span></li>
-          <li style="--c:#eece48"><span class="owner-list__sw"></span><span class="owner-list__name">copper</span><span class="owner-list__bar"><i style="width:0.1%"></i></span><span class="owner-list__pct">0.1%</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <ul class="dbg-tabs" aria-label="What the frame analyzer surfaces">
-      <li><span class="dbg-tabs__name">Raster map</span> Visual representation of the full frame where each pixel corresponds to a colour clock coloured by its active bus master.</li>
-      <li><span class="dbg-tabs__name">Owner breakdown</span> Summary of cycle counts and percentages for CPU, blitter, Copper, DMA channels, and idle cycles.</li>
-      <li><span class="dbg-tabs__name">Blitter statistics</span> Quantifies blitter active cycles versus wait cycles caused by higher-priority DMA.</li>
-      <li><span class="dbg-tabs__name">Scanline inspector</span> Pin and inspect specific scanlines cycle-by-cycle to analyse bus handoffs in detail.</li>
-      <li><span class="dbg-tabs__name">Frame underlay</span> Overlay bus activity maps directly on top of the rendered frame to correlate DMA activity with visual elements.</li>
-      <li><span class="dbg-tabs__name">Register markers</span> View exactly where custom register writes occurred relative to the raster beam.</li>
-    </ul>
+    <div class="section__head"><span class="kicker">// frame analyzer</span><h2>Understand the timing</h2><p>See which chip owns each bus cycle across a video frame. Inspect a scanline, find blitter stalls, or overlay bus activity on the picture to connect timing with what appears on screen.</p></div>
+    <figure class="shot"><a href="assets/news/0-20-0/frame-analyzer.jpg"><img src="assets/news/0-20-0/frame-analyzer.jpg" width="1224" height="768" alt="Copperline’s Frame Analyzer showing chip-bus ownership beside the Amiga display" loading="lazy"></a><figcaption><a href="docs/window/">Read the Frame Analyzer guide</a></figcaption></figure>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== HEADLESS ===================== -->
   <section id="headless" class="section">
-    <div class="section__head">
-      <span class="kicker">// headless &amp; automation</span>
-      <h2>Scriptable and deterministic</h2>
-      <p>The emulation core is deterministic: unthrottled headless runs produce identical results
-         to interactive windowed sessions given the same inputs and media. This makes Copperline
-         well suited for regression testing, scripted capture, and automated benchmarking.</p>
-    </div>
-
-    <div class="headless">
-      <ul class="feature-list">
-        <li><strong>Command-line control:</strong> Configure machine profiles, CPU models, memory allocations,
-           and storage attachments directly via CLI arguments without a config file.</li>
-        <li><strong>Scripted input and capture:</strong> Inject keystrokes, mouse movement, and joystick inputs
-           on precise frame schedules, outputting screenshots, raw frame dumps, WAV audio, or save states.</li>
-        <li><strong>Session recording and replay:</strong> Record user inputs to a <code>.clscript</code> file
-           and replay sessions deterministically for bug reports and regression tests.</li>
-        <li><strong>Self-contained save states:</strong> Save states encapsulate the full machine state and can
-           be restored even without the original ROM file present.</li>
-        <li><strong>JSON-RPC control protocol:</strong> Drive live sessions over a loopback TCP socket (<code>--control</code>)
-           to manage breakpoints, inject input, swap media, and stream frame, serial, or interrupt events.</li>
-        <li><strong>Automated testing and CI:</strong> Run headless benchmarks and automated test suites in CI
-           environments without requiring a window server or GUI.</li>
-      </ul>
-
-      <div class="codeblock" role="group" aria-label="A scripted headless capture">
-        <div class="codeblock__bar"><span></span><span></span><span></span> scripted capture</div>
-        <pre><code><span class="c-comment"># boot a disk, press space after 4s, save a screenshot at 12s (headless)</span>
-copperline <span class="c-flag">--factory --model</span> A500 <span class="c-flag">--insert-disk-after</span> 0 df0 game.adf <span class="c-flag">--noaudio</span> \
-  <span class="c-flag">--press-after</span> 4 SPACE \
-  <span class="c-flag">--screenshot-after</span> 12 shot.png
-
-<span class="c-comment"># record an input session, then replay it to render audio to WAV</span>
-copperline --insert-disk-after 0 df0 game.adf <span class="c-flag">--record-input</span> run.clscript
-copperline --insert-disk-after 0 df0 game.adf <span class="c-flag">--script</span> run.clscript <span class="c-flag">--audio-wav</span> run.wav</code></pre>
-      </div>
-    </div>
+    <div class="section__head"><span class="kicker">// development</span><h2>Make a bug repeatable</h2><p>Schedule inputs and captures from the command line, record a session to a <code>.clscript</code> file, or control a running machine through JSON-RPC.</p></div>
+    <div class="codeblock"><div class="codeblock__bar">Headless capture: press Space at 4 seconds, capture at 12</div><pre><code>copperline --factory --model A500 --insert-disk-after 0 df0 game.adf \
+  --noaudio --press-after 4 SPACE --screenshot-after 12 shot.png</code></pre></div>
+    <p class="section-note">Repeatable results require the same configuration, media, clock seeds and inputs. Live files, networks and physical devices can affect a run. <a href="docs/architecture/">Determinism and the host boundary</a>.</p>
+    <div class="download-links"><a href="docs/headless/">Scripting guide</a><a href="docs/control/">Control protocol</a><a href="docs/vscode/">Debug with VS Code</a></div>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== HARDWARE ===================== -->
-  <section id="hardware" class="section">
-    <div class="section__head">
-      <span class="kicker">// hardware support</span>
-      <h2>Supported hardware and features</h2>
-      <p>From 68000 instruction prefetch to Paula audio mixing, timing is verified against test suites,
-         custom test disks, and real Amiga hardware.</p>
-    </div>
-
-    <ul class="badges">
-      <li>M68K CPU core</li>
-      <li>Agnus beam counters</li>
-      <li>Copper (per-slot)</li>
-      <li>Blitter (per-slot)</li>
-      <li>Denise / Lisa</li>
-      <li>Paula audio</li>
-      <li>Paula serial</li>
-      <li>Roland MT-32</li>
-      <li>Coppersynth GM synth</li>
-      <li>Toccata sound board</li>
-      <li>MHI decoder board</li>
-      <li>CIA-A / CIA-B</li>
-      <li>Chip / fast / slow RAM</li>
-      <li>Battery RTC</li>
-      <li>Floppy DMA</li>
-      <li>FluxBridge drives</li>
-      <li>Gayle IDE</li>
-      <li>A4000 IDE</li>
-      <li>lide.device IDE</li>
-      <li>A2091 SCSI</li>
-      <li>A4091 SCSI</li>
-      <li>A3000 SCSI (SDMAC)</li>
-      <li>Ramsey / Fat Gary</li>
-      <li>SCSI CD-ROM</li>
-      <li>ATAPI CD-ROM</li>
-      <li>Host hard disks</li>
-      <li>Parallel port</li>
-      <li>030 / 040 / 060 MMU</li>
-      <li>HOSTFS volumes</li>
-      <li>Zorro II / III autoconfig</li>
-      <li>Z3660 RTG</li>
-      <li>Picasso II / II+ RTG</li>
-      <li>Graffity RTG</li>
-      <li>A2065 Ethernet</li>
-      <li>HostSocket sockets</li>
-      <li>WASM Zorro plugins</li>
-      <li>OCS sprites</li>
-      <li>HAM6 / HAM8 / EHB</li>
-      <li>Dual playfield</li>
-      <li>CLXDAT collisions</li>
-      <li>DIWHIGH / BEAMCON0</li>
-      <li>SuperHires</li>
-      <li>FMODE wide fetch</li>
-      <li>CD32 / CDTV CD</li>
-    </ul>
-
-    <p class="hardware__note">
-      CPU emulation is powered by the open-source <a href="https://crates.io/crates/m68k" target="_blank" rel="noopener">m68k</a>
-      library on crates.io, with 68000 instruction cycle timing verified against the TomHarte SingleStepTests
-      suite. Chipset behaviour and timing are continuously tested against the vAmigaTS suite, custom hardware
-      test disks, and golden-render comparisons on CI. Full architecture documentation is available in the
-      <a href="https://github.com/CopperlineHQ/Copperline/tree/main/docs" target="_blank" rel="noopener">internals documentation</a>.
-    </p>
-  </section>
-
-  <hr class="copperline">
-
-  <!-- ===================== STATUS ===================== -->
   <section id="status" class="section">
-    <div class="section__head">
-      <span class="kicker">// project status</span>
-      <h2>Current development status</h2>
-      <p>Copperline is under active development. Below is an overview of what is currently well-tested,
-         recent additions, and known areas for future work.</p>
-    </div>
-
-    <div class="status-grid">
-      <div class="status-col status-col--good">
-        <h3>Working well</h3>
-        <ul>
-          <li>OCS, ECS, and AGA display pipeline, including HAM6/HAM8, EHB, dual playfield, and beam-synchronized rendering.</li>
-          <li>Cycle-accurate 68000 CPU emulation (SingleStepTests verified) and 68020-68060 support with FPU and MMU.</li>
-          <li>Deterministic session recording, save states, and reverse-stepping debugger.</li>
-          <li>Inspection tooling: CPU/chipset debugger, memory editor, and chip-bus frame analyzer.</li>
-          <li>Standard floppy formats (ADF, ADZ, DMS, IPF, SCP), Gayle and A4000 IDE, SCSI controllers, and bootable host directory mounts.</li>
-        </ul>
-      </div>
-
-      <div class="status-col status-col--mid">
-        <h3>New in 0.20.0</h3>
-        <ul>
-          <li>Desktop and browser rollback Netplay, invitations and synchronized floppy changes.</li>
-          <li>A shared Debug workspace with the Amiga screen, debugger, Frame Analyzer and Console.</li>
-          <li>A libretro core for RetroArch: A500, A1200, CD32 and WHDLoad.</li>
-          <li>Save-state thumbnails, versioned subsystem chunks and GIF clips.</li>
-          <li>Four-player adapter, light pen, PCMCIA cards, CHD hard disks, host serial and SF2000 SD.</li>
-          <li>Band-limited Paula audio, guest code coverage and headless screenshot checks.</li>
-        </ul>
-      </div>
-
-      <div class="status-col status-col--gap">
-        <h3>Not yet implemented</h3>
-        <ul>
-          <li>High-density (1.76 MB) and PC/CrossDOS floppy disk formats.</li>
-          <li>Non-QWERTY host keyboard layout mappings.</li>
-          <li>Additional physical floppy controller interfaces beyond Greaseweazle.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="status-next">
-      <span class="card__tag">// release notes</span>
-      <p>Development takes place in the open on GitHub. Detailed notes for each release are published on
-         the <a href="news/">news page</a>. You can also build the latest development branch directly using
-         <code>brew install --HEAD copperline</code> or Cargo.</p>
-    </div>
+    <div class="section__head"><span class="kicker">// compatibility · 0.20.0</span><h2>Compatibility and limitations</h2><p>Games, demos and Workbench run across OCS, ECS and AGA machines. Compatibility varies by software and configuration; hardware accuracy continues to improve.</p></div>
+    <dl class="compatibility">
+      <div><dt>ROMs and software</dt><dd>AROS is included so you can start without supplying a ROM. Some games and Workbench installations need an original Kickstart ROM. <a href="docs/getting-started/">ROM and setup guide</a>.</dd></div>
+      <div><dt>Netplay</dt><dd>Connect two desktops or two browsers using the same Copperline build. Desktop and browser peers cannot connect to each other. Mixed operating systems and browser engines still need qualification. <a href="docs/netplay/">Netplay requirements</a>.</dd></div>
+      <div><dt>Experimental JIT</dt><dd>The optional 68020+ JIT changes CPU timing and is off by default. Leave it disabled when accurate instruction timing matters. <a href="docs/configuration/">CPU settings</a>.</dd></div>
+      <div><dt>Physical floppy drives</dt><dd>Greaseweazle controllers are supported through FluxBridge. Physical media and devices cannot be rewound with a save state. <a href="docs/fluxbridge/">Supported hardware and limitations</a>.</dd></div>
+      <div><dt>Disk formats</dt><dd>Standard floppy images use the double-density Amiga format. 1.76 MB Amiga and sector-based PC/CrossDOS images are not supported. <a href="docs/configuration/">Supported image formats</a>.</dd></div>
+      <div><dt>Keyboard layouts</dt><dd>Host keys map to Amiga keys by physical position. Input does not automatically adapt to the host’s selected keyboard layout.</dd></div>
+    </dl>
+    <p class="section-note" id="hardware">Hardware behaviour is checked against CPU and chipset test suites, custom test disks and real Amigas. See the <a href="docs/">hardware documentation</a> for details.</p>
+    <p class="section-note">Found a problem? <a href="https://github.com/CopperlineHQ/Copperline/issues">Check existing issues or report it</a> with the version, machine configuration and steps to reproduce it. An input recording can help.</p>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== DOWNLOAD ===================== -->
-  <section id="download" class="section section--download">
-    <div class="download">
-      <span class="kicker">// download</span>
-      <h2>Get Copperline</h2>
-      <p>Download pre-compiled binaries for macOS, Linux, and Windows, or build from source with a standard
-         Rust toolchain. Pre-built packages include the open-source AROS Kickstart replacement, so you can
-         get started immediately without configuring ROM files.</p>
-
-      <a class="btn btn--primary btn--big" href="https://github.com/CopperlineHQ/Copperline/releases/latest" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 3v10.5l3.3-3.3 1.4 1.4L12 17l-4.7-5.4 1.4-1.4L12 13.5V3h0zM5 19h14v2H5z"/></svg>
-        Download the latest release
-      </a>
-
-      <div class="tabs">
-        <div class="tabs__list" role="tablist" aria-label="Choose your platform">
-          <button class="tab" id="tab-macos" role="tab" aria-selected="true" aria-controls="panel-macos" data-os="macos">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16.36 12.6c-.02-2.06 1.68-3.05 1.76-3.1-0.96-1.4-2.45-1.6-2.98-1.62-1.27-.13-2.48.75-3.12.75-.64 0-1.64-.73-2.7-.71-1.39.02-2.67.81-3.38 2.05-1.44 2.5-.37 6.2 1.04 8.23.69.99 1.51 2.1 2.59 2.06 1.04-.04 1.43-.67 2.69-.67 1.25 0 1.61.67 2.71.65 1.12-.02 1.83-1.01 2.51-2.01.79-1.15 1.12-2.27 1.14-2.33-.03-.01-2.18-.84-2.2-3.3zM14.3 6.54c.57-.69.95-1.65.85-2.6-.82.03-1.81.54-2.4 1.23-.53.61-.99 1.59-.87 2.52.91.07 1.85-.46 2.42-1.15z"/></svg>
-            macOS
-          </button>
-          <button class="tab" id="tab-linux" role="tab" aria-selected="false" aria-controls="panel-linux" data-os="linux" tabindex="-1">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2c-1.7 0-3 1.6-3 3.6 0 .9.1 1.5-.4 2.5-.5 1-1.7 2.3-2.3 4.3-.3 1-.2 1.9-.5 2.5-.3.6-.9 1-1.2 1.7-.1.4 0 .8.4.9.7.3 1.7.5 2.4 1.1.6.5.9 1.2 1.6 1.5.3.1.7.2 1 .1.6-.1 1-.6 1.5-.9.5 0 1.1 0 1.6 0 .5.3.9.8 1.5.9.3.1.7 0 1-.1.7-.3 1-1 1.6-1.5.7-.6 1.7-.8 2.4-1.1.4-.1.5-.5.4-.9-.3-.7-.9-1.1-1.2-1.7-.3-.6-.2-1.5-.5-2.5-.6-2-1.8-3.3-2.3-4.3-.5-1-.4-1.6-.4-2.5C15 3.6 13.7 2 12 2zm-1.4 4.3c.4 0 .7.4.7.9s-.3.9-.7.9-.7-.4-.7-.9.3-.9.7-.9zm2.8 0c.4 0 .7.4.7.9s-.3.9-.7.9-.7-.4-.7-.9.3-.9.7-.9zM12 9.2c.7 0 1.6.4 1.6.8 0 .3-.4.5-.8.7-.3.2-.6.5-.8.5s-.5-.3-.8-.5c-.4-.2-.8-.4-.8-.7 0-.4.9-.8 1.4-.8z"/></svg>
-            Linux
-          </button>
-          <button class="tab" id="tab-windows" role="tab" aria-selected="false" aria-controls="panel-windows" data-os="windows" tabindex="-1">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 5.4l7.5-1v7.1H3V5.4zm0 13.2l7.5 1v-7H3v6zM11.3 4.3L21 3v8.5h-9.7V4.3zm0 8.2H21V21l-9.7-1.3v-7.2z"/></svg>
-            Windows
-          </button>
-        </div>
-
-        <div class="tab-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
-          <div class="codeblock" role="group" aria-label="Run the macOS .dmg">
-            <div class="codeblock__bar"><span></span><span></span><span></span> run the macos .dmg</div>
-            <pre><code><span class="c-comment"># open Copperline-<span class="relver">0.20.0</span>-macos-universal.dmg and copy</span>
-<span class="c-comment"># Copperline.app to your Applications folder</span>
-
-<span class="c-comment"># the build is ad-hoc signed; approve first launch if prompted under</span>
-<span class="c-comment"># System Settings &gt; Privacy &amp; Security ("Open Anyway")</span></code></pre>
-          </div>
-
-          <div class="codeblock" role="group" aria-label="Install with Homebrew">
-            <div class="codeblock__bar"><span></span><span></span><span></span> or install with homebrew</div>
-            <pre><code><span class="c-comment"># tap the repository and install the latest release</span>
-brew tap CopperlineHQ/copperline https://github.com/CopperlineHQ/Copperline
-brew install copperline
-
-<span class="c-comment"># or build the latest development version from main</span>
-brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
-          </div>
-        </div>
-
-        <div class="tab-panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux" hidden>
-          <div class="codeblock" role="group" aria-label="Run the Linux AppImage">
-            <div class="codeblock__bar"><span></span><span></span><span></span> run the appimage</div>
-            <pre><code><span class="c-comment"># make the AppImage executable and run</span>
-chmod +x Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage
-
-<span class="c-comment"># boots the bundled AROS Kickstart replacement by default</span>
-./Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage
-
-<span class="c-comment"># or launch with a specific Kickstart ROM or config file</span>
-./Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage path/to/kickstart.rom
-./Copperline-<span class="relver">0.20.0</span>-x86_64.AppImage <span class="c-flag">--config</span> copperline.toml</code></pre>
-          </div>
-
-          <div class="codeblock" role="group" aria-label="Install with Homebrew on Linux">
-            <div class="codeblock__bar"><span></span><span></span><span></span> or install with homebrew</div>
-            <pre><code><span class="c-comment"># with Homebrew on Linux, tap the repository and install</span>
-brew tap CopperlineHQ/copperline https://github.com/CopperlineHQ/Copperline
-brew install copperline
-
-<span class="c-comment"># or build the latest development version from main</span>
-brew install <span class="c-flag">--HEAD</span> copperline</code></pre>
-          </div>
-        </div>
-
-        <div class="tab-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
-          <div class="codeblock" role="group" aria-label="Run the Windows build">
-            <div class="codeblock__bar"><span></span><span></span><span></span> run the windows build</div>
-            <pre><code><span class="c-comment"># download and extract Copperline-<span class="relver">0.20.0</span>-win-x64.zip (win-arm64 on ARM)</span>
-<span class="c-comment"># launch from terminal or double-click copperline.exe</span>
-copperline.exe
-copperline.exe path\to\kickstart.rom
-copperline.exe <span class="c-flag">--config</span> copperline.toml</code></pre>
-          </div>
-        </div>
-      </div>
-
-      <div class="codeblock" role="group" aria-label="Build from source">
-        <div class="codeblock__bar"><span></span><span></span><span></span> build from source</div>
-        <pre><code><span class="c-comment"># clone and build with Cargo (release mode recommended)</span>
-git clone https://github.com/CopperlineHQ/Copperline.git
-cd Copperline
-cargo build <span class="c-flag">--release</span>
-
-<span class="c-comment"># run the compiled binary</span>
-./target/release/copperline
-./target/release/copperline path/to/kickstart.rom
-./target/release/copperline <span class="c-flag">--config</span> copperline.toml</code></pre>
-      </div>
-      <p><strong>RetroArch:</strong> download the platform's libretro ZIP from the release page and
-         follow the <a href="docs/libretro/">installation guide</a>. The core is installed manually.</p>
-      <p class="download__req">Building from source requires Rust 1.95+ (stable).</p>
-    </div>
-  </section>
-
-  <hr class="copperline">
-
-  <!-- ===================== FAQ ===================== -->
   <section id="faq" class="section">
-    <div class="section__head">
-      <span class="kicker">// faq</span>
-      <h2>Frequently asked questions</h2>
-    </div>
-
+    <div class="section__head"><span class="kicker">// questions</span><h2>A few things to know</h2></div>
     <div class="faq">
-      <details class="faq__item">
-        <summary>Do I need a Kickstart ROM?</summary>
-        <div class="faq__body">
-          <p>No. Copperline bundles the open-source AROS boot ROM, which allows many programs and homebrew software
-             to run out of the box. However, commercial games and standard Workbench installations typically require
-             genuine Commodore Kickstart ROMs. You can use ROMs dumped from your own Amiga hardware or acquired
-             through licensed packages like Cloanto's Amiga Forever.</p>
-        </div>
-      </details>
-
-      <details class="faq__item">
-        <summary>Why isn't the macOS build notarized?</summary>
-        <div class="faq__body">
-          <p>Copperline is an open-source project maintained in free time, and binaries are currently ad-hoc signed
-             rather than notarized through an Apple Developer account. On first launch, macOS Gatekeeper may ask you
-             to confirm opening the app under System Settings &gt; Privacy &amp; Security. Alternatively, installing
-             via Homebrew builds from source on your machine.</p>
-        </div>
-      </details>
-
-      <details class="faq__item">
-        <summary>How does Copperline compare to established emulators like WinUAE, FS-UAE, or vAmiga?</summary>
-        <div class="faq__body">
-          <p>WinUAE, FS-UAE, and vAmiga are mature projects with extensive compatibility across the vast Amiga software
-             library. Copperline focuses particularly on developer and debugging tooling: cycle-by-cycle chip bus analysis,
-             deterministic reverse debugging and rewind, headless automation and scripting, and a modern Rust codebase
-             designed for extensibility and embedded WebAssembly use.</p>
-        </div>
-      </details>
-
-      <details class="faq__item">
-        <summary>Will my software or game run?</summary>
-        <div class="faq__body">
-          <p>Many popular games, demos, and Workbench setups run well, and compatibility is continuously expanding.
-             Since Copperline aims to accurately model hardware rather than applying per-title game patches, fixes
-             directly improve overall fidelity. If you encounter an incompatibility, recording a session with
-             <code>--record-input</code> produces a reproducible <code>.clscript</code> file that can be attached
-             to a GitHub issue for debugging.</p>
-        </div>
-      </details>
-
-      <details class="faq__item">
-        <summary>How was Copperline developed?</summary>
-        <div class="faq__body">
-          <p>Copperline was developed by Andrew Hutchings (LinuxJedi) in Rust, drawing on hardware documentation,
-             reference machines, and test disks run on real Amiga hardware. AI coding assistants and agents were
-             utilized during development to assist with implementation, test generation, and automated debugging
-             workflows. Accuracy is validated against hardware test suites and published regression benchmarks.</p>
-        </div>
-      </details>
-
-      <details class="faq__item">
-        <summary>Where does the name come from?</summary>
-        <div class="faq__body">
-          <p>The name refers to the Amiga's Copper coprocessor, which executes instructions synchronized to the
-             display beam to create the iconic raster bar color gradients seen throughout classic Amiga demos and games.</p>
-        </div>
-      </details>
+      <details class="faq__item"><summary>Do I need a Kickstart ROM?</summary><div class="faq__body"><p>You can boot the included AROS ROM immediately. Some software needs an original Kickstart ROM; select one in the launcher if you have it. <a href="docs/getting-started/">Read the setup guide</a>.</p></div></details>
+      <details class="faq__item"><summary>How does Copperline compare with other Amiga emulators?</summary><div class="faq__body"><p>WinUAE, FS-UAE and vAmiga have long-established compatibility. Copperline puts particular emphasis on reverse debugging, chip-bus analysis, scripting and repeatable tests. The browser build and Netplay also make it easy to try a configuration or play together.</p></div></details>
+      <details class="faq__item"><summary>Why isn’t the macOS build notarized?</summary><div class="faq__body"><p>The downloads are currently ad-hoc signed. macOS may ask you to approve the first launch in Privacy &amp; Security. Installing with Homebrew builds Copperline from source instead.</p></div></details>
+      <details class="faq__item"><summary>How was Copperline developed?</summary><div class="faq__body"><p>I use hardware documentation, real Amigas and test disks as references. AI coding assistants help with implementation, tests and debugging. Changes are checked with hardware tests and regression runs.</p></div></details>
+      <details class="faq__item"><summary>Where does the name come from?</summary><div class="faq__body"><p>The Amiga’s Copper is a coprocessor that runs alongside the CPU and can change display settings as the beam draws each line. Copperline takes its name from that connection.</p></div></details>
     </div>
   </section>
 
   <hr class="copperline">
-
-  <!-- ===================== COMMUNITY ===================== -->
-  <section id="community" class="section">
-    <div class="section__head">
-      <span class="kicker">// community</span>
-      <h2>Community and contributing</h2>
-      <p>Copperline is developed openly on GitHub with an active community on Discord.</p>
-    </div>
-
-    <div class="grid">
-      <article class="card">
-        <span class="card__tag">chat</span>
-        <h3>Discord</h3>
-        <p>Join the Discord server to discuss development, troubleshoot configurations, share test results,
-           or chat about Amiga hardware and emulation.</p>
-        <a class="card__link" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">join the server &gt;</a>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">support</span>
-        <h3>Support the project</h3>
-        <p>Copperline is free and open source under the GNU GPL v3. Sponsorship helps cover development hardware,
-           testing equipment, and code-signing certificates.</p>
-        <p class="card__thanks">Special thanks to project patrons: <strong>Lee Hobson</strong> and <strong>Sphair</strong>.</p>
-        <a class="card__link" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">become a patron &gt;</a>
-      </article>
-
-      <article class="card">
-        <span class="card__tag">contribute</span>
-        <h3>Issues and contributions</h3>
-        <p>Bug reports, feature requests, and pull requests are welcome on GitHub. If reporting an emulation issue,
-           attaching a <code>.clscript</code> recording helps reproduce and diagnose the bug quickly.</p>
-        <p class="card__thanks">Thanks to all contributors:
-           <strong>Bernie Innocenti</strong>, <strong>Lee Hobson</strong>,
-           <strong>jbl007</strong>, <strong>Simon Dick</strong>,
-           <strong>Nicolas Ramz</strong>, <strong>Ben Letchford</strong>,
-           <strong>Volker Schwaberow</strong>, and
-           <strong>Matt Harlum</strong>.</p>
-        <a class="card__link" href="https://github.com/CopperlineHQ/Copperline/issues" target="_blank" rel="noopener">open an issue &gt;</a>
-      </article>
-    </div>
-
-    <p class="community-note">One-off contributions can also be made via
-       <a href="https://github.com/sponsors/linuxjedi" target="_blank" rel="noopener">GitHub Sponsors</a>,
-       <a href="https://ko-fi.com/linuxjedi" target="_blank" rel="noopener">Ko-fi</a>, or
-       <a href="https://paypal.me/linuxjedi" target="_blank" rel="noopener">PayPal</a>.</p>
+  <section id="community" class="section community-section">
+    <div id="about" class="community-story"><span class="kicker">// Andrew Hutchings · LinuxJedi</span><h2>Built with real Amigas on the workbench</h2><p>I wanted an Amiga emulator I could automate from the command line and use to track down difficult bugs. The first milestone was getting DiagROM to display its menu.</p><p>I also repair, collect and design hardware for real Amigas. Those machines give me a reference when an emulator’s behaviour needs checking.</p><a href="https://linuxjedi.co.uk">More about my work</a></div>
+    <div class="community-links"><h3>Join in</h3><p><a href="https://discord.gg/HDTjt3tYAC">Chat on Discord</a> about configurations, demos and Amiga hardware.</p><p><a href="https://github.com/CopperlineHQ/Copperline/issues">Report an issue</a> or contribute a fix on GitHub.</p><p><a href="projects/">See community projects</a> built with Copperline.</p><h3>Support Copperline</h3><p>Support helps cover development hardware, testing equipment and code-signing costs. Join <a href="https://www.patreon.com/cw/Copperline">Patreon</a>, or give through <a href="https://github.com/sponsors/linuxjedi">GitHub Sponsors</a>, <a href="https://ko-fi.com/linuxjedi">Ko-fi</a> or <a href="https://paypal.me/linuxjedi">PayPal</a>.</p></div>
+    <p class="community-thanks">Thank you to patrons Lee Hobson and Sphair, and contributors Bernie Innocenti, Lee Hobson, jbl007, Simon Dick, Nicolas Ramz, Ben Letchford, Volker Schwaberow and Matt Harlum.</p>
   </section>
-
-  <hr class="copperline">
-
-  <!-- ===================== ABOUT ===================== -->
-  <section id="about" class="section">
-    <div class="about">
-      <span class="kicker">// about the author</span>
-      <h2>Why Copperline exists</h2>
-      <p>Copperline started from a desire for an Amiga emulator that was both simple to automate from the command line
-         and equipped with powerful debugging tools. The initial milestone was booting DiagROM far enough to display its menu.</p>
-      <p>Over time, the project expanded into a full emulation suite focused on developer productivity: a debugger that can
-         step backwards, cycle-accurate bus analysis to diagnose DMA contention, and deterministic recording so bugs can
-         be reproduced reliably.</p>
-      <p>When not writing Rust, I spend much of my time working on real Amiga hardware: repairing, collecting, and designing
-         expansion boards. Having physical machines on the workbench provides a direct reference to ensure the emulation
-         matches real-world behaviour.</p>
-      <p class="about__sig">- Andrew Hutchings (LinuxJedi) &middot;
-         <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a> &middot;
-         <a href="https://github.com/LinuxJedi" target="_blank" rel="noopener">GitHub</a></p>
-    </div>
-  </section>
-
 </main>
 
 <footer class="footer">
@@ -929,15 +294,15 @@ cargo build <span class="c-flag">--release</span>
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
       </p>
     </div>
-    <nav class="footer__links">
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="docs/">Docs</a>
       <a href="news/">News</a>
       <a href="news/feed.xml">RSS</a>
       <a href="projects/">Projects</a>
-      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
-      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
-      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/CopperlineHQ/Copperline/releases/latest" target="_blank" rel="noopener">Releases</a>
-      <a href="https://github.com/CopperlineHQ/Copperline/tree/main/docs" target="_blank" rel="noopener">Docs</a>
+      <a href="#community">Community</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
     </nav>
   </div>
 </footer>
@@ -994,22 +359,6 @@ cargo build <span class="c-flag">--release</span>
     if (match) dl.select(match, false);
   })();
 
-  // Keep the release version in the download snippets current. The static
-  // text is the fallback: if this fetch fails, the page still shows the
-  // version it was published with.
-  (function () {
-    var vers = document.querySelectorAll('.relver');
-    if (!vers.length || !window.fetch) return;
-    fetch('https://api.github.com/repos/CopperlineHQ/Copperline/releases/latest')
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (rel) {
-        if (!rel || !rel.tag_name) return;
-        var v = String(rel.tag_name).replace(/^v/, '');
-        if (!/^\d+\.\d+(\.\d+)?$/.test(v)) return;
-        Array.prototype.forEach.call(vers, function (el) { el.textContent = v; });
-      })
-      .catch(function () {});
-  })();
 </script>
 
 </body>

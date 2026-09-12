@@ -28,6 +28,7 @@
 <link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 
+<script src="../assets/theme.js"></script>
 <link rel="stylesheet" href="../style.css">
 <script src="../assets/nav.js" defer></script>
 <style>
@@ -48,7 +49,7 @@
     text-align: center;
   }
   .try-head .kicker { margin-bottom: 0.35rem; }
-  .try-head h2 {
+  .try-head h1 {
     font-size: clamp(1.35rem, 2.6vw, 1.9rem);
     margin-bottom: 0;
   }
@@ -123,6 +124,7 @@
     background: rgba(8, 11, 19, 0.78);
     text-align: center;
     padding: 1rem;
+    --ink-mute: #b9c1d4;
   }
   .try-status {
     color: var(--ink-mute);
@@ -143,7 +145,7 @@
     row-gap: 0.35rem;
     margin-top: 0.7rem;
     font: 600 0.8rem "IBM Plex Mono", ui-monospace, monospace;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--ink-soft);
   }
   .try-ledbar:empty { display: none; }
   .try-controls {
@@ -195,7 +197,7 @@
     border-radius: 6px;
     cursor: pointer;
     border: 1px solid var(--line);
-    background: rgba(10, 13, 22, 0.6);
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
   }
@@ -214,7 +216,7 @@
   .try-sidebar {
     flex: 0 0 252px;
     width: 252px;
-    background: rgba(10, 13, 22, 0.6);
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 0.9rem;
@@ -274,6 +276,9 @@
   #sidebar #netplay-panel input,
   #sidebar #netplay-panel textarea,
   #sidebar #netplay-panel select { min-width: 0; max-width: 100%; }
+  #sidebar #netplay-panel input,
+  #sidebar #netplay-panel textarea,
+  #sidebar #netplay-panel select { background: var(--surface); color: var(--ink); }
   #sidebar #netplay-panel textarea { font-size: 0.8rem; }
   #sidebar #netplay-panel .btn { font-size: 0.88rem; padding: 0.5rem 0.6rem; }
   #sidebar #netplay-panel :focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
@@ -327,6 +332,19 @@
     color: var(--ink-mute);
     font-size: 0.92rem;
   }
+  .try-help { max-width: 920px; margin: 2rem auto 0; color: var(--ink-soft); }
+  .try-help p { margin: 1rem 0; }
+  .try-help details { padding: 0.6rem 0; border-block-start: 1px solid var(--line); }
+  .try-help summary { padding-block: 0.4rem; color: var(--blue); font-weight: 500; cursor: pointer; }
+  .try-help ol { padding-left: 1.5rem; }
+  .try-help li { margin-bottom: 0.7rem; }
+  /* These panels are built by the published glue with inline colours. */
+  #savedstates-panel, #savedstates-panel button, #savedstates-panel input {
+    background: var(--surface) !important;
+    color: var(--ink-soft) !important;
+    border-color: var(--line) !important;
+  }
+  #savedstates-panel span, #ledbar > span:last-child { color: var(--ink-mute) !important; }
   /* Narrow viewports: the sidebar leaves the flex row and becomes a
      fixed drawer sliding in from the right, with a scrim behind it. It
      stays display:block while "closed" so the transform can animate. */
@@ -343,7 +361,7 @@
       border: none;
       border-left: 1px solid var(--line);
       border-radius: 0;
-      background: #0b0f1b;
+      background: var(--bg-2);
       padding-bottom: calc(0.9rem + env(safe-area-inset-bottom));
       transform: translateX(102%);
       transition: transform 0.22s ease;
@@ -443,42 +461,40 @@
 <script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <div class="scanlines" aria-hidden="true"></div>
 
 <header class="nav">
   <a class="nav__brand" href="../">
-    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
-    <span>Copperline</span>
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
   </a>
-  <nav class="nav__links" id="nav-menu">
-    <a href="../">Home</a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/" aria-current="page">Try</a>
     <a href="../docs/">Docs</a>
     <a href="../news/">News</a>
-    <a href="../#download">Download</a>
-    <a id="bug-report" href="https://github.com/CopperlineHQ/Copperline/issues/new?template=bug_report.yml" target="_blank" rel="noopener">Report a bug</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
   </nav>
   <div class="nav__social">
     <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
     </a>
-    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
-    </a>
-    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
-    </a>
-    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
-      <span class="nav__burger" aria-hidden="true"></span>
-    </button>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
   </div>
 </header>
 
-<main>
+<main id="main">
   <section class="section section--try">
     <div class="section__head try-head">
       <span class="kicker">// try it in your browser</span>
-      <h2>Copperline, compiled to WebAssembly</h2>
+      <h1>Try Copperline in your browser</h1>
     </div>
 
     <div class="try-wrap">
@@ -598,75 +614,48 @@
       </div>
       <div class="try-scrim" id="sidebar-scrim" aria-hidden="true"></div>
 
-      <p class="try-note">
-        Copperline runs directly in your browser using WebAssembly. The default configuration
-        is an Amiga 500 (512 KB Chip RAM + 512 KB Slow RAM) running the bundled open-source AROS
-        Kickstart replacement. Use the <strong>Machine</strong> and <strong>Video</strong>
-        controls in the sidebar to switch between an Amiga 500 and AGA Amiga 1200, or toggle
-        PAL and NTSC modes. You can insert your own floppy disk images (.adf, .adz, .dms, .ipf,
-        .scp) with the <strong>Insert DF0</strong> button, or provide a custom Kickstart ROM.
-      </p>
-
-      <p class="try-note">
-        Play a two-player floppy game with someone in another browser using
-        <a href="#netplay-panel">Netplay</a>. The host shares their ROMs, inserted disks
-        and machine configuration with the guest. Both players need the same Copperline
-        build. Host or join starts a fresh machine, replacing any running game.
-      </p>
-      <ol class="try-note">
-        <li>The host opens <strong>Netplay</strong>. For Lemmings and other two-mouse games,
-          open <strong>Advanced</strong> and set <strong>Controllers</strong> to <strong>Two mice</strong>.
-          Click <strong>Host game</strong> and share the invitation link or QR code.</li>
-        <li>The other player opens the invitation and clicks <strong>Join game</strong>.
-          The host's files and settings transfer automatically. Both machines boot after
-          the received files are verified.</li>
-        <li>When the game asks for another disk, the host selects <strong>DF0</strong> in
-          Netplay and uses <strong>Swap disk</strong> to choose the next image. Both games
-          pause while it transfers, then resume together. The guest needs no local copy
-          or second drive.</li>
-      </ol>
-      <p class="try-note">
-        The host controls port 1; the joining player controls port 2. In joystick or CD32-pad
-        mode, each player's keyboard joystick, first gamepad or touch controls drive their
-        assigned port. In <strong>Two mice</strong> mode, each player's mouse or touch trackpad
-        controls their own port. Switch <strong>Joystick</strong> off to type on the shared Amiga keyboard.
-        Keep both pages open. <strong>Disconnect</strong> ends the session and discards its disk writes.
-        Browser sessions connect to other browsers only. If the connection cannot be made,
-        use <strong>Copy diagnostics</strong> to save the connection report. Room connections
-        include relay fallback; <strong>Advanced</strong> has a relay-only option and manual
-        connection codes. Share invitations privately. They expire after 15 minutes;
-        an established game can continue. Files travel over the encrypted peer connection.
-        The guest's received files are used only for the session; their saved ROM and
-        local setup are kept.
-      </p>
-
-      <p class="try-note">
-        Save states allow you to snapshot the complete emulated machine state. <strong>Quick save</strong>
-        keeps a state in browser storage that persists across visits, while <strong>Save state</strong>
-        downloads a standard <code>.clstate</code> snapshot file compatible with Copperline desktop
-        builds of the same release. <strong>Save states from 0.19 and earlier need recreating
-        for 0.20.</strong> Disk images and ordinary in-game saves are unaffected.
-        You can also load disk images directly from a URL via <strong>DF0 from URL</strong>
-        or by appending <code>?df0=&lt;url&gt;</code> to the page address (requires CORS support on
-        the host). All emulation runs entirely client-side on your device.
-      </p>
-
-      <p class="try-note">
-        Customise CRT shaders, display scaling, overscan, and monitor bezels in the
-        <strong>Display</strong> settings. Click the emulated screen to capture the mouse pointer
-        (press <kbd>Esc</kbd> to release, or hold <kbd>Esc</kbd> to exit fullscreen). Toggle
-        the <strong>Joystick</strong> button to control port 2 using the keyboard (arrow keys and
-        Right Ctrl/Alt) or virtual touch controls on mobile devices. An on-screen Amiga keyboard
-        can be opened with the <strong>Keyboard</strong> button.
-      </p>
-
-      <p class="try-note">
-        Official Commodore Kickstart ROMs
-        are copyrighted and not included; please use ROMs dumped from your own hardware. The
-        bundled AROS ROMs are distributed under the <a href="aros/LICENSE">AROS Public License</a>.
-        If you encounter an issue, click <strong>Report a bug</strong> in the top navigation to
-        file a pre-filled report on GitHub.
-      </p>
+      <div class="try-help">
+        <p>Start with <strong>Boot AROS</strong>, or use <strong>Insert DF0</strong> to load a floppy image.
+          <strong>Controls</strong> has machine settings and an option to load your own Kickstart ROM.</p>
+        <p>Click the screen to capture the mouse; press <kbd>Esc</kbd> to release it.
+          <strong>Joystick</strong> enables keyboard or touch game controls, and <strong>Keyboard</strong> opens the on-screen Amiga keys.</p>
+        <details>
+          <summary>Play together with Netplay</summary>
+          <p>Connect two browsers using the same Copperline build. The host shares ROMs, disks and settings;
+            joining starts a fresh machine and replaces the running game.</p>
+          <ol>
+            <li>Open <a href="#netplay-panel">Netplay</a>. For Lemmings or another two-mouse game, choose
+              <strong>Advanced → Controllers → Two mice</strong> before hosting.</li>
+            <li>Choose <strong>Host game</strong> and share the invitation privately. The other player opens it and chooses
+              <strong>Join game</strong>. Files transfer automatically; the guest needs no local copies.</li>
+            <li>For another disk, the host chooses <strong>DF0</strong> or <strong>DF1</strong> in Netplay and uses
+              <strong>Swap disk</strong>. Both machines pause for the transfer, then resume together.</li>
+          </ol>
+          <p>The host controls port 1 and the guest controls port 2. Switch <strong>Joystick</strong> off to type on the shared Amiga keyboard.
+            Keep both pages open. Disconnecting ends the game and discards the session’s disk writes.</p>
+          <p>Invitations expire after 15 minutes; an established game can continue. Transfers are encrypted,
+            and the guest’s saved ROM and local setup are preserved. Use <strong>Copy diagnostics</strong> if a connection fails.
+            <a href="../docs/netplay/">Full Netplay guide and connection options</a>.</p>
+        </details>
+        <details>
+          <summary>Save states and disk images</summary>
+          <p><strong>Quick save</strong> keeps a snapshot in this browser. <strong>Save state</strong> downloads a
+            <code>.clstate</code> file that desktop builds of the same release can open. <strong>Saved states</strong> manages named snapshots.</p>
+          <p><strong>Recreate save states from 0.19 and earlier for 0.20.</strong> Disk images and ordinary in-game saves are unaffected.</p>
+          <p>Floppy formats include ADF, ADZ, DMS, IPF and SCP. Under Controls, <strong>DF0 from URL</strong> loads an image
+            from a server that allows cross-origin requests. <a href="../docs/browser/">Browser storage and media guide</a>.</p>
+        </details>
+        <details>
+          <summary>Machine, display and input settings</summary>
+          <p>The default is an A500 with 512 KB Chip RAM, 512 KB Slow RAM and AROS. Under <strong>Controls → Machine</strong>,
+            choose an A500 or A1200 and PAL or NTSC video.</p>
+          <p><strong>Display</strong> has CRT effects, scaling, overscan and bezels. <strong>Joystick</strong> uses the arrow keys
+            and Right Ctrl/Alt for port 2 during local play; phones also have touch controls. Hold <kbd>Esc</kbd> to exit fullscreen.</p>
+          <p>The page’s light/dark switch changes the website, leaving the emulated picture and monitor settings as you chose them.</p>
+        </details>
+        <p>Emulation runs on your device. The included AROS ROM uses the <a href="aros/LICENSE">AROS Public License</a>;
+          original Commodore ROMs are not included. <a href="https://github.com/CopperlineHQ/Copperline/issues/new?template=bug_report.yml">Report a bug</a>.</p>
+      </div>
     </div>
   </section>
 </main>
@@ -683,12 +672,15 @@
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
       </p>
     </div>
-    <nav class="footer__links">
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
       <a href="../news/feed.xml">RSS</a>
-      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
-      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
-      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/CopperlineHQ/Copperline/releases/latest" target="_blank" rel="noopener">Releases</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
     </nav>
   </div>
 </footer>

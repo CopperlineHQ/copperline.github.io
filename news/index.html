@@ -22,48 +22,46 @@
 <link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 
+<script src="../assets/theme.js"></script>
 <link rel="stylesheet" href="../style.css">
 <script src="../assets/nav.js" defer></script>
 <script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <div class="scanlines" aria-hidden="true"></div>
 
 <header class="nav">
   <a class="nav__brand" href="../">
-    <img src="../assets/copperline-icon.png" alt="" width="34" height="34">
-    <span>Copperline</span>
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
   </a>
-  <nav class="nav__links" id="nav-menu">
-    <a href="../">Home</a>
-    <a href="feed.xml">RSS</a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
     <a href="../try/">Try</a>
     <a href="../docs/">Docs</a>
-    <a href="../projects/">Projects</a>
-    <a href="../#download">Download</a>
+    <a href="../news/" aria-current="page">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
   </nav>
   <div class="nav__social">
     <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
     </a>
-    <a class="nav__icon" href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener" aria-label="Copperline on Discord" title="Discord">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
-    </a>
-    <a class="nav__icon" href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener" aria-label="Copperline on Patreon" title="Patreon">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.957 7.21c-.004-3.064-2.391-5.576-5.191-6.482-3.478-1.125-8.064-.962-11.384.604C2.357 3.231 1.093 7.391 1.046 11.54c-.039 3.411.302 12.396 5.369 12.46 3.765.047 4.326-4.804 6.068-7.141 1.24-1.662 2.836-2.132 4.801-2.618 3.376-.836 5.678-3.501 5.673-7.031Z"/></svg>
-    </a>
-    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu">
-      <span class="nav__burger" aria-hidden="true"></span>
-    </button>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
   </div>
 </header>
 
-<main>
+<main id="main">
   <section class="section">
     <div class="section__head">
       <span class="kicker">// news</span>
-      <h2>Release write-ups &amp; development notes</h2>
+      <h1>News and releases</h1>
       <p>Release notes and development updates for Copperline. An <a href="feed.xml">RSS feed</a>
          is available to subscribe to new announcements.</p>
     </div>
@@ -72,152 +70,92 @@
       <li class="news-list__item">
         <span class="news-list__date">12 September 2026</span>
         <h2><a href="copperline-0-20-0.html">Copperline 0.20.0: Netplay, a new debugging workspace, and RetroArch</a></h2>
-        <p>Two-player Amiga Netplay on desktop and in the browser, a rebuilt debugging workspace, and a RetroArch core. Plus save-state thumbnails, GIF clips, new hardware and cleaner Paula audio.</p>
-        <a class="news-list__more" href="copperline-0-20-0.html">read the write-up &gt;</a>
+        <p>Two-player Netplay, a shared debugging workspace and a RetroArch core. Also adds save-state thumbnails, GIF clips and improvements to Paula audio.</p>
+        <a class="news-list__more" href="copperline-0-20-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">6 September 2026</span>
         <h2><a href="copperline-0-19-0.html">Copperline 0.19.0: Amiga debugging from VS Code, Bartman's profiler on Copperline, and two open ROMs</a></h2>
-        <p>The developer release: debug Amiga programs at source level from
-           Visual Studio Code through a Debug Adapter Protocol server, with
-           breakpoints, Step Back, variables and every custom register;
-           Bartman's Amiga C/C++ extension runs on Copperline with its visual
-           profiler fed by per-colour-clock bus captures; an MCP server, a
-           uaelib trap, an HRTMon freezer cartridge, open CD32 FMV and A2091
-           ROMs, copperhf.device, integer scaling and autocrop, and floppy,
-           Akiko and 68030/040 timing fixes measured on real hardware.</p>
-        <a class="news-list__more" href="copperline-0-19-0.html">read the write-up &gt;</a>
+        <p>Source debugging in VS Code, support for Bartman’s visual profiler, and open CD32 FMV and A2091 ROMs. Hardware tests drive further timing fixes.</p>
+        <a class="news-list__more" href="copperline-0-19-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">29 August 2026</span>
         <h2><a href="copperline-0-18-0.html">Copperline 0.18.0: The CD32 FMV module, calibrated drive timing, a modem on Paula, and import-uae</a></h2>
-        <p>Commodore's CD32 Full Motion Video MPEG cartridge is emulated
-           end to end, the CD32 drive model is calibrated against real
-           PAL hardware with a probe disc and filmed cold boots, CDXL video
-           streams from cooked ISOs, a Hayes AT modem with WiModem232
-           compatibility answers on the serial port, copperline-import-uae
-           converts configurations with zero guesswork, run-ahead cuts input
-           latency, and AGA sprite and palette fidelity reaches 0.000%
-           error against vAmigaTS.</p>
-        <a class="news-list__more" href="copperline-0-18-0.html">read the write-up &gt;</a>
+        <p>CD32 FMV emulation, CD drive timing measured on real hardware, and a serial modem. Import existing emulator configurations with copperline-import-uae.</p>
+        <a class="news-list__more" href="copperline-0-18-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">22 August 2026</span>
         <h2><a href="copperline-0-17-0.html">Copperline 0.17.0: Coppersynth, two sound boards, and CD32 discs that boot without a Kickstart</a></h2>
-        <p>Coppersynth puts a General MIDI sound module with an SC-55-style
-           front panel and MT-32 translation on the Amiga's MIDI cable with
-           no ROMs, a MacroSystem Toccata and an MHI MPEG decoder board join
-           the Zorro bus, every audio source gets its own stem and debugger
-           row - and CD32 discs cold-boot on the bundled AROS ROM, a
-           publisher kit builds single-game players, and gamepads work out
-           of the box and drive the whole UI.</p>
-        <a class="news-list__more" href="copperline-0-17-0.html">read the write-up &gt;</a>
+        <p>Coppersynth General MIDI, Toccata and MHI sound boards, and CD32 discs booting with AROS. Gamepads can navigate the interface too.</p>
+        <a class="news-list__more" href="copperline-0-17-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">15 August 2026</span>
         <h2><a href="copperline-0-16-0.html">Copperline 0.16.0: one-command WHDLoad, a game library, and a new Amiga game built on Copperline</a></h2>
-        <p>A WHDLoad-installed game boots straight from its archive, the
-           launcher grows a browsable game library with OpenRetro cover art,
-           <code>--run</code> warp-boots freshly built Amiga executables for
-           developers, storage gains a lide.device-compatible IDE board with
-           ATAPI CD-ROM, OFS directory mounts that boot Kickstart 1.3 and a
-           Create Image workshop - and a studio building a new commercial
-           Amiga game on Copperline drove fixes from Agnus pointer semantics
-           to floating-bus reads.</p>
-        <a class="news-list__more" href="copperline-0-16-0.html">read the write-up &gt;</a>
+        <p>Launch WHDLoad archives directly, browse a game library, and run freshly built Amiga programs from the command line.</p>
+        <a class="news-list__more" href="copperline-0-16-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">8 August 2026</span>
         <h2><a href="copperline-0-15-0.html">Copperline 0.15.0: an MT-32, your real hard disks, and sockets with nothing to install</a></h2>
-        <p>An emulated Roland MT-32 - front panel and all - on the MIDI port,
-           the host's real hard disks handed to the machine RDB and all, a
-           HostSocket board giving guest applications BSD sockets with no
-           TCP/IP stack to install, the physical floppy path rebuilt pure-Rust
-           on FluxBridge, native IPF and CHD images, a redesigned menu tree,
-           an authentic 1084 bezel, integer scaling and a performance overlay,
-           and a browser build with a screen keyboard and real headroom on
-           phones.</p>
-        <a class="news-list__more" href="copperline-0-15-0.html">read the write-up &gt;</a>
+        <p>Roland MT-32 emulation, access to physical hard disks, and guest sockets without a TCP/IP stack. Physical floppy support moves to FluxBridge.</p>
+        <a class="news-list__more" href="copperline-0-15-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">1 August 2026</span>
         <h2><a href="copperline-0-14-0.html">Copperline 0.14.0: real drives, real networks, and a 1084 on your desk</a></h2>
-        <p>Real 3.5" floppy drives on the emulated bus through DrawBridge,
-           Greaseweazle and SupercardPro, the A2065 bridged onto the real LAN,
-           Picasso II / II+ RTG for the 24-bit machines, CRT shaders, screen
-           tints and a 1084-style bezel, rewind and quick-save slots, autofire
-           and input remapping, an experimental JIT CPU mode, and a
-           WinUAE-inspired debugging suite.</p>
-        <a class="news-list__more" href="copperline-0-14-0.html">read the write-up &gt;</a>
+        <p>Physical floppy drives, bridged Ethernet and Picasso II graphics. CRT shaders, rewind, input remapping and an experimental JIT arrive too.</p>
+        <a class="news-list__more" href="copperline-0-14-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">25 July 2026</span>
         <h2><a href="copperline-0-13-0.html">Copperline 0.13.0: RTG, Ethernet and a Linux login prompt</a></h2>
-        <p>RTG graphics through the Z3660 Zorro III board, Ramsey motherboard and
-           CPU-slot accelerator RAM for the big boxes, an Ethernet backend that
-           needs no privileges or setup, a telnet BBS dialled over emulated
-           serial, configurable floppy speed, and enough 68040 MMU and 31 kHz
-           display work to boot Debian Linux/m68k to a login prompt.</p>
-        <a class="news-list__more" href="copperline-0-13-0.html">read the write-up &gt;</a>
+        <p>Z3660 RTG graphics and Ethernet networking, plus the MMU and display work needed to boot Linux/m68k.</p>
+        <a class="news-list__more" href="copperline-0-13-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">24 July 2026</span>
         <h2><a href="copperline-github-org.html">Copperline moves to its own GitHub organisation</a></h2>
-        <p>The repositories have moved from my personal LinuxJedi account to a
-           new GitHub organisation, CopperlineHQ, because Copperline is
-           becoming a community bigger than just me. Repository names are
-           unchanged, the old URLs keep redirecting for the foreseeable
-           future, and a Discord server for development discussion is on the
-           way.</p>
-        <a class="news-list__more" href="copperline-github-org.html">read the note &gt;</a>
+        <p>The repositories move from LinuxJedi to CopperlineHQ as the project’s community grows. Existing repository links continue to redirect.</p>
+        <a class="news-list__more" href="copperline-github-org.html">Read the announcement</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">18 July 2026</span>
         <h2><a href="copperline-0-12-0.html">Copperline 0.12.0: the browser build and the big boxes</a></h2>
-        <p>The whole emulator compiled to WebAssembly and running client-side at
-           copperline.dev/try, A3000 / A4000 profiles booting from their onboard
-           SCSI and IDE, host-directory mounts gone writable, a JSON-RPC control
-           protocol for scripted live sessions, SCSI CD-ROM drives with CD audio,
-           and any controller in either game port.</p>
-        <a class="news-list__more" href="copperline-0-12-0.html">read the write-up &gt;</a>
+        <p>Copperline comes to the browser. A3000 and A4000 profiles, writable host directories and a JSON-RPC control interface expand desktop support.</p>
+        <a class="news-list__more" href="copperline-0-12-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">12 July 2026</span>
         <h2><a href="copperline-0-11-0.html">Copperline 0.11.0: boot from a host directory</a></h2>
-        <p>Host directories mounted - and booted - as live AmigaDOS volumes, the
-           blitter's BLTPRI bus fence, a 68000 microcode write-ordering pass, sprite
-           serialization measured against other emulators and real hardware, and a
-           6x cut in worst-case frame times on slower hosts.</p>
-        <a class="news-list__more" href="copperline-0-11-0.html">read the write-up &gt;</a>
+        <p>Boot from a host directory, with blitter, CPU and sprite timing fixes and lower frame times on slower hosts.</p>
+        <a class="news-list__more" href="copperline-0-11-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">7 July 2026</span>
         <h2><a href="copperline-0-10-0.html">Copperline 0.10.0: the 68060, the MMUs and a much bigger debugger</a></h2>
-        <p>The 68060 joins the CPU line-up, the 68030 / 68040 gain real MMU and cache
-           behaviour, the debugger grows a command console plus Video, Audio and
-           IO Map tabs, and the A4091 SCSI board, MIDI and TCP serial bridges and
-           zipped floppies arrive - much of it contributed.</p>
-        <a class="news-list__more" href="copperline-0-10-0.html">read the write-up &gt;</a>
+        <p>68060 support, 68030/040 MMU and cache modelling, and new debugger inspectors. Also adds A4091 SCSI, MIDI and serial bridges.</p>
+        <a class="news-list__more" href="copperline-0-10-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
         <span class="news-list__date">29 June 2026</span>
         <h2><a href="copperline-0-9-0.html">Copperline 0.9.0: the FPU deep-dive</a></h2>
-        <p>An 80-bit 68881/68882 accuracy pass with pure-Rust softfloat, explicit
-           joystick input selection, save states that restore without the original ROM,
-           and the usual round of CIA, Paula, keyboard and display-timing fixes.</p>
-        <a class="news-list__more" href="copperline-0-9-0.html">read the write-up &gt;</a>
+        <p>An 80-bit FPU accuracy pass, joystick input selection and save states that restore without the original ROM file.</p>
+        <a class="news-list__more" href="copperline-0-9-0.html">Read release notes</a>
       </li>
 
       <li class="news-list__item">
@@ -226,7 +164,7 @@
         <p>The no-config machine launcher, external WASM Zorro board plugins, A2065
            Ethernet with a loopback backend, and a long list of sprite, Denise and
            bitplane timing fixes.</p>
-        <a class="news-list__more" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.8.0" target="_blank" rel="noopener">release notes on GitHub &gt;</a>
+        <a class="news-list__more" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.8.0" target="_blank" rel="noopener">Release notes on GitHub</a>
       </li>
 
       <li class="news-list__item">
@@ -235,13 +173,13 @@
         <p>Expanded machine profiles (A500 Rev 6A, A500OCS, A500+, A1000), conditional
            and counted breakpoints, warp-speed frame skipping, and the first macOS
            .dmg release builds.</p>
-        <a class="news-list__more" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.7.0" target="_blank" rel="noopener">release notes on GitHub &gt;</a>
+        <a class="news-list__more" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.7.0" target="_blank" rel="noopener">Release notes on GitHub</a>
       </li>
     </ul>
 
     <p class="news-foot">Earlier releases live on the
        <a href="https://github.com/CopperlineHQ/Copperline/releases" target="_blank" rel="noopener">GitHub releases page</a>.
-       Full write-ups start at 0.9.0; from here on, every release gets one.</p>
+       Release articles start at 0.9.0.</p>
   </section>
 </main>
 
@@ -257,12 +195,15 @@
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
       </p>
     </div>
-    <nav class="footer__links">
-      <a href="feed.xml">RSS</a>
-      <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Discord</a>
-      <a href="https://www.patreon.com/cw/Copperline" target="_blank" rel="noopener">Patreon</a>
-      <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/CopperlineHQ/Copperline/releases/latest" target="_blank" rel="noopener">Releases</a>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
     </nav>
   </div>
 </footer>
