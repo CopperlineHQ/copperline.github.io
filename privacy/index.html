@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy - Copperline</title>
+<meta name="description" content="What Copperline stores, what it never collects, and the few things that reach the network only when you ask them to.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Copperline Privacy Policy">
+<meta property="og:description" content="What Copperline stores, what it never collects, and the few things that reach the network only when you ask them to.">
+<meta property="og:url" content="https://copperline.dev/privacy/">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section">
+    <article class="post">
+      <span class="post__date">Last updated 13 September 2026</span>
+      <h1>Privacy Policy</h1>
+
+      <p>This policy covers the Copperline emulator, however you obtained it,
+         the browser version at <a href="../try/">copperline.dev/try</a>, and
+         this website. Copperline is maintained by Andrew Hutchings.</p>
+
+      <p><strong>The short version: Copperline collects nothing about you.</strong>
+         There is no account, no telemetry, no analytics, no advertising, no
+         update check, and no Copperline server that your copy reports to. The
+         emulator opens no network connection at all unless you use one of the
+         handful of features described below, each of which you have to ask
+         for.</p>
+
+      <p>Copperline is free software under the GPL v3, so none of this has to
+         be taken on trust. Every claim on this page can be checked against the
+         <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">source code</a>.</p>
+
+      <h2>What Copperline stores on your computer</h2>
+
+      <p>Copperline keeps its own settings and data in a folder in your
+         documents - <code>Documents\Copperline</code> on Windows,
+         <code>~/Documents/Copperline</code> on macOS and Linux - or beside the
+         program itself in portable mode. That folder holds things like:</p>
+
+      <ul>
+        <li>machine configurations, key mappings and gamepad calibration;</li>
+        <li>save states, screenshots, recorded input scripts and captured clips;</li>
+        <li>WHDLoad game saves, and the game library database and cover-art
+            cache if you use the library feature;</li>
+        <li>battery-backed clock and non-volatile memory files for the machines
+            you emulate.</li>
+      </ul>
+
+      <p>If Copperline crashes it writes a <code>copperline-crash.txt</code>
+         report next to the program, in the working directory, or in your
+         temporary folder. It contains the error and a backtrace. It is never
+         sent anywhere - if you want me to see it, you attach it to a bug
+         report yourself.</p>
+
+      <p>All of this is ordinary files on your own disk. Nothing in it is
+         transmitted, and you can delete any of it at any time.</p>
+
+      <h2>What Copperline never collects</h2>
+
+      <ul>
+        <li>No usage, feature or performance telemetry.</li>
+        <li>No analytics or advertising identifiers, and no profiling.</li>
+        <li>No hardware or system inventory.</li>
+        <li>No automatic update or licence check on startup.</li>
+        <li>No automatic crash reporting.</li>
+        <li>No account, sign-in or unique installation identifier.</li>
+        <li>No list of the ROMs, disks or games you run.</li>
+      </ul>
+
+      <h2>When the emulator uses the network</h2>
+
+      <p>These are the only paths out of the program, and every one of them is
+         started by you.</p>
+
+      <p><strong>Game library sync.</strong> The launcher's library page can
+         sync game metadata from
+         <a href="https://openretro.org" target="_blank" rel="noopener">openretro.org</a>,
+         which is an independent third-party service with its own privacy
+         policy. If you choose to sign in, your OpenRetro username and password
+         are sent to openretro.org over HTTPS, always encrypted and never over
+         plain HTTP. The password is exchanged immediately for a session token
+         and is never written to disk; the token lasts for that session only.
+         Copperline identifies itself with the fixed device name
+         <code>copperline</code>, so you can see and revoke the session in your
+         OpenRetro account. Game descriptions and cover art come back and are
+         cached in the folder described above. Nothing about your own game
+         files is uploaded.</p>
+
+      <p><strong>WHDLoad support files.</strong> On request, Copperline
+         downloads the WHDLoad support archive from
+         <a href="https://whdload.de/" target="_blank" rel="noopener">whdload.de</a>
+         and Soft-Kicker from
+         <a href="https://aminet.net/" target="_blank" rel="noopener">aminet.net</a>,
+         verifying both against pinned checksums. Those sites see an ordinary
+         web request, including your IP address, as any download does.</p>
+
+      <p><strong>Internet netplay.</strong> Starting or joining an internet
+         session opens an encrypted QUIC connection to the other player,
+         directly where your networks allow it. Where a direct route cannot be
+         found, traffic falls back to a relay, which forwards it still
+         encrypted; by default these are the public relays run by the
+         <a href="https://www.iroh.computer/" target="_blank" rel="noopener">iroh</a>
+         project, and you can point Copperline at your own relay instead. A
+         fresh key is generated for each session and kept only in memory. As
+         with any peer-to-peer connection, the player you connect to can see
+         your IP address on a direct route, and the relay can see it otherwise.
+         Only controller input and session setup travel between players. None
+         of it reaches me.</p>
+
+      <p><strong>Networking inside the emulated Amiga.</strong> If you fit an
+         emulated network card, use the HostSocket board, or connect Paula's
+         serial port to a modem or TCP service, the Amiga software you are
+         running can reach the internet through your computer. That traffic is
+         whatever that software chooses to send, to the hosts it names.
+         Copperline passes it through and keeps no record of it.</p>
+
+      <p><strong>Debugging and automation interfaces.</strong> The control
+         protocol, the GDB stub, the Debug Adapter Protocol adapter and the MCP
+         server are all off unless you enable them, and all listen on the
+         loopback interface of your own machine.</p>
+
+      <h2>The browser version</h2>
+
+      <p>The browser build at <a href="../try/">copperline.dev/try</a> runs
+         entirely inside your browser. ROMs, disks and save states that you
+         load stay on your device in browser storage; they are never uploaded,
+         and I never see them.</p>
+
+      <p>Browser netplay needs a small signalling service, which runs on
+         Cloudflare Workers for Copperline. It exchanges the two players'
+         connection details and nothing else: one invitation is held for at
+         most fifteen minutes and then discarded. Gameplay runs over encrypted
+         WebRTC between the two browsers, directly or through a TURN relay when
+         a direct route is impossible. ROMs, disks and snapshots never pass
+         through that service. Cloudflare handles this traffic as the
+         infrastructure provider under its own privacy policy.</p>
+
+      <h2>This website</h2>
+
+      <p>copperline.dev is hosted on GitHub Pages, so GitHub receives the
+         requests your browser makes, including your IP address, under
+         <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub's privacy statement</a>.</p>
+
+      <p>Page views are counted with
+         <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a>,
+         which sets no cookies, stores no IP addresses and does not track you
+         between sites. It tells me which pages are read and roughly how often,
+         and nothing that identifies a reader. Fonts are served from this site
+         rather than a font CDN, so loading a page contacts no third party
+         beyond those two.</p>
+
+      <h2>Where you downloaded Copperline</h2>
+
+      <p>Copperline is distributed through the Microsoft Store, GitHub
+         Releases, Flathub and Homebrew. Each of those runs its own service
+         under its own privacy policy, and each gives me aggregate figures such
+         as download and install counts, and in some cases anonymous crash
+         statistics. None of it identifies an individual person to me, and none
+         of it comes from the emulator itself.</p>
+
+      <h2>Children</h2>
+
+      <p>Copperline collects no personal information from anyone, which
+         includes children. There is nothing to sign up for and nothing to
+         submit.</p>
+
+      <h2>Your data and your rights</h2>
+
+      <p>Because I collect and hold no personal data about users, there is no
+         personal data of yours for me to look up, correct, export, sell or
+         delete - and it is never sold or shared, because it does not exist.
+         The data Copperline creates is on your own computer and entirely under
+         your control. Where a feature sends something to a third party, such
+         as an OpenRetro sign-in, your rights in that data sit with that
+         service.</p>
+
+      <h2>Changes to this policy</h2>
+
+      <p>If a future version of Copperline changes what it sends or stores,
+         this page changes in the same release, and the date at the top moves.
+         The full history of this page is public in the
+         <a href="https://github.com/CopperlineHQ/copperline.github.io" target="_blank" rel="noopener">website repository</a>.</p>
+
+      <h2>Contact</h2>
+
+      <p>Questions about this policy, or about anything Copperline does with
+         data, are welcome as an issue on the
+         <a href="https://github.com/CopperlineHQ/Copperline/issues" target="_blank" rel="noopener">Copperline issue tracker</a>
+         or a message on the
+         <a href="https://discord.gg/HDTjt3tYAC" target="_blank" rel="noopener">Copperline Discord</a>.</p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/" aria-current="page">Privacy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
