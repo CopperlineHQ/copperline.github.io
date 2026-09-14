@@ -383,6 +383,16 @@ export class WebEmu {
         }
     }
     /**
+     * Retain the confirmed history so spectators can join, even late. Call
+     * right after `start_netplay`, before the first run.
+     */
+    netplay_enable_spectators() {
+        const ret = wasm.webemu_netplay_enable_spectators(this.__wbg_ptr);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
      * Freeze at the current frame while the reliable channel negotiates a
      * common boundary. Input packets continue to reconcile and acknowledge.
      * @returns {number}
@@ -393,6 +403,16 @@ export class WebEmu {
             throw takeFromExternrefTable0(ret[1]);
         }
         return ret[0];
+    }
+    /**
+     * The initial machine fingerprint every spectator must reproduce.
+     * @returns {Uint8Array}
+     */
+    netplay_identity() {
+        const ret = wasm.webemu_netplay_identity(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
     }
     /**
      * [protocol version, maximum packet bytes, header bytes, input record bytes].
@@ -1031,6 +1051,80 @@ export class WebEmu {
         wasm.webemu_set_volume_percent(this.__wbg_ptr, percent);
     }
     /**
+     * The spectator's initial fingerprint, sent to the host for comparison.
+     * @returns {Uint8Array}
+     */
+    spectate_identity() {
+        const ret = wasm.webemu_spectate_identity(this.__wbg_ptr);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
+     * Feed bytes from the host, split anywhere.
+     * @param {Uint8Array} bytes
+     */
+    spectate_receive(bytes) {
+        const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_spectate_receive(this.__wbg_ptr, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * [spectating, frame, behind, checked, disk changes applied].
+     * @returns {Float64Array}
+     */
+    spectate_status() {
+        const ret = wasm.webemu_spectate_status(this.__wbg_ptr);
+        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+        return v1;
+    }
+    /**
+     * @param {number} id
+     */
+    spectator_feed_close(id) {
+        wasm.webemu_spectator_feed_close(this.__wbg_ptr, id);
+    }
+    /**
+     * Confirmed frames retained for spectators.
+     * @returns {number}
+     */
+    spectator_feed_frames() {
+        const ret = wasm.webemu_spectator_feed_frames(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * Open a feed cursor for one spectator at frame zero; returns its id.
+     * Fails once the retained history is too large for a late joiner.
+     * @returns {number}
+     */
+    spectator_feed_open() {
+        const ret = wasm.webemu_spectator_feed_open(this.__wbg_ptr);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return ret[0] >>> 0;
+    }
+    /**
+     * Encode what a spectator still needs, up to about `max_bytes` (a disk
+     * change is returned whole). Empty means it has everything so far.
+     * @param {number} id
+     * @param {number} max_bytes
+     * @returns {Uint8Array}
+     */
+    spectator_feed_take(id, max_bytes) {
+        const ret = wasm.webemu_spectator_feed_take(this.__wbg_ptr, id, max_bytes);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
      * Call after loading ROM/disks into a fresh WebEmu, before any run/state load.
      * Connection codes and data-channel setup are handled by the page.
      * @param {number} player
@@ -1045,6 +1139,19 @@ export class WebEmu {
         const ptr1 = passStringToWasm0(controller, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
         const ret = wasm.webemu_start_netplay(this.__wbg_ptr, player, ptr0, len0, delay, window, ptr1, len1);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * Follow a host's game on a fresh machine built from its media, before
+     * any run. The page feeds `spectate_receive` from the host's stream.
+     * @param {string} controller
+     */
+    start_spectating(controller) {
+        const ptr0 = passStringToWasm0(controller, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.webemu_start_spectating(this.__wbg_ptr, ptr0, len0);
         if (ret[1]) {
             throw takeFromExternrefTable0(ret[0]);
         }
