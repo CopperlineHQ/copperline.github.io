@@ -181,8 +181,9 @@
       <p>Browser netplay needs a small signalling service, which runs on
          Cloudflare Workers for Copperline. It exchanges the players'
          connection details and nothing else: one invitation is held for at
-         most fifteen minutes and then discarded. A host that admits spectators
-         opens a second, separately keyed room on the same service. That room
+         most fifteen minutes and then discarded. Hosting a browser game also
+         opens a second, separately keyed room for spectators on the same
+         service. That room
          holds each spectator's connection details for at most ten minutes,
          stays open while the host's page is playing, and is discarded when the
          host disconnects or fifteen minutes after its page stops checking for
