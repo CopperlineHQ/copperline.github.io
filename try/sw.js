@@ -12,13 +12,15 @@
 // no version dance beyond bumping CACHE when the precache list changes
 // shape.
 
-const CACHE = 'copperline-try-v0.20.0-site-2';
+const CACHE = 'copperline-try-v0.20.0-site-3';
 
 const PRECACHE = [
   './',
   './site.js',
   './try.js',
   './netplay.js',
+  './netplay-rtc.js',
+  './netplay-watch.js',
   './netplay-room.js',
   './netplay-media.js',
   './netplay-swap.js',

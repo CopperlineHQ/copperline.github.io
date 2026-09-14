@@ -60,7 +60,7 @@
 <main id="main">
   <section class="section">
     <article class="post">
-      <span class="post__date">Last updated 13 September 2026</span>
+      <span class="post__date">Last updated 14 September 2026</span>
       <h1>Privacy Policy</h1>
 
       <p>This policy covers the Copperline emulator, however you obtained it,
@@ -150,10 +150,14 @@
          <a href="https://www.iroh.computer/" target="_blank" rel="noopener">iroh</a>
          project, and you can point Copperline at your own relay instead. A
          fresh key is generated for each session and kept only in memory. As
-         with any peer-to-peer connection, the player you connect to can see
+         with any peer-to-peer connection, the peers you connect to can see
          your IP address on a direct route, and the relay can see it otherwise.
-         Only controller input and session setup travel between players. None
-         of it reaches me.</p>
+         Only controller input and session setup travel between players. A
+         host that admits spectators hands out a separate spectator invitation
+         with its own key; each spectator connects the same way, receives the
+         host's game files and setup as a joining player would, and then
+         follows the two players' controller input without ever sending any of
+         its own. None of it reaches me.</p>
 
       <p><strong>Networking inside the emulated Amiga.</strong> If you fit an
          emulated network card, use the HostSocket board, or connect Paula's
@@ -175,13 +179,19 @@
          and I never see them.</p>
 
       <p>Browser netplay needs a small signalling service, which runs on
-         Cloudflare Workers for Copperline. It exchanges the two players'
+         Cloudflare Workers for Copperline. It exchanges the players'
          connection details and nothing else: one invitation is held for at
-         most fifteen minutes and then discarded. Gameplay runs over encrypted
-         WebRTC between the two browsers, directly or through a TURN relay when
-         a direct route is impossible. ROMs, disks and snapshots never pass
-         through that service. Cloudflare handles this traffic as the
-         infrastructure provider under its own privacy policy.</p>
+         most fifteen minutes and then discarded. A host that admits spectators
+         opens a second, separately keyed room on the same service. That room
+         holds each spectator's connection details for at most ten minutes,
+         stays open while the host's page is playing, and is discarded when the
+         host disconnects or fifteen minutes after its page stops checking for
+         spectators. Gameplay runs over encrypted WebRTC between the browsers,
+         directly or through a TURN relay when a direct route is impossible;
+         spectators receive the host's files and follow the players' controller
+         input over the same kind of connection. ROMs, disks and snapshots
+         never pass through that service. Cloudflare handles this traffic as
+         the infrastructure provider under its own privacy policy.</p>
 
       <h2>This website</h2>
 

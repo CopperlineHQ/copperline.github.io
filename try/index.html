@@ -621,19 +621,24 @@
           <strong>Joystick</strong> enables keyboard or touch game controls, and <strong>Keyboard</strong> opens the on-screen Amiga keys.</p>
         <details>
           <summary>Play together with Netplay</summary>
-          <p>Connect two browsers using the same Copperline build. The host shares ROMs, disks and settings;
+          <p>Connect two browsers using the same Copperline build, with up to eight more watching. The host shares ROMs, disks and settings;
             joining starts a fresh machine and replaces the running game.</p>
           <ol>
             <li>Open <a href="#netplay-panel">Netplay</a>. For Lemmings or another two-mouse game, choose
               <strong>Advanced → Controllers → Two mice</strong> before hosting.</li>
             <li>Choose <strong>Host game</strong> and share the invitation privately. The other player opens it and chooses
               <strong>Join game</strong>. Files transfer automatically; the guest needs no local copies.</li>
+            <li>To let others watch, choose <strong>Advanced &rarr; Spectators</strong> before hosting and share the separate
+              <strong>Spectator invitation</strong>. Spectators open it and choose <strong>Watch game</strong>. They can join at
+              any point, replay the game from its start to catch up, and never send input.</li>
             <li>For another disk, the host chooses <strong>DF0</strong> or <strong>DF1</strong> in Netplay and uses
               <strong>Swap disk</strong>. Both machines pause for the transfer, then resume together.</li>
           </ol>
           <p>The host controls port 1 and the guest controls port 2. Switch <strong>Joystick</strong> off to type on the shared Amiga keyboard.
-            Keep both pages open. Disconnecting ends the game and discards the session’s disk writes.</p>
-          <p>Invitations expire after 15 minutes; an established game can continue. Transfers are encrypted,
+            Keep both pages open. Disconnecting ends the game and discards the session’s disk writes; a spectator leaving
+            changes nothing for the players.</p>
+          <p>Player invitations expire after 15 minutes; an established game can continue, and its spectator invitation stays
+            valid while the host is playing. Transfers are encrypted,
             and the guest’s saved ROM and local setup are preserved. Use <strong>Copy diagnostics</strong> if a connection fails.
             <a href="../docs/netplay/">Full Netplay guide and connection options</a>.</p>
         </details>

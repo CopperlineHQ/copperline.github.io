@@ -157,7 +157,7 @@ cargo build --release
     </div>
     <div class="grid home-features">
       <article class="card"><h3>Amiga hardware, modelled in detail</h3><p>OCS, ECS and AGA machines with 68000–68060 CPUs, expansion boards, hard disks and CD support.</p><a href="docs/configuration/">Hardware and configuration</a></article>
-      <article class="card"><h3>Play together online</h3><p>Two-player rollback Netplay across two desktops or two browsers. The host shares the setup, including ROMs and supported media.</p><a href="docs/netplay/">Set up Netplay</a></article>
+      <article class="card"><h3>Play together online</h3><p>Two-player rollback Netplay across two desktops or two browsers, with up to eight spectators watching. The host shares the setup, including ROMs and supported media.</p><a href="docs/netplay/">Set up Netplay</a></article>
       <article class="card"><h3>Run it in RetroArch</h3><p>A libretro core for A500, A1200 and CD32 software, with WHDLoad, playlists, save states and RetroArch Netplay.</p><a href="docs/libretro/">Install the core</a></article>
       <article class="card"><h3>Step backwards through a bug</h3><p>Inspect registers and memory beside the Amiga display. Rewind execution to find the instruction that changed a value.</p><a href="#debugger">See the Debug workspace</a></article>
       <article class="card"><h3>See where each bus cycle goes</h3><p>The Frame Analyzer shows when the CPU, Copper, blitter and DMA channels use chip memory.</p><a href="#analyzer">Explore frame analysis</a></article>
@@ -246,7 +246,7 @@ cargo build --release
     <div class="section__head"><span class="kicker">// compatibility · 0.20.0</span><h2>Compatibility and limitations</h2><p>Games, demos and Workbench run across OCS, ECS and AGA machines. Compatibility varies by software and configuration; hardware accuracy continues to improve.</p></div>
     <dl class="compatibility">
       <div><dt>ROMs and software</dt><dd>AROS is included so you can start without supplying a ROM. Some games and Workbench installations need an original Kickstart ROM. <a href="docs/getting-started/">ROM and setup guide</a>.</dd></div>
-      <div><dt>Netplay</dt><dd>Connect two desktops or two browsers using the same Copperline build. Desktop and browser peers cannot connect to each other. Mixed operating systems and browser engines still need qualification. <a href="docs/netplay/">Netplay requirements</a>.</dd></div>
+      <div><dt>Netplay</dt><dd>Connect two desktops or two browsers using the same Copperline build, and admit up to eight spectators of the same kind. Desktop and browser peers cannot connect to each other. Mixed operating systems and browser engines still need qualification. <a href="docs/netplay/">Netplay requirements</a>.</dd></div>
       <div><dt>Experimental JIT</dt><dd>The optional 68020+ JIT changes CPU timing and is off by default. Leave it disabled when accurate instruction timing matters. <a href="docs/configuration/">CPU settings</a>.</dd></div>
       <div><dt>Physical floppy drives</dt><dd>Greaseweazle controllers are supported through FluxBridge. Physical media and devices cannot be rewound with a save state. <a href="docs/fluxbridge/">Supported hardware and limitations</a>.</dd></div>
       <div><dt>Disk formats</dt><dd>Standard floppy images use the double-density Amiga format. 1.76 MB Amiga and sector-based PC/CrossDOS images are not supported. <a href="docs/configuration/">Supported image formats</a>.</dd></div>
