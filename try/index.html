@@ -97,8 +97,19 @@
   }
   html[data-sidebar="closed"] .try-sidebar { display: none; }
   .try-scrim { display: none; }
+  /* The monitor draws its own CRT look (the shader's scanlines and the
+     bezel), so the site's cosmetic scanline overlay (.scanlines in
+     style.css, a fixed layer at z-index 9999) must not run across the
+     drawn cabinet. On this page the overlay drops beneath the shell
+     instead: it still textures the page furniture, while the shell, the
+     sticky nav (100) and the narrow-viewport drawer and scrim (200, 190)
+     keep their usual order above it. The glue's fixed children of the
+     shell (the on-screen keyboard) ride up with the shell; its pinned
+     fullscreen fallback sets its own z-index inline. */
+  .scanlines { z-index: 50; }
   .try-shell {
     position: relative;
+    z-index: 60;
     background: #000;
     border: 1px solid var(--line);
     border-radius: var(--radius);
