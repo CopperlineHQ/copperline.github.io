@@ -50,7 +50,7 @@ range checks as the equivalent TOML fields:
 | `--cpu-clock MHZ` | `[cpu] clock_mhz` | a number of MHz |
 | `--fpu` / `--no-fpu` | `[cpu] fpu` | fit / omit a 68881/68882 |
 | `--jit` / `--no-jit` | `[cpu] jit` | experimental fast batch/trace-JIT CPU execution (68020+; not cycle-exact) |
-| `--clipboard` / `--no-clipboard` | `[clipboard] share` | share the host clipboard with the guest's `clipboard.device` (default: on windowed, off headless) |
+| `--clipboard` / `--no-clipboard` | `[clipboard] share` | share the host clipboard with the guest's `clipboard.device`; fits an extra autoconfig board, so it is opt-in (default: off) |
 | `--cartridge MODEL` | `[cartridge] model` | `none` (default) or `hrtmon`, the bundled HRTMon freezer cartridge |
 | `--chip SIZE` | `[memory] chip` | `512K`, `1M`, `2M`, ... |
 | `--fast SIZE` | `[memory] fast` | `0`, `1M`, `4M`, `8M`, ... |
@@ -132,8 +132,8 @@ described with their `[audio]`, `[serial]`, `[parallel]`, `[a2065]`, and
 rom = "KICK13.ROM"            # Kickstart image, 512 KiB (or a 256 KiB 1.x part)
 extended_rom = "cd32ext.rom"  # optional: CDTV (256K at $F00000) or
                               # CD32 (512K at $E00000) extended ROM
-# fmv_rom = "another.rom"     # CD32: bundled open FMV ROM by default
-# fmv_rom = ""                # explicitly leave the module unfitted
+# fmv = true                  # CD32: fit the FMV module (bundled open ROM)
+# fmv_rom = "another.rom"     # CD32: fit the FMV module with this ROM
 # identify = false            # drop the Copperline identification board
                               # from the Zorro chain (default: present)
 ```
@@ -166,13 +166,16 @@ file boots identically. A 256 KiB Kickstart 1.x part is mirrored across the
 pairs for the 32-bit machines are not accepted; use the matching single-file
 image instead.
 
-`fmv_rom` fits the CD32 Full Motion Video module and is valid only with the
-`CD32` machine profile. The profile loads Copperline's bundled open-source 256 KiB
-replacement ROM by default. Supplying a path overrides it with a custom image (such
-as the Commodore v40.30 ROM); `fmv_rom = ""` leaves the cartridge slot empty. The
-module autoconfigures ahead of the standard Zorro chain, driving the CL450 video
-and L64111 MPEG Layer II audio decoders through guest code. The launcher's **ROM**
-tab exposes this setting as **FMV module ROM**.
+`fmv = true` fits the CD32 Full Motion Video module with Copperline's bundled
+open-source 256 KiB replacement ROM, and `fmv_rom = "path"` fits it with a
+custom image (such as the Commodore v40.30 ROM) instead; both are valid only
+with the `CD32` machine profile. The cartridge slot is empty by default: a
+stock CD32 has no module, and fitting one changes the guest's memory layout
+and boot timing enough to alter titles that never used it (`fmv_rom = ""`, the
+older spelling of an empty slot, is still accepted). The module autoconfigures
+ahead of the standard Zorro chain, driving the CL450 video and L64111 MPEG
+Layer II audio decoders through guest code. The launcher's **ROM** tab exposes
+this setting as **FMV module ROM**.
 
 The open ROM includes a clean-room `cd32mpeg.device` and `videocd.library` compatible
 with CD32 Kickstart 3.1. The library identifies inserted Video CDs and parses their
@@ -438,13 +441,14 @@ carried no information.)
   `COPPERLINE_REALTIME_PRIORITY` overrides this for one run; set it to
   `0`/`false`/`off` to force it off, or to any other value (or leave it empty)
   to force it on.
-- `warp_speed` sets the default speed of Warp Speed (turbo) mode. The window
-  presents with vsync, so emulating one frame per presented frame would pin
+- `warp_speed` sets the default speed of Warp Speed (turbo) mode. With VSync
+  enabled (the default), emulating one frame per presented frame would pin
   warp to the host monitor's refresh rate. This option is an output frame
   skip -- `"2x"`, `"4x"`, `"8x"`, `"16x"`, or `"max"` (default) -- so warp
   retires that many emulated frames per presented frame, making warp roughly
   the limit times the refresh rate (host CPU permitting). `"max"` runs flat
-  out and still presents at vsync. Adjust it live from the **Warp Limit**
+  out and still presents at vsync when enabled. With VSync off, presentation
+  frequency depends on host throughput. Adjust it live from the **Warp Limit**
   menu item or `Cmd+Shift+W` / `Alt+Shift+W` (see [The window and its
   controls](ui.md)).
 - `warp_boot = true` accelerates boot sequences: from power-on, the machine
@@ -692,7 +696,30 @@ tint = "none"         # "none" (default), "bw", "green", "amber", or "sepia"
 menu_scale = "1x"     # size of the pop-up menu: "1x" (default) or "2x"
 full_screen = false   # open fullscreen at start (default false)
 status_bar = true     # show the status bar at start (default true)
+vsync = true          # synchronise desktop presentation to vblank (default true)
+hidpi_texture = true  # draw the presentation texture at device-pixel density (default true)
 ```
+
+`vsync` controls desktop presentation. On uses strict FIFO vsync to prevent
+tearing. Off requests unsynchronised presentation where the graphics backend
+supports it; it may reduce latency but can tear. **Video Settings > VSync**
+changes it live without restarting or changing normal emulation speed. The
+choice carries into the configuration screen when saving a config. Headless
+captures and the browser frontend are unaffected. Roughly 50 Hz PAL output
+can still show an uneven cadence on fixed 60 Hz or 120 Hz displays: VSync
+does not make those refresh rates match.
+
+`hidpi_texture` decides the resolution of the texture the window is drawn
+from. On (the default) it follows the display's device-pixel density, so a
+200% (Retina) window is fed a 2x texture and every host row picks its own
+woven scanline. Off keeps the texture at canvas resolution and leaves the
+upscale to the GPU's scaler pass, a quarter of the per-frame texture
+upload (and of the CPU copy, when a menu or overlay makes the frame
+compose on the CPU) -- worth trying on a slow host that falls short of
+real time in a high-density window. Integer scaling looks the same either
+way (its whole-number blocks are point-sampled from the 1x texture); the
+smooth fit selects rows at canvas resolution instead of the finer texture
+grid, which fine interlaced detail can show. Captures are never affected.
 
 The emulated framebuffer always carries the full overscan field Denise
 produces. `"tv"` presents what the monitor's glass shows: the captured
@@ -1118,7 +1145,10 @@ Rendering completed frames uses a worker thread by default so emulation can
 advance while the previous frame is painted. The worker is an implementation
 detail of presentation: screenshots, frame dumps, and recordings wait for
 the exact frame they save. `COPPERLINE_THREADED_RENDER=0` forces the old
-synchronous render path for comparison.
+synchronous render path for comparison. Presenting the composed frame --
+the texture upload, the GPU passes and the wait for the display's vsync --
+runs on a second worker, so the main thread's redraw ends at hand-off;
+`COPPERLINE_THREADED_PRESENT=0` presents from the main thread instead.
 
 ## `[audio]`
 
@@ -1261,8 +1291,8 @@ controller too). `--port1` / `--port2` override for one run, the runtime
 menu's **Port 1/2 Device** items hot-plug a device live, and the control
 protocol's `input.set_port` does the same from a script.
 
-Putting joysticks in *both* ports is a real two-player setup: the host
-gamepad and the keyboard mapping then drive one port each (see below).
+Putting joysticks in both ports allows two gamepads, a gamepad and keyboard,
+or two keyboard mappings to drive them (see [Controller ports](ui.md#controller-ports)).
 
 ### Joystick input source
 
@@ -1582,7 +1612,7 @@ from the runtime menu, and the gain with `Cmd/Alt+Shift +/-`. On macOS the CLI
 binary needs microphone permission to capture a real input; routing audio in
 through a loopback device such as BlackHole needs none.
 
-`"joystick-adapter"` is the classic passive four-player adapter (Kick Off 2,
+`"joystick-adapter"` (also accepted as `"multitap"`) is the classic passive four-player adapter (Kick Off 2,
 Sensible Soccer, Dyna Blaster, Gauntlet II, Super Skidmarks and others read
 it): two switch joysticks wired straight to the connector, with no active
 parts. Port 3's directions short the data pins `D0`-`D3` (CIA-A port B bits
@@ -1594,8 +1624,8 @@ joystick model. The switches only pull down pins the guest has programmed as
 inputs (the games clear `DDRB`), so a port a printer driver is driving as
 outputs is left alone. `[input] port3`/`port4` (or `--port3`/`--port4`) say
 which sockets hold a joystick; naming a joystick there fits the adapter by
-itself, and an adapter named here fills every socket left unset. The host
-gamepad and the keyboard mappings reach the sockets through the usual
+itself, and an adapter named here fills every socket left unset. Up to four host
+gamepads and the two keyboard mappings reach the sockets through the usual
 routing (see [Controller ports](ui.md#controller-ports)), and `--joy-after
 ... 3`/`... 4`, `--script` and the control protocol's `input.joy` drive them
 directly.
@@ -2216,7 +2246,7 @@ hook entirely and never see the mounts.
 
 ```toml
 [clipboard]
-share = true    # default: on in a windowed session, off headless
+share = true    # default: false -- sharing is opt-in
 ```
 
 Text copied in the guest -- anything an application posts to
@@ -2247,18 +2277,33 @@ in the log and then left alone rather than reopened on every poll; the
 guest side of the bridge still runs, so `clipboard.get`/`clipboard.set`
 over the control protocol keep working.
 
-`share` is unset by default, which means the session decides: a windowed
-session shares (the launcher's machines too), a headless run does not,
-since the host clipboard is live host state a replay cannot reproduce
-(see [Determinism and the host boundary](../internals/architecture.md#determinism-and-the-host-boundary)).
-Setting `share = true` (or `--clipboard`) fits the bridge regardless: in a
-headless run it is then reachable through the control protocol's
-`clipboard.get`/`clipboard.set` (see [Control](../debugger/control.md)),
-never through the host clipboard itself, and the run stays
-deterministic. That is also how a recording made in a windowed session
-replays headless with the same machine: pass `--clipboard`. `share =
-false` (or `--no-clipboard`) leaves the bridge out entirely. Netplay
-peers never share, on either side of the session and even with an explicit
+`share` is **off by default**, windowed and headless alike, and the bridge
+is fitted only where it is asked for: `share = true` or `--clipboard`.
+That is because the bridge is a unit of the Copperline services board, so
+sharing puts an autoconfig board on the Zorro chain that the machine you
+configured does not otherwise have. Kickstart binds the board at boot and
+every Exec allocation after it lands somewhere else. That is a different
+machine, and some software can tell: a program that points `COP1LC` at a
+buffer before it has written the list there has the Copper read whatever
+the buffer holds, and where the buffer sits decides what that is. Lotus
+Esprit Turbo Challenge hangs on one layout where the data decodes as a
+`MOVE` to `INTENA` that clears the master interrupt enable. A host
+convenience must not cost the guest its memory map without being asked,
+so it does not.
+
+Up to and including 0.20.0 `share` defaulted on for windowed sessions
+(the launcher's machines too), which is what made that Lotus hang look
+like an emulation bug. It is off everywhere now; turn it back on with
+`share = true` or `--clipboard`.
+
+Headless, `share = true` is still safe for determinism: the bridge is then
+reachable only through the control protocol's `clipboard.get`/`clipboard.set`
+(see [Control](../debugger/control.md)), never through the host clipboard
+itself, since the host clipboard is live host state a replay cannot
+reproduce (see [Determinism and the host boundary](../internals/architecture.md#determinism-and-the-host-boundary)).
+That is also how a recording made in a windowed session with sharing on
+replays headless on the same machine: pass `--clipboard`. Netplay peers
+never share, on either side of the session and even with an explicit
 `--clipboard`: every peer must build the same machine, and the bridge is
 part of the services board's layout, so a session where one side fitted it
 could not agree on a machine at all. *Input
@@ -2334,9 +2379,9 @@ and P/Q parity) when an Akiko client requests raw sectors. CD32 discs that
 use a CDTV trademark boot record for backward-compatible startup are accepted
 by the same path.
 
-CD32 FMV-enhanced titles use the same Akiko media path and the CD32 profile
-fits the bundled open module automatically. Naming top-level `fmv_rom`
-overrides that image; an empty value removes the module. Under CD32 Kickstart,
+CD32 FMV-enhanced titles use the same Akiko media path once the module is
+fitted: top-level `fmv = true` fits the bundled open module, and naming
+`fmv_rom` fits another image. Under CD32 Kickstart,
 raw Video CD movie discs auto-launch the open cartridge's track player; use
 up/down, Red, and Blue to select, play, and stop. The AROS system-ROM path
 deliberately skips the cartridge diagnostic and therefore does not install

@@ -866,9 +866,11 @@ Liberation's CD32 intro busy-waits on its first frame interrupt after
 
 ### CD32 Full Motion Video module (`cd32_fmv.rs`)
 
-The CD32 profile fits a 1 MiB Zorro II FMV cartridge by default using the
-bundled open ROM; top-level `fmv_rom` overrides it and an empty value removes
-it. The module is the first autoconfig board, normally at `$200000`
+Top-level `fmv = true` fits a 1 MiB Zorro II FMV cartridge on the CD32
+profile using the bundled open ROM, and `fmv_rom` fits it with another image;
+the slot is empty by default, as on a stock CD32, because the module's
+resident ROM moves the guest's memory layout and boot timing. The module is
+the first autoconfig board, normally at `$200000`
 (manufacturer 514, product
 `$6A`, serial `$0028001E`). Its window follows the physical decode: 256 KiB ROM at
 `+$000000`, board status/control at `+$040000`, LSI L64111 MPEG Layer II audio
@@ -1104,9 +1106,14 @@ button shorts POUT (PA1) -- the assignment WinUAE's
 written against. The bus overlays the pull-downs on the CIA reads only
 for pins the guest has left as inputs (DDR bit clear), so a printer driver
 driving the port as outputs is unaffected. The host routing
-(`host_routing_for_ports`) queues the sockets behind the game ports for
-the pad and keyboard mappings; the recorder, `--joy-after`'s PORT token
-and the control protocol address them as ports 3 and 4.
+(`host_routing_for_gamepads`) queues the sockets behind the game ports.
+The desktop reader accumulates events separately for four stable controller
+slots, identified by the backend's device ID; model UUIDs select calibration
+only. Disconnecting a controller clears only its slot. Keyboard mappings
+fill vacant player ports, with Keyboard mode reserving the cursor-key port.
+The recorder, `--joy-after` and the control protocol address the adapter as
+ports 3 and 4. Libretro frontend ports 3 and 4 drive these same input states;
+its first two frontend ports retain their reversed native-port mapping.
 
 A `lightpen` port device models the pen/gun's two signals. The
 photodetector pulls the port's pin 6 (/FIRx) low as the beam sweeps past
