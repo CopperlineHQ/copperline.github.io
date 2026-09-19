@@ -8,6 +8,13 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 0.21.0: spectators, four controllers and desktop fixes</title>
+    <link>https://copperline.dev/news/copperline-0-21-0.html</link>
+    <guid>https://copperline.dev/news/copperline-0-21-0.html</guid>
+    <pubDate>Sat, 19 Sep 2026 05:50:05 +0000</pubDate>
+    <description>Invite up to eight spectators to Netplay, use four local controllers on desktop and in RetroArch, and get display and file-picker fixes. Clipboard sharing and the CD32 FMV cartridge are now opt-in.</description>
+  </item>
+  <item>
     <title>Copperline 0.20.0: Netplay, a new debugging workspace, and RetroArch</title>
     <link>https://copperline.dev/news/copperline-0-20-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-20-0.html</guid>

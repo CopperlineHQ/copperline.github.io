@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 0.21.0: spectators, four controllers and desktop fixes - Copperline News</title>
+<meta name="description" content="Invite up to eight spectators to Netplay, use four local controllers on desktop and in RetroArch, and get display and file-picker fixes. Clipboard sharing and the CD32 FMV cartridge are now opt-in.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 0.21.0: spectators, four controllers and desktop fixes">
+<meta property="og:description" content="Invite up to eight spectators to Netplay, use four local controllers on desktop and in RetroArch, and get display and file-picker fixes. Clipboard sharing and the CD32 FMV cartridge are now opt-in.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-0-21-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section class="section"><article class="post">
+<a class="post__back" href="./">&lt; all news</a>
+<span class="post__date">19 September 2026 &middot; release</span>
+<h1>Copperline 0.21.0: spectators, four controllers and desktop fixes</h1>
+<p>Copperline 0.21.0 is out. Netplay now has room for an audience, local multiplayer can use four gamepads, and the desktop does less work between finishing an Amiga frame and putting it on screen.</p>
+<p>There are also fixes for native file pickers and shutdown, plus two changes to the default machine configuration that are worth checking before you upgrade.</p>
+<h2>Invite people to watch</h2>
+<p>A host can admit up to eight spectators on desktop or in the browser. The spectator invitation is separate from the player invitation, so a watcher cannot take player 2's place.</p>
+<p>Spectators can join a game in progress. They receive the host's setup and media, then replay the confirmed input history as fast as their machine allows until they catch up. They follow a few frames behind the players and receive synchronized floppy changes too. There is no video stream: each spectator runs and checks a local emulated Amiga. Joining a long game takes longer to catch up.</p>
+<p>On the desktop, choose the spectator count in Netplay settings and generate a spectator invitation. In the browser, <strong>Host game</strong> supplies a spectator link with copy, share and QR controls. Open that link and choose <strong>Watch game</strong>. Leaving a spectator session does not interrupt the players.</p>
+<p>Netplay still has two active players. Everyone needs the same build, and desktop peers connect to desktops while browser peers connect to browsers. Mixed operating systems and browser engines still need qualification. See the <a href="../docs/netplay/">Netplay guide</a>.</p>
+<h2>Four local controllers</h2>
+<p>The desktop now reads four independent gamepads through the Amiga's two game ports and the parallel-port joystick adapter. Choose <strong>Multitap (4 joysticks)</strong> in the launcher, set both native ports to Joystick and use gamepad input mode. Cursor keys and the numeric keypad can fill spare player slots. Disconnecting one pad leaves the others assigned to their players.</p>
+<p>The RetroArch core exposes the extra sockets as ports 3 and 4. Select <strong>Parallel-port joystick (multitap)</strong> for those ports in <strong>Quick Menu → Controls</strong>. This is local four-player support for games such as Super Skidmarks; built-in Internet play remains two-player. The <a href="../docs/ui/#controller-ports">desktop controller guide</a> and <a href="../docs/libretro/">libretro guide</a> cover setup.</p>
+<h2>Display work and desktop fixes</h2>
+<p>Presentation reuses TV-aperture calculations and repeated rows, draws eligible pictures on the GPU, and moves upload and presentation work to a worker thread. The core also avoids redundant DMA decoding and Copper WAIT checks. These changes reduce host work while preserving the emulated timeline.</p>
+<p><strong>Video Settings → VSync</strong> now changes presentation live. It defaults on; turning it off may reduce latency where supported but can tear. PAL output still has an uneven cadence on a display with a mismatched refresh rate. Wayland scheduling has also been improved.</p>
+<p>For high-density displays, <code>[display] hidpi_texture = false</code> reduces texture and copy work. Integer scaling keeps its appearance; smooth scaling may show differences in fine interlaced detail. Captures are unaffected.</p>
+<ul>
+<li>Windows tries accelerated OpenGL when automatic renderer selection lands on a CPU renderer, while respecting explicit backend choices.</li>
+<li>Windows file pickers keep the window responsive. macOS uses sheets to avoid the macOS 27 crash when resizing a native picker.</li>
+<li>Closing or quitting on macOS no longer deadlocks while the presentation worker releases the window.</li>
+<li>Windows Explorer launches no longer open an unwanted console. The executable gains its icon and version resources.</li>
+<li>PCMCIA gets its own menu, and the Netplay enable control follows the surrounding stepper controls.</li>
+</ul>
+<p>RetroArch state buffers are now sized for the loaded machine: a typical A500 floppy session reserves about 14 MiB instead of 64 MiB, and an A1200 about 18 MiB. This reduces memory use and per-frame checksum work. Larger configurations need more space.</p>
+<h2>Before upgrading</h2>
+<ul>
+<li><strong>Clipboard sharing is off by default.</strong> The extra autoconfig board changes the guest's memory layout and caused a hang in Lotus Esprit Turbo Challenge. Enable it with <code>--clipboard</code> or <code>[clipboard] share = true</code> when wanted. Explicit saved settings still apply.</li>
+<li><strong>The CD32 FMV slot starts empty.</strong> Fitting the module changed memory layout and boot timing even for games that did not use it, including Kang Fu's intro. Choose <strong>Fit</strong> in the launcher's FMV row or set top-level <code>fmv = true</code> to use the bundled open ROM. A named <code>fmv_rom</code> still fits that ROM.</li>
+<li><strong>Recreate RetroArch save states after updating the core.</strong> The core checks a build fingerprint that includes the release version. Desktop states retain the chunked format introduced in 0.20; states from 0.19 and earlier still cannot load. Disk images and saves made inside games are unaffected.</li>
+</ul>
+<p>New copperhf.device regression coverage verifies Kickstart 1.3 FFS booting with a compatible FastFileSystem. The reported crash came from a newer filesystem binary expecting libraries absent from 1.3; the documentation now explains what to check. Dependency updates include the rustls fix for RUSTSEC-2026-0285.</p>
+<p>Thanks to Lee Hobson for the file-picker and menu work, Simon Dick for the copperhf investigation and documentation, and everyone testing and supporting Copperline.</p>
+<p><a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.21.0">Download Copperline 0.21.0</a> <a class="btn btn--ghost" href="../try/">Try in your browser</a></p>
+<p>Downloads cover macOS, Linux x86-64, Windows x64/ARM64 and three RetroArch platforms. Homebrew users can run <code>brew update</code> followed by <code>brew upgrade copperline</code>. The release includes a PDF manual and checksums. Read the <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.21.0">full release notes</a> or <a href="https://github.com/CopperlineHQ/Copperline/compare/v0.20.0...v0.21.0">changelog</a>.</p>
+
+</article></section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

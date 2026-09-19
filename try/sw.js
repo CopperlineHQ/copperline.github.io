@@ -12,7 +12,7 @@
 // no version dance beyond bumping CACHE when the precache list changes
 // shape.
 
-const CACHE = 'copperline-try-v0.20.0-site-3';
+const CACHE = 'copperline-try-v0.21.0-site-1';
 
 const PRECACHE = [
   './',
