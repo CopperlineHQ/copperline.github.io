@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 1.0.0-rc.1: the first release candidate for 1.0 - Copperline News</title>
+<meta name="description" content="The first release candidate for Copperline 1.0 adds three- and four-player netplay on the desktop, debugger watches on device registers, a timed CD32 drive trace and a refreshed AROS ROM. Please test it and report anything that worked in 0.21.0 but does not now.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 1.0.0-rc.1: the first release candidate for 1.0">
+<meta property="og:description" content="The first release candidate for Copperline 1.0 adds three- and four-player netplay on the desktop, debugger watches on device registers, a timed CD32 drive trace and a refreshed AROS ROM. Please test it and report anything that worked in 0.21.0 but does not now.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-1-0-0-rc-1.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section class="section"><article class="post">
+<a class="post__back" href="./">&lt; all news</a>
+<span class="post__date">26 September 2026 &middot; release</span>
+<h1>Copperline 1.0.0-rc.1: the first release candidate for 1.0</h1>
+<p>This is the first release candidate for Copperline 1.0. If testing does not turn up problems that need a second candidate, the next release will be 1.0.0.</p>
+<p>That makes this the release to try with your usual games, demos and configurations. If something worked in 0.21.0 and does not work here, please <a href="https://github.com/CopperlineHQ/Copperline/issues">open an issue</a> with the configuration and the software involved.</p>
+<p>The candidate also brings three- and four-player netplay on the desktop, debugger watches on device registers with a timed trace of CD32 drive commands, a refreshed AROS ROM, and a manual that has been checked against the program.</p>
+<h2>Three and four players over netplay</h2>
+<p>Desktop netplay now seats two to four players. Players three and four use the four-player adapter on the parallel port, as they would at a single Amiga: two switch joysticks, with no mouse and no CD32 buttons.</p>
+<p>Player 1 hosts, and everyone else connects to the host, which passes each player's input on to the others. Only the host needs to be reachable, and every player must be connected before the game starts. It works over direct IP and over the encrypted Internet connection, and spectators can still watch.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-0-0-rc-1/netplay-four-players.png"><img src="../assets/news/1-0-0-rc-1/netplay-four-players.png" width="1432" height="1074" alt="The launcher's Netplay page with Players set to 4 players, Local player set to port 1 and a session code ready to share" loading="lazy"></a>
+<figcaption>The host sets <strong>Players</strong>; <strong>Local player</strong> then offers ports 3 and 4 as well.</figcaption>
+</figure>
+<p>In the launcher, the host sets <strong>Players</strong>. On the command line, the host passes <code>--netplay-players 3</code> or <code>4</code>, and can repeat <code>--netplay-peer</code> once per guest or leave it out to admit anyone with the session code. The host's machine needs the adapter fitted with a joystick in each socket in use.</p>
+<p>Browser games stay two-player, because a web page has no parallel port. See the <a href="../docs/netplay/">netplay guide</a>.</p>
+<h2>Watch device registers and trace the CD32 drive</h2>
+<p>Ordinary watchpoints compare memory before and after each instruction. That cannot work for a device register, because reading one has side effects: it can pop a byte from Akiko's command port or clear a CIA interrupt flag. <strong>MMIO watches</strong> are taken at the CPU's own bus access instead. Each data access to the watched range is recorded with its address, size, value, direction, PC, frame, beam position and colour clock. They work on Akiko, the CIAs, Gayle, Zorro boards, custom registers and RAM.</p>
+<p>The new <strong>CD command trace</strong> records every packet the CD32 sends its drive: the decoded command, sector range, speed, reply and outcome, with emulated timestamps for each step from issue to completion. It only observes; it never feeds back into the emulation.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-0-0-rc-1/debugger-mmio-watch.png"><img src="../assets/news/1-0-0-rc-1/debugger-mmio-watch.png" width="1600" height="1105" alt="The debugger's Break tab with the new MMIO watch button and list, and the new CD tab beside it" loading="lazy"></a>
+<figcaption>The Break tab gains <strong>MMIO</strong> watches, and the new <strong>CD</strong> tab lists drive commands with their timings.</figcaption>
+</figure>
+<p>Both are available from the debugger window, the console (<code>MWATCH</code> and <code>CDTRACE</code>), headless runs (<code>COPPERLINE_DBG_MMIO</code> and <code>COPPERLINE_DBG_CD</code>) and the control protocol, and therefore MCP. See the <a href="../docs/window/">debugger window guide</a>.</p>
+<h2>AROS ROM refresh</h2>
+<p>The bundled AROS ROM is rebuilt from upstream master with no local patches; everything the previous refresh carried has now been merged upstream. Hires screens are no longer sheared sideways, a program that enables interrupts itself under <code>Disable()</code> no longer freezes at the first vertical blank, and loaded programs now come from the top of free memory, leaving the low block contiguous for older software. There are also fixes to CD32 <code>cd.device</code>, screen Copper lists, the Shell and the console.</p>
+<p>The new memory placement exposed two Copperline bugs, both now fixed: guest code coverage could count the next command as part of the program, and the VS Code profiler sometimes captured no frames.</p>
+<h2>A manual checked against the program</h2>
+<p>Every chapter of the manual, all 238 custom-register pages and the example configuration were checked against the source. Wrong defaults, labels and paths are corrected, and flags, configuration keys, protocol methods, console commands and environment variables that had never been documented now are. The Linux instructions now say plainly that Copperline is not on Flathub: download the AppImage, or build the Flatpak yourself.</p>
+<p>The review also found places where the program was wrong. The debugger decoded ADKCON bit names one bit too high, showed KILLEHB on ZDCTEN's bit, and hid bit 1 of DDFSTRT and DDFSTOP, which it now shows according to the fitted Agnus. <code>--help</code>, the shortcuts panel and the MCP tool descriptions now match what the program does.</p>
+<h2>Before upgrading</h2>
+<ul>
+<li><strong>Every netplay peer needs 1.0.0-rc.1.</strong> The protocol changed to carry four players, so a 0.21.0 peer cannot join.</li>
+<li><strong>Recreate RetroArch save states after updating the core.</strong> Desktop save states from 0.20.0 and 0.21.0 still load; states from 0.19 and earlier do not.</li>
+<li><strong>High-density floppy images are refused.</strong> Copperline's drives are double-density units. A high-density UAE extended ADF used to crash the guest; it is now refused when inserted, with a message saying why. The RetroArch core accepts only 880 KiB ADFs.</li>
+<li><strong>Some command-line combinations are now errors</strong> rather than being ignored, such as <code>--exit-on-return</code> with <code>--gdb</code>. A lone <code>--run PROG --exit-on-return</code> now runs without a window.</li>
+</ul>
+<p>Thanks to the patrons who pay for the hardware used to check the emulation, to everyone who has reported problems and tested fixes, and to everyone who has contributed code on the way to 1.0.</p>
+<p><a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.0.0-rc.1">Download Copperline 1.0.0-rc.1</a> <a class="btn btn--ghost" href="../try/">Try in your browser</a></p>
+<p>Downloads cover macOS, Linux x86-64, Windows x64/ARM64 and three RetroArch platforms. Homebrew users can run <code>brew update</code> followed by <code>brew upgrade copperline</code>. The release includes a PDF manual and checksums. Read the <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.0.0-rc.1">full release notes</a> or <a href="https://github.com/CopperlineHQ/Copperline/compare/v0.21.0...v1.0.0-rc.1">changelog</a>.</p>
+
+</article></section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

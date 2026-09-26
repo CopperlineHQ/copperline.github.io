@@ -8,6 +8,13 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 1.0.0-rc.1: the first release candidate for 1.0</title>
+    <link>https://copperline.dev/news/copperline-1-0-0-rc-1.html</link>
+    <guid>https://copperline.dev/news/copperline-1-0-0-rc-1.html</guid>
+    <pubDate>Sat, 26 Sep 2026 11:58:45 +0000</pubDate>
+    <description>The first release candidate for Copperline 1.0 adds three- and four-player netplay on the desktop, debugger watches on device registers, a timed CD32 drive trace and a refreshed AROS ROM. Please test it and report anything that worked in 0.21.0 but does not now.</description>
+  </item>
+  <item>
     <title>Copperline 0.21.0: spectators, four controllers and desktop fixes</title>
     <link>https://copperline.dev/news/copperline-0-21-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-21-0.html</guid>

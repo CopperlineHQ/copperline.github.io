@@ -83,8 +83,8 @@
   </section>
 
   <aside class="release-strip" aria-label="Latest release">
-    <p><strong>New in 0.21.0</strong> Netplay spectators, four local controllers and desktop display fixes.</p>
-    <a href="news/copperline-0-21-0.html">Read the release notes</a>
+    <p><strong>New in 1.0.0-rc.1</strong> The first release candidate for 1.0: four-player netplay, device-register watches and a CD32 drive trace.</p>
+    <a href="news/copperline-1-0-0-rc-1.html">Read the release notes</a>
   </aside>
 
   <section id="download" class="section">
@@ -103,7 +103,7 @@
           <button class="tab" id="tab-windows" role="tab" aria-selected="false" aria-controls="panel-windows" data-os="windows" tabindex="-1">Windows</button>
         </div>
         <div class="tab-panel install-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
-          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.21.0/Copperline-0.21.0-macos-universal.dmg">Download for macOS</a>
+          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-macos-universal.dmg">Download for macOS</a>
           <p>For Apple Silicon and Intel Macs. Open the DMG and copy <strong>Copperline.app</strong> to Applications.</p>
           <p class="install-note">The app is ad-hoc signed rather than notarized, so macOS may block the first launch. Allow it in <strong>System Settings &rarr; Privacy &amp; Security &rarr; Open Anyway</strong>.</p>
           <details class="install-more">
@@ -113,16 +113,16 @@ brew install copperline</code></pre>
           </details>
         </div>
         <div class="tab-panel install-panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux" hidden>
-          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.21.0/Copperline-0.21.0-x86_64.AppImage">Download for Linux</a>
+          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-x86_64.AppImage">Download for Linux</a>
           <p>AppImage for x86-64. Make it executable, then launch it:</p>
-          <pre><code>chmod +x Copperline-0.21.0-x86_64.AppImage
-./Copperline-0.21.0-x86_64.AppImage</code></pre>
+          <pre><code>chmod +x Copperline-1.0.0-rc.1-x86_64.AppImage
+./Copperline-1.0.0-rc.1-x86_64.AppImage</code></pre>
           <p class="install-note">A Vulkan driver is required. See the <a href="docs/getting-started/">Linux setup guide</a>.</p>
         </div>
         <div class="tab-panel install-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="install-actions">
-            <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.21.0/Copperline-0.21.0-win-x64.zip">Download for Windows x64</a>
-            <a href="https://github.com/CopperlineHQ/Copperline/releases/download/v0.21.0/Copperline-0.21.0-win-arm64.zip">Windows ARM64</a>
+            <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-win-x64.zip">Download for Windows x64</a>
+            <a href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-win-arm64.zip">Windows ARM64</a>
           </div>
           <p>Extract the whole ZIP, then open <strong>copperline.exe</strong>. Keep the folders beside it: they hold the bundled ROMs and WHDLoad support files.</p>
         </div>
@@ -133,7 +133,7 @@ brew install copperline</code></pre>
         <li><h3>Load your software</h3><p>On the desktop, drag a disk image onto the window or insert one from the status bar. <a href="docs/whdload/">WHDLoad archives</a> can be launched directly.</p></li>
       </ol>
     </div>
-    <p class="upgrade-note"><strong>Upgrading to 0.21?</strong> Clipboard sharing and the CD32 FMV cartridge are now opt-in. Recreate RetroArch save states after updating the core. <a href="news/copperline-0-21-0.html">Read the upgrade notes</a>.</p>
+    <p class="upgrade-note"><strong>Upgrading from 0.21?</strong> Every netplay peer needs the same release, RetroArch save states need recreating after updating the core, and high-density floppy images are now refused. <a href="news/copperline-1-0-0-rc-1.html">Read the upgrade notes</a>.</p>
     <div class="download-links">
       <a href="https://github.com/CopperlineHQ/Copperline/releases/latest">All release downloads</a>
       <a href="docs/libretro/">Install the RetroArch core</a>
@@ -158,7 +158,7 @@ cargo build --release
     </div>
     <div class="home-features">
       <article class="card"><h3>Amiga hardware, modelled in detail</h3><p>OCS, ECS and AGA machines with 68000 to 68060 CPUs, Zorro expansion boards, hard disks and CD drives.</p><a href="docs/configuration/">Hardware and configuration</a></article>
-      <article class="card"><h3>Play together online</h3><p>Two-player rollback netplay between two desktops or two browsers, with up to eight spectators. The host sends the machine setup, ROMs and supported media, so the other player needs no local copies.</p><a href="docs/netplay/">Set up netplay</a></article>
+      <article class="card"><h3>Play together online</h3><p>Rollback netplay for two players on desktops or in browsers, or up to four on desktops through the four-player adapter, with up to eight spectators. The host sends the machine setup, ROMs and supported media, so the other players need no local copies.</p><a href="docs/netplay/">Set up netplay</a></article>
       <article class="card"><h3>Run it in RetroArch</h3><p>A libretro core for A500, A1200 and CD32 software, with WHDLoad, playlists, save states, four local controller ports and RetroArch netplay.</p><a href="docs/libretro/">Install the core</a></article>
       <article class="card"><h3>Step backwards through a bug</h3><p>Inspect registers and memory beside the Amiga display. Rewind execution to find the instruction that changed a value.</p><a href="#debugger">See the Debug workspace</a></article>
       <article class="card"><h3>See where each bus cycle goes</h3><p>The Frame Analyzer shows which part of the machine used the chip bus in each cycle of a frame.</p><a href="#analyzer">Explore frame analysis</a></article>
@@ -214,7 +214,7 @@ cargo build --release
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-break" role="tabpanel" aria-labelledby="dbgtab-break" hidden>
           <a href="assets/news/0-20-0/debug-break.jpg"><img src="assets/news/0-20-0/debug-break.jpg" width="1224" height="768" alt="Copperline 0.20.0 Break inspector beside the Amiga display" loading="lazy"></a>
-          <figcaption><strong>Breakpoints.</strong> PC breakpoints, memory watchpoints and register traps.</figcaption>
+          <figcaption><strong>Breakpoints.</strong> PC breakpoints, memory and device-register watches, and register traps.</figcaption>
         </figure>
         <figure class="dbg-gallery__shot" id="dbgshot-console" role="tabpanel" aria-labelledby="dbgtab-console" hidden>
           <a href="assets/news/0-20-0/debug-console.jpg"><img src="assets/news/0-20-0/debug-console.jpg" width="1224" height="768" alt="Copperline 0.20.0 Console in the shared Debug workspace" loading="lazy"></a>
@@ -244,10 +244,10 @@ cargo build --release
 
   <hr class="copperline">
   <section id="status" class="section">
-    <div class="section__head"><span class="kicker">// compatibility &middot; 0.21.0</span><h2>Compatibility and limitations</h2><p>Games, demos and Workbench run on OCS, ECS and AGA machines, but not everything works yet. Compatibility depends on the software and the configuration, and accuracy improves with each release.</p></div>
+    <div class="section__head"><span class="kicker">// compatibility &middot; 1.0.0-rc.1</span><h2>Compatibility and limitations</h2><p>Games, demos and Workbench run on OCS, ECS and AGA machines, but not everything works yet. Compatibility depends on the software and the configuration, and accuracy improves with each release.</p></div>
     <dl class="compatibility">
       <div><dt>ROMs and software</dt><dd>AROS is included, so you can start straight away. Some games and Workbench installations need an original Kickstart ROM. <a href="docs/getting-started/">ROM and setup guide</a>.</dd></div>
-      <div><dt>Netplay</dt><dd>Two desktops or two browsers running the same Copperline build can play together, with up to eight spectators of the same kind. A desktop cannot connect to a browser, and mixing operating systems or browser engines has not been verified yet. <a href="docs/netplay/">Netplay requirements</a>.</dd></div>
+      <div><dt>Netplay</dt><dd>Two to four desktops, or two browsers, running the same Copperline build can play together, with up to eight spectators of the same kind. Players three and four need the four-player adapter. A desktop cannot connect to a browser, and mixing operating systems or browser engines has not been verified yet. <a href="docs/netplay/">Netplay requirements</a>.</dd></div>
       <div><dt>Experimental JIT</dt><dd>The optional JIT for 68020 and later CPUs changes CPU timing and is off by default. Leave it off when accurate instruction timing matters. <a href="docs/configuration/">CPU settings</a>.</dd></div>
       <div><dt>Physical floppy drives</dt><dd>Real drives work through a Greaseweazle controller and FluxBridge; other flux controllers are not supported. A save state cannot rewind a physical disk. <a href="docs/fluxbridge/">Supported hardware and limitations</a>.</dd></div>
       <div><dt>Disk formats</dt><dd>Floppy images must be double-density Amiga disks. High-density (1.76 MB) Amiga images and sector-based PC/CrossDOS images are not supported. <a href="docs/configuration/">Supported image formats</a>.</dd></div>
