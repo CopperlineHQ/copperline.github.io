@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Try it in your browser - Copperline</title>
-<meta name="description" content="Copperline Amiga emulator compiled to WebAssembly running directly in your browser. Boots the bundled AROS ROM, with support for custom Kickstart ROMs and disk images.">
+<meta name="description" content="The Copperline Amiga emulator, compiled to WebAssembly and running in your browser. It boots the bundled AROS ROM and takes your own Kickstart ROMs and disk images.">
 <!-- Room service URL is configured here; service credentials stay server-side. -->
 <meta name="copperline-netplay-service" content="https://copperline-netplay.andrew-879.workers.dev">
 <meta name="theme-color" content="#0a0d16">
@@ -504,7 +504,7 @@
 <main id="main">
   <section class="section section--try">
     <div class="section__head try-head">
-      <span class="kicker">// try it in your browser</span>
+      <span class="kicker">// webassembly build</span>
       <h1>Try Copperline in your browser</h1>
     </div>
 
@@ -631,46 +631,55 @@
         <p>Click the screen to capture the mouse; press <kbd>Esc</kbd> to release it.
           <strong>Joystick</strong> enables keyboard or touch game controls, and <strong>Keyboard</strong> opens the on-screen Amiga keys.</p>
         <details>
-          <summary>Play together with Netplay</summary>
-          <p>Connect two browsers using the same Copperline build, with up to eight more watching. The host shares ROMs, disks and settings;
-            connecting starts a fresh machine and replaces the running game. Until player 2 arrives, the host can keep playing and change disks.</p>
+          <summary>Play together with netplay</summary>
+          <p>Two browsers running the same Copperline build can play together, with up to eight more watching. The host sends
+            its ROMs, disks and settings. Until player 2 arrives, the host can keep playing and change disks; when they connect,
+            both pages start a fresh machine, which replaces the game that was running.</p>
           <ol>
             <li>Open <a href="#netplay-panel">Netplay</a>. For Lemmings or another two-mouse game, choose
-              <strong>Advanced → Controllers → Two mice</strong> before hosting.</li>
+              <strong>Advanced &rarr; Controllers &rarr; Two mice</strong> before hosting.</li>
             <li>Choose <strong>Host game</strong> and share the invitation privately. The other player opens it and chooses
               <strong>Join game</strong>. Files transfer automatically; the guest needs no local copies.</li>
             <li>To let others watch, share the separate <strong>Spectator invitation</strong> or its QR code, shown under
-              your own. Up to eight spectators open it and choose <strong>Watch game</strong>. They can join at any point,
-              replay the game from its start to catch up, and never send input.</li>
+              the player invitation. Up to eight spectators open it and choose <strong>Watch game</strong>. They can join
+              at any point, replay the game from its start to catch up, and never send input.</li>
             <li>For another disk, the host chooses <strong>DF0</strong> or <strong>DF1</strong> in Netplay and uses
               <strong>Swap disk</strong>. Both machines pause for the transfer, then resume together.</li>
           </ol>
-          <p>The host controls port 1 and the guest controls port 2. Switch <strong>Joystick</strong> off to type on the shared Amiga keyboard.
-            Keep both pages open. Disconnecting ends the game and discards the session’s disk writes; a spectator leaving
+          <p>The host controls port 1 and the guest controls port 2, so in most joystick games the guest is player 1.
+            Switch <strong>Joystick</strong> off to type on the shared Amiga keyboard.
+            Keep both pages open. Disconnecting ends the game and discards the session's disk writes; a spectator leaving
             changes nothing for the players.</p>
-          <p>Player invitations expire after 15 minutes; an established game can continue, and its spectator invitation stays
-            valid while the host is playing. Transfers are encrypted,
-            and the guest’s saved ROM and local setup are preserved. Use <strong>Copy diagnostics</strong> if a connection fails.
-            <a href="../docs/netplay/">Full Netplay guide and connection options</a>.</p>
+          <p>A player invitation expires after 15 minutes, but a game that has started carries on, and its spectator invitation
+            stays valid while the host is playing. Transfers are encrypted, and the guest's own saved ROM and settings are left
+            untouched. If a connection fails, use <strong>Copy diagnostics</strong> and include the result in a bug report.
+            <a href="../docs/netplay/">Netplay guide and connection options</a>.</p>
         </details>
         <details>
           <summary>Save states and disk images</summary>
           <p><strong>Quick save</strong> keeps a snapshot in this browser. <strong>Save state</strong> downloads a
-            <code>.clstate</code> file that desktop builds of the same release can open. <strong>Saved states</strong> manages named snapshots.</p>
+            <code>.clstate</code> file that the desktop build of the same release can open. <strong>Saved states</strong>
+            manages named snapshots.</p>
           <p><strong>Save states from 0.19 and earlier cannot be loaded.</strong> Disk images and ordinary in-game saves are unaffected.</p>
-          <p>Floppy formats include ADF, ADZ, DMS, IPF and SCP. Under Controls, <strong>DF0 from URL</strong> loads an image
-            from a server that allows cross-origin requests. <a href="../docs/browser/">Browser storage and media guide</a>.</p>
+          <p>Floppy images can be ADF, ADZ, DMS, IPF or SCP, and may be gzip- or ZIP-compressed. Under Controls,
+            <strong>DF0 from URL</strong> loads an image from a server that allows cross-origin requests. <a href="../docs/browser/">Browser storage and media guide</a>.</p>
         </details>
         <details>
           <summary>Machine, display and input settings</summary>
-          <p>The default is an A500 with 512 KB Chip RAM, 512 KB Slow RAM and AROS. Under <strong>Controls → Machine</strong>,
-            choose an A500 or A1200 and PAL or NTSC video.</p>
-          <p><strong>Display</strong> has CRT effects, scaling, overscan and bezels. <strong>Joystick</strong> uses the arrow keys
-            and Right Ctrl/Alt for port 2 during local play; phones also have touch controls. Hold <kbd>Esc</kbd> to exit fullscreen.</p>
-          <p>The page’s light/dark switch changes the website, leaving the emulated picture and monitor settings as you chose them.</p>
+          <p>The default machine is an A500 with 512 KiB of chip RAM, 512 KiB of slow RAM and AROS. Under
+            <strong>Controls &rarr; Machine</strong> you can switch to an A1200 and choose PAL or NTSC video.
+            <strong>Display</strong> has the CRT effects, scaling, overscan and monitor bezels.</p>
+          <p>In local play, <strong>Joystick</strong> in Keys mode puts a joystick in port 2: the arrow keys move, either
+            <kbd>Ctrl</kbd> or the right <kbd>Alt</kbd> fires, and the left <kbd>Alt</kbd> is the second button. CD32 mode adds
+            the pad's other buttons, and touch screens also get on-screen controls. Gamepads work without it, taking port 2
+            first and then port 1.</p>
+          <p>To leave fullscreen, hold <kbd>Esc</kbd> in Chrome and other Chromium-based browsers, press it in other browsers,
+            or use the on-screen <strong>Exit</strong> button.</p>
+          <p>The site's light and dark theme switch changes only the page around the emulator; the picture and monitor
+            settings stay as you set them.</p>
         </details>
-        <p>Emulation runs on your device. The included AROS ROM uses the <a href="aros/LICENSE">AROS Public License</a>;
-          original Commodore ROMs are not included. <a href="https://github.com/CopperlineHQ/Copperline/issues/new?template=bug_report.yml">Report a bug</a>.</p>
+        <p>Everything runs on your device. The included AROS ROM is under the <a href="aros/LICENSE">AROS Public License</a>;
+          no Commodore ROMs are included. <a href="https://github.com/CopperlineHQ/Copperline/issues/new?template=bug_report.yml">Report a bug</a>.</p>
       </div>
     </div>
   </section>
@@ -682,7 +691,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.

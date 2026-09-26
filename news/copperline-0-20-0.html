@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Copperline 0.20.0: Netplay, a new debugging workspace, and RetroArch - Copperline News</title>
-<meta name="description" content="Two-player Amiga Netplay on desktop and in the browser, a rebuilt debugging workspace, and a RetroArch core. Plus save-state thumbnails, GIF clips, new hardware and cleaner Paula audio.">
+<meta name="description" content="Two-player netplay, a shared debugging workspace and a RetroArch core, plus save-state thumbnails, GIF clips and Paula audio improvements.">
 <meta name="theme-color" content="#0a0d16">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Copperline 0.20.0: Netplay, a new debugging workspace, and RetroArch">
-<meta property="og:description" content="Two-player Amiga Netplay on desktop and in the browser, a rebuilt debugging workspace, and a RetroArch core. Plus save-state thumbnails, GIF clips, new hardware and cleaner Paula audio.">
+<meta property="og:description" content="Two-player netplay, a shared debugging workspace and a RetroArch core, plus save-state thumbnails, GIF clips and Paula audio improvements.">
 <meta property="og:url" content="https://copperline.dev/news/copperline-0-20-0.html">
 <meta property="og:image" content="https://copperline.dev/assets/news/0-20-0/debug-workspace.jpg">
 
@@ -63,27 +63,27 @@
 <span class="post__date">12 September 2026 &middot; release</span>
 <h1>Copperline 0.20.0: Netplay, a new debugging workspace, and RetroArch</h1>
 
-<p>Copperline 0.20.0 is out. This release adds two-player Netplay on desktop and in the browser, brings the Amiga display and inspectors together in a new debugging workspace, and adds a libretro core for RetroArch.</p>
-<p>There are save-state thumbnails, GIF clips, new peripherals and improvements to Paula audio too. <strong>Save states from 0.19 and earlier need recreating</strong>; disk images and ordinary in-game saves are unaffected.</p>
-<h2>Two-player Netplay</h2>
-<p>Each player runs a complete emulated Amiga. Copperline exchanges input, predicts late packets and rolls back to replay frames when a prediction was wrong. Desktop Internet invitations use encrypted connections with NAT traversal and relay fallback, so port forwarding is normally unnecessary. Direct UDP connections remain available.</p>
-<p>The host sends the machine settings, ROMs and supported game media to the joining player. Both machines then cold-boot together. Floppy changes during play pause both peers, transfer the replacement and resume at the same emulated frame. IPF protection-track timing survives the transfer too.</p>
-<p>The browser has invitation links and QR sharing, automatic setup transfer, and synchronized DF0/DF1 swaps. Two-mouse games work on both frontends, including two-player Lemmings. In the browser, choose <strong>Advanced → Controllers → Two mice</strong> in Netplay before hosting.</p>
+<p>Copperline 0.20.0 is out. This release adds two-player netplay on the desktop and in the browser, brings the Amiga display and the inspectors together in a new debugging workspace, and adds a libretro core for RetroArch.</p>
+<p>There are also save-state thumbnails, GIF clips, new peripherals and Paula audio improvements. <strong>Save states from 0.19 and earlier need recreating</strong>; disk images and ordinary in-game saves are unaffected.</p>
+<h2>Two-player netplay</h2>
+<p>Each player runs a complete emulated Amiga. Copperline exchanges input, predicts input that has not arrived yet, and rolls back to replay frames when a prediction was wrong. Desktop internet invitations use encrypted connections with NAT traversal and relay fallback, so port forwarding is normally unnecessary. Direct UDP connections are still available.</p>
+<p>The host sends the machine settings, ROMs and supported game media to the joining player. Both machines then cold-boot together. A floppy change during play pauses both peers, transfers the replacement and resumes both at the same emulated frame. IPF protection-track timing survives the transfer.</p>
+<p>The browser has invitation links and QR sharing, automatic setup transfer, and synchronized DF0/DF1 swaps. Two-mouse games work on both frontends, including two-player Lemmings. In the browser, choose <strong>Advanced &rarr; Controllers &rarr; Two mice</strong> in the Netplay panel before hosting.</p>
 <div class="release-video"><iframe src="https://www.youtube-nocookie.com/embed/wUcZPUC9SkQ" title="Two-player Amiga Lemmings over the Internet in Copperline" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-<p><a href="https://youtu.be/wUcZPUC9SkQ">Watch the two-player Lemmings Netplay video on YouTube</a>.</p>
-<p>Use the same Copperline build on both machines. Desktop and browser peers cannot connect to each other, and mixed operating systems and browser engines still need qualification. Native Netplay supports two players. See the <a href="../docs/netplay/">Netplay guide</a> or <a href="../try/#netplay-panel">open it in the browser</a>.</p>
+<p><a href="https://youtu.be/wUcZPUC9SkQ">Watch the two-player Lemmings netplay video on YouTube</a>.</p>
+<p>Both machines need the same Copperline build. Desktop and browser peers cannot connect to each other, and mixing operating systems or browser engines has not been verified yet. See the <a href="../docs/netplay/">netplay guide</a> or <a href="../try/#netplay-panel">open it in the browser</a>.</p>
 <h2>The Debug workspace</h2>
-<p>The Amiga display now sits beside the debugger, Frame Analyzer and Console in the main window. Switch between Play and Debug, drag the divider to give either side more space, and keep the picture visible while inspecting the machine.</p>
+<p>The Amiga display now sits beside the debugger, Frame Analyzer and Console in the main window. Switch between Play and Debug, drag the divider to give either side more room, and keep the picture in view while you inspect the machine.</p>
 <figure class="shot" style="margin:1.6rem 0"><a href="../assets/news/0-20-0/debug-workspace.jpg"><img src="../assets/news/0-20-0/debug-workspace.jpg" width="1224" height="768" alt="State of the Art beside the CPU registers, disassembly and memory in Copperline 0.20.0" loading="lazy"></a><figcaption>The CPU debugger and Amiga display share one window. Click the picture to open the full-size capture.</figcaption></figure>
-<p>The shared inspector UI has selectable text, normal copy/paste and resizable CPU panes. Edit memory in hex or ASCII, follow addresses between views, and close individual inspector tabs. Tabs show which inspectors are open and which are capturing. Returning to Play preserves their state for next time.</p>
+<p>The inspectors now share one interface, with selectable text, normal copy and paste, and resizable CPU panes. Edit memory in hex or ASCII, follow addresses between views, and close individual inspector tabs. The tabs show which inspectors are open and which are capturing, and returning to Play keeps their state for next time.</p>
 <figure class="shot" style="margin:1.6rem 0"><a href="../assets/news/0-20-0/frame-analyzer.jpg"><img src="../assets/news/0-20-0/frame-analyzer.jpg" width="1224" height="768" alt="Copperline Frame Analyzer beside the Amiga display, showing chip-bus ownership across a frame" loading="lazy"></a><figcaption>The Frame Analyzer records each colour clock, showing how the CPU and DMA channels shared the chip bus.</figcaption></figure>
-<p>The debugger also steps a CPU out of STOP to the interrupt that wakes it. Disassembler fixes cover opcode collisions, instruction lengths, processor-specific instructions and absolute-word addresses. The <a href="../docs/window/">Debug workspace chapter</a> covers the controls; source debugging through <a href="../docs/vscode/">VS Code</a> remains available.</p>
+<p>The debugger can also step a CPU out of STOP to the interrupt that wakes it. Disassembler fixes cover opcode collisions, instruction lengths, processor-specific instructions and absolute-word addresses. The <a href="../docs/window/">Debug workspace chapter</a> covers the controls; source debugging through <a href="../docs/vscode/">VS Code</a> remains available.</p>
 <h2>Copperline in RetroArch</h2>
-<p>The new libretro core supports A500, A1200 and CD32 machines, floppy and CD playlists, WHDLoad packages, keyboard/mouse/gamepad input and save states. AROS is embedded, and games that need Kickstart can use a ROM supplied in the frontend's system directory.</p>
-<p>RetroArch's disk controls handle swapping. Floppy writes live in the frontend's save directory, CD32 EEPROM is exposed as save RAM, and the memory map supports memory inspection and cheat search. Two-gamepad Netplay uses RetroArch's own session controls.</p>
+<p>The new libretro core supports A500, A1200 and CD32 machines, floppy and CD playlists, WHDLoad packages, keyboard, mouse and gamepad input, and save states. AROS is built in, and games that need a Kickstart ROM can use one from the frontend's system directory.</p>
+<p>RetroArch's disk controls handle swapping. Floppy writes live in the frontend's save directory, CD32 EEPROM is exposed as save RAM, and the memory map supports memory inspection and cheat search. Two-gamepad netplay uses RetroArch's own session controls.</p>
 <p>Core ZIPs for Linux x86-64, macOS Apple Silicon and Windows x86-64 are on the release page. Install them manually for now; the core is not in RetroArch's Online Updater. See the <a href="../docs/libretro/">libretro guide</a>.</p>
 <h2>Saves and clips</h2>
-<p>The Load State browser now shows thumbnails, the machine, the media and the emulated time for each snapshot. States use individually versioned subsystem chunks, allowing many future changes to be handled without invalidating the entire file. The transition means states from 0.19 and earlier must be recreated.</p>
+<p>The Load State browser now shows thumbnails, the machine, the media and the emulated time for each snapshot. States are now made of individually versioned subsystem chunks, so many future changes will not invalidate the whole file. The switch means states from 0.19 and earlier must be recreated.</p>
 <figure class="shot" style="margin:1.6rem 0"><a href="../assets/news/0-20-0/save-states.jpg"><img src="../assets/news/0-20-0/save-states.jpg" width="1224" height="768" alt="Load State browser with thumbnails from saved demo scenes" loading="lazy"></a><figcaption>Save-state thumbnails make it easier to find the scene you wanted to return to.</figcaption></figure>
 <p>The desktop can save the last few seconds as a GIF. Headless runs can schedule the same kind of clip at a chosen emulated time with <code>--gif-after</code> and <code>--gif-seconds</code>.</p>
 <h2>Hardware and audio</h2>
@@ -91,13 +91,13 @@
 <li>A parallel-port four-player joystick adapter for local play, plus light pen and light gun input.</li>
 <li>A600/A1200 PCMCIA SRAM and CompactFlash/IDE cards, compressed CHD hard disks and real host serial ports on Paula's UART.</li>
 <li>Matt Harlum's SF2000 SD controller, including the SD-over-SPI interface and boot-ROM support.</li>
-<li>Host/guest clipboard text sharing, enabled in ordinary desktop sessions and switchable in Input Settings. Headless and Netplay sessions leave it off.</li>
+<li>Host/guest clipboard text sharing, enabled in ordinary desktop sessions and switchable in Input Settings. Headless and netplay sessions leave it off.</li>
 <li>Band-limited Paula mixing to reduce resampling artefacts, with mixer phase tied to the emulated clock.</li>
-<li>Fixes for copperhf data-cache coherency, Intel Mac fullscreen borders and desktop Netplay display stalls during mouse movement.</li>
+<li>Fixes for copperhf data-cache coherency, Intel Mac fullscreen borders and desktop netplay display stalls during mouse movement.</li>
 <li>m68k 0.13.0 and refreshed AROS ROMs with lower guest-memory use.</li>
 </ul>
 <h2>Testing Amiga programs</h2>
-<p>Headless runs can type text, compare scheduled screenshots against expected images and return a guest program's AmigaDOS exit code to the host shell. Guest coverage exports as lcov. <code>copperline-ctl diverge</code> compares two builds or configurations and narrows a mismatch through its first frame to the differing instruction, memory or timing result.</p>
+<p>Headless runs can type text, compare scheduled screenshots against expected images and return a guest program's AmigaDOS exit code to the host shell. Guest code coverage exports as lcov. <code>copperline-ctl diverge</code> compares two builds or configurations and narrows a mismatch down from its first differing frame to the instruction, memory access or timing result that differs.</p>
 <p>The desktop downloads now include <code>copperline-ctl</code> and <code>copperline-import-uae</code>. Thanks to Matt Harlum for the SF2000 controller, Simon Dick for the copperhf fix, Volker Schwaberow for the disassembler corrections, and everyone testing and supporting Copperline.</p>
 <p><a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.20.0">Download Copperline 0.20.0</a> <a class="btn btn--ghost" href="../try/">Try in your browser</a></p>
 <p>Desktop downloads cover macOS (Apple Silicon and Intel), Linux x86-64 and Windows x64/ARM64. Homebrew users can run <code>brew update</code> and <code>brew upgrade copperline</code>. The <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.20.0">full release notes</a> include upgrade details, and the <a href="https://github.com/CopperlineHQ/Copperline/compare/v0.19.0...v0.20.0">changelog</a> lists every change.</p>
@@ -111,7 +111,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.

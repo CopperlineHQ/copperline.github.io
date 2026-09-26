@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Copperline 0.12.0: the browser build and the big boxes - Copperline News</title>
-<meta name="description" content="Copperline 0.12.0 runs in the browser as a WebAssembly build, boots the A3000 and A4000 from their onboard SCSI and IDE, makes host-directory mounts writable, and adds a JSON-RPC control protocol, SCSI CD-ROM drives with CD audio, and any controller in either game port.">
+<meta name="description" content="Copperline comes to the browser. On the desktop, A3000 and A4000 profiles, writable host directories and a JSON-RPC control protocol arrive.">
 <meta name="theme-color" content="#0a0d16">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Copperline 0.12.0: the browser build and the big boxes">
-<meta property="og:description" content="A WebAssembly build running client-side at copperline.dev/try, A3000 / A4000 profiles booting from their onboard SCSI and IDE, writable host-directory mounts, a JSON-RPC control protocol, SCSI CD-ROM drives with CD audio, and any controller in either game port.">
+<meta property="og:description" content="Copperline comes to the browser. On the desktop, A3000 and A4000 profiles, writable host directories and a JSON-RPC control protocol arrive.">
 <meta property="og:url" content="https://copperline.dev/news/copperline-0-12-0.html">
 <meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
 
@@ -64,75 +64,73 @@
       <span class="post__date">18 July 2026 &middot; release</span>
       <h1>Copperline 0.12.0: the browser build and the big boxes</h1>
 
-      <p>0.12.0 is out, six days after 0.11.0, and it takes the emulator to some
-         new places. The whole machine now compiles to WebAssembly and runs
-         client-side in your browser, the big-box A3000 and A4000 boot AmigaOS
-         from their onboard SCSI and IDE controllers, the host-directory mounts
-         introduced in <a href="copperline-0-11-0.html">0.11.0</a> have gone
-         writable, and a JSON-RPC control protocol drives live sessions from
-         scripts. Alongside those: SCSI CD-ROM drives with CD audio, any
-         controller in either game port, printers and audio samplers on the
-         parallel port, and a round of chip-bus and display accuracy fixes.</p>
+      <p>0.12.0 is out, six days after 0.11.0. The whole machine now compiles to
+         WebAssembly and runs client-side in your browser. The big-box A3000 and
+         A4000 boot AmigaOS from their onboard SCSI and IDE controllers. The
+         host-directory mounts introduced in
+         <a href="copperline-0-11-0.html">0.11.0</a> are now writable, and a
+         JSON-RPC control protocol drives live sessions from scripts. Alongside
+         those come SCSI CD-ROM drives with CD audio, any controller in either
+         game port, printers and audio samplers on the parallel port, and a round
+         of chip-bus and display accuracy fixes.</p>
 
-      <p>As always, it is a hardware-behaviour release: when something doesn't
-         run, the fix models the underlying Amiga subsystem rather than
-         special-casing the title.</p>
+      <p>As always, when something doesn't run, the fix models the underlying
+         Amiga subsystem rather than special-casing the title.</p>
 
       <h2>Copperline in your browser</h2>
 
       <p>Open <a href="../try/">copperline.dev/try</a> and the same cycle-driven
-         core boots the bundled AROS ROM in a few seconds - compiled to
-         WebAssembly and running entirely client-side, so nothing you load
-         leaves your machine. You can pick a Kickstart ROM and disk images from
-         the page, drop them straight onto the window, or point URL query
-         parameters at them. There is a keyboard joystick, touch input with a
-         trackpad-style mouse and an on-screen joystick, and fullscreen -
-         including on iPhone Safari, which needed its own fallback. And when
-         something does go wrong, a prefilled GitHub bug-report link captures
-         the machine state so the report arrives ready to investigate.</p>
+         core boots the bundled AROS ROM in a few seconds. It is compiled to
+         WebAssembly and runs entirely client-side, so nothing you load leaves
+         your machine. You can pick a Kickstart ROM and disk images from the
+         page, drop them onto the window, or point URL query parameters at them.
+         There is a keyboard joystick, touch input with a trackpad-style mouse
+         and an on-screen joystick, and fullscreen. iPhone Safari needed its own
+         fullscreen fallback. If something goes wrong, a prefilled GitHub
+         bug-report link includes the machine state in the report.</p>
 
       <h2>The big boxes boot</h2>
 
-      <p>New A3000 and A4000 machine profiles, each booting off its own
-         built-in disk controller: the A3000 brings the Super DMAC with the
-         onboard WD33C93 SCSI bus, the A4000 the motherboard IDE port at
-         $DD2020, and both the Ramsey memory controller, the Fat Gary bus
+      <p>There are new A3000 and A4000 machine profiles, each booting from its
+         own built-in disk controller. The A3000 brings the Super DMAC with the
+         onboard WD33C93 SCSI bus, and the A4000 the motherboard IDE port at
+         $DD2020. Both have the Ramsey memory controller, the Fat Gary bus
          controller and a motherboard battery clock. The profiles are new and
-         still incomplete, but both boot AmigaOS from their native controllers.
-         A new <code>rom_scsi_device_disable</code> knob skips the ROM's
-         scsi.device when its bus has no drives, saving the boot-time probe of
-         an empty bus.</p>
+         still incomplete. A new <code>rom_scsi_device_disable</code> option
+         skips the ROM's scsi.device when its bus has no drives, which saves the
+         boot-time probe of an empty bus.</p>
 
-      <p>The big-box support - Ramsey, Fat Gary, the Super DMAC and the A4000
-         IDE - was contributed by Bernie Innocenti
-         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>),
-         who had a big hand in this release well beyond it.</p>
+      <p>Bernie Innocenti
+         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>)
+         contributed the big-box support: Ramsey, Fat Gary, the Super DMAC and
+         the A4000 IDE. Bernie's contributions to this release go well beyond
+         that.</p>
 
       <h2>Host mounts go writable</h2>
 
-      <p>The <code>[[filesys]]</code> volumes from 0.11.0 were read-only; now
+      <p>The <code>[[filesys]]</code> volumes from 0.11.0 were read-only. Now
          the guest reads and writes the host's files directly. Amiga protection
          bits, comments and datestamps persist to UAE-style <code>.uaem</code>
-         sidecars, host UTF-8 filenames map to AmigaDOS Latin-1,
-         delete-protection is honoured, and <code>ACTION_EXAMINE_ALL</code> is
+         sidecars, and host UTF-8 filenames map to AmigaDOS Latin-1.
+         Delete-protection is honoured, and <code>ACTION_EXAMINE_ALL</code> is
          implemented for modern directory scanners. The launcher gained a Host
-         Mounts tab with per-mount access control, and <code>readonly =
-         true</code> still exports a directory write-protected when that is
-         what you want. Also Bernie's work, along with the move of the services
-         board from A-line traps to MMIO registers underneath it.</p>
+         Mounts tab with per-mount access control, and
+         <code>readonly = true</code> still exports a directory write-protected.
+         This is also Bernie's work, as is the move of the services board from
+         A-line traps to MMIO registers underneath it.</p>
 
       <h2>A protocol for driving the machine</h2>
 
-      <p>Copperline began as an emulator you could hand to an AI agent; the
+      <p>Copperline began as an emulator you could hand to an AI agent, and the
          Copperline Control Protocol gives that idea a stable wire format.
-         <code>--control</code> opens a JSON-RPC 2.0 server on loopback TCP
-         (with a <code>copperline-ctl</code> client alongside) for breakpoints
-         and stepping, input injection, media swaps, screenshots, save states,
-         and streaming observability - frame, serial, interrupt and media event
-         subscriptions with bounded queues - plus runtime-bracketed instruction
-         traces and waveform captures. <code>--control-gui</code> attaches the
-         same server to a windowed session, so a script can drive the machine
-         you are watching. The details are in the
+         <code>--control</code> opens a JSON-RPC 2.0 server on loopback TCP, with
+         a <code>copperline-ctl</code> client alongside. It covers breakpoints
+         and stepping, input injection, media swaps, screenshots and save states.
+         It also streams frame, serial, interrupt and media event subscriptions
+         with bounded queues, and brackets instruction traces and waveform
+         captures at runtime. <code>--control-gui</code> attaches the same server
+         to a windowed session, so a script can drive the machine you are
+         watching. The details are in the
          <a href="../docs/control/">control protocol guide</a>.</p>
 
       <h2>CD-ROM on the SCSI bus</h2>
@@ -142,53 +140,53 @@
          the supported controllers. CD audio tracks play through the machine's
          audio output, and discs swap at runtime via the status-bar CD buttons,
          drag-and-drop, or <code>--insert-cd-after</code>. Plain
-         <code>.iso</code> images now load in the CDTV and CD32 drives too, not
-         just CUE/BIN.</p>
+         <code>.iso</code> images now load in the CDTV and CD32 drives as well
+         as CUE/BIN.</p>
 
       <h2>Any controller in either port</h2>
 
       <p>Both game ports now take any device, as on a real Amiga:
          <code>mouse</code>, <code>joystick</code>, a <code>cd32</code> pad,
-         <code>analogue</code> paddles on the POT pins - whose counter model
-         was finished for the occasion - or <code>none</code>, hot-pluggable
-         from the runtime menu. Scripted input flags aim at either port, and
-         two-mouse and two-joystick setups get sensible host keyboard
-         mappings.</p>
+         <code>analogue</code> paddles on the POT pins, or <code>none</code>.
+         Devices are hot-pluggable from the runtime menu, and the POT counter
+         model was finished to support the paddles. Scripted input flags can
+         target either port, and two-mouse and two-joystick setups get sensible
+         host keyboard mappings.</p>
 
-      <p>One behaviour change to note: the <code>[input] joystick</code> mode
-         no longer has an "auto" keyboard fallback. The default is now
-         <code>"gamepad"</code> - a physical pad drives the port and the
-         keyboard passes through to the Amiga - and the cursor-key joystick is
-         an explicit opt-in with <code>joystick = "keyboard"</code>. Existing
+      <p>One behaviour change: the <code>[input] joystick</code> mode no longer
+         has an "auto" keyboard fallback. The default is now
+         <code>"gamepad"</code>, where a physical pad drives the port and the
+         keyboard passes through to the Amiga. The cursor-key joystick is an
+         explicit opt-in with <code>joystick = "keyboard"</code>. Existing
          configs with <code>"auto"</code> still parse.</p>
 
       <h2>The parallel port</h2>
 
       <p>The Centronics port is now a modelled connector with pluggable
-         devices: a printer that captures the raw strobed byte stream to a host
-         file, and an 8-bit audio sampler fed from a host capture device - the
-         emulated equivalent of a classic parallel-port digitizer cartridge,
-         usable from AudioMaster, ProTracker, OctaMED and friends. The
-         BUSY / POUT / SEL status lines are driven by the attached peripheral.
-         The sampler was contributed by Lee Hobson
+         devices. A printer captures the raw strobed byte stream to a host file.
+         An 8-bit audio sampler, fed from a host capture device, is the emulated
+         equivalent of a parallel-port digitizer cartridge and is usable from
+         AudioMaster, ProTracker, OctaMED and similar programs. The attached
+         peripheral drives the BUSY / POUT / SEL status lines. The sampler was
+         contributed by Lee Hobson
          (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>).</p>
 
       <h2>Hardware accuracy fixes</h2>
 
       <ul>
-        <li>Chip RAM mirrors across the full chip window by Agnus address
-            reach, so a loader that parks its stack above the installed chip
-            RAM sees the mirror instead of a bus fault - an Action Replay-style
-            boot guru was the regression example. Custom registers likewise
-            mirror into the empty chip-register decode space the way Gary
-            resolves them, which un-sticks Kickstart 1.2's memory-sizing probe
-            (a yellow-screen boot).</li>
+        <li>Chip RAM mirrors across the full chip window according to Agnus
+            address reach, so a loader that parks its stack above the installed
+            chip RAM sees the mirror instead of a bus fault. An Action
+            Replay-style boot guru was the regression example. Custom registers
+            likewise mirror into the empty chip-register decode space the way
+            Gary resolves them. That un-sticks Kickstart 1.2's memory-sizing
+            probe, which caused a yellow-screen boot.</li>
         <li>OCS / ECS BPLCON1 scroll nibbles count lo-res pixels at every
             resolution, fixing a first-column wrap in hi-res Kickstart 2.05
-            boot screens; early hi-res DDF content renders inside an early
-            display window; and sprite DMA fetches land in a hardware-true
-            display-latch view, so stale sprite rows can no longer leak into
-            later frames.</li>
+            boot screens. Early hi-res DDF content renders inside an early
+            display window. Sprite DMA fetches land in a display-latch view that
+            matches the hardware, so stale sprite rows no longer leak into later
+            frames.</li>
         <li>Every ECS Agnus reports the same chipset ID, matching real
             chips.</li>
         <li><code>ACTION_SEEK</code> offsets are sign-extended, so
@@ -200,49 +198,48 @@
 
       <ul>
         <li><code>--waveform out.vcd</code> captures chipset signals as a VCD
-            trace for GTKWave, with trigger and duration windows, and the
-            control protocol brackets captures at runtime.</li>
+            trace for GTKWave, with trigger and duration windows.</li>
         <li>The GDB stub reports program-load (LoadSeg) events, so a debugger
-            can break at the entry point of a program loaded inside the guest -
-            and the stub now survives client disconnects.</li>
+            can break at the entry point of a program loaded inside the guest.
+            The stub also survives client disconnects now.</li>
         <li><code>[debug] log_unmapped</code> logs every CPU access that no
-            device decodes, scoped to an address window - the quick way to find
-            registers a guest expects that Copperline does not provide
+            device decodes, scoped to an address window. It is a quick way to
+            find registers a guest expects that Copperline does not provide
             yet.</li>
         <li><code>rtc_time</code> seeds the battery clock to a fixed instant
             and ticks it in emulated time, so time-dependent guest software can
-            be tested reproducibly; <code>rtc_frozen</code> pins the clock
+            be tested reproducibly. <code>rtc_frozen</code> pins the clock
             exactly.</li>
-        <li>Disk images now drag-and-drop onto the window - in the desktop app
-            as well as the browser.</li>
+        <li>Disk images can now be dragged and dropped onto the window, in the
+            desktop app as well as the browser.</li>
         <li>The manual now publishes as a themed HTML site at
             <a href="../docs/">copperline.dev/docs</a> on every release, and a
             public AGENTS.md documents the headless workflow for AI coding
             agents.</li>
         <li>The bundled AROS boot ROM was rebuilt with upstream boot-time
-            optimizations - thanks to
+            optimizations, so the default no-Kickstart boot is much faster.
+            Thanks to
             <a href="https://github.com/warpdesign" target="_blank" rel="noopener">@warpdesign</a>
-            for those - so the out-of-the-box no-Kickstart boot is dramatically
-            faster.</li>
+            for those.</li>
       </ul>
 
       <h2>Compatibility notes</h2>
 
-      <p>Save states from 0.11.0 do not load in 0.12.0: the serialized machine
-         shape changed several times this cycle - sprite display latches, the
-         guest battery clock, per-port controllers, the big-box chipsets - so
+      <p>Save states from 0.11.0 do not load in 0.12.0. The serialized machine
+         layout changed several times this cycle (sprite display latches, the
+         guest battery clock, per-port controllers, the big-box chipsets), so
          the state format version moved from 27 to 32. Re-create snapshots
          after upgrading. No config file changes are required: all new sections
-         and keys are optional, and 0.11.0 configs continue to parse, with the
-         <code>joystick = "auto"</code> behaviour change described above the
-         one thing to check.</p>
+         and keys are optional, and 0.11.0 configs continue to parse. The one
+         thing to check is the <code>joystick = "auto"</code> behaviour change
+         described above.</p>
 
       <h2>Get it</h2>
 
       <p>Builds for macOS, Linux and Windows are on the
          <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.12.0" target="_blank" rel="noopener">release page</a>,
-         and the Homebrew tap is updated. Or skip the download entirely:
-         <a href="../try/">copperline.dev/try</a> is the same emulator.</p>
+         and the Homebrew tap is updated. Or skip the download:
+         <a href="../try/">copperline.dev/try</a> runs the same emulator.</p>
 
       <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
          <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
@@ -256,7 +253,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.

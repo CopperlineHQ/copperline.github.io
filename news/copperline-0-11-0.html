@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Copperline 0.11.0: boot from a host directory - Copperline News</title>
-<meta name="description" content="Copperline 0.11.0 mounts host directories as bootable AmigaDOS volumes, models the blitter's BLTPRI bus fence and 68000 microcode write ordering, fixes sprite serialization against real-hardware references, and cuts worst-case frame times by 6x.">
+<meta name="description" content="Boot from a host directory, with blitter, CPU and sprite timing fixes and lower frame times on slower hosts.">
 <meta name="theme-color" content="#0a0d16">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Copperline 0.11.0: boot from a host directory">
-<meta property="og:description" content="Host directories as bootable AmigaDOS volumes, the blitter's BLTPRI bus fence, a 68000 microcode write-ordering pass, sprite serialization fixes, and a 6x cut in worst-case frame times.">
+<meta property="og:description" content="Boot from a host directory, with blitter, CPU and sprite timing fixes and lower frame times on slower hosts.">
 <meta property="og:url" content="https://copperline.dev/news/copperline-0-11-0.html">
 <meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
 
@@ -64,69 +64,70 @@
       <span class="post__date">12 July 2026 &middot; release</span>
       <h1>Copperline 0.11.0: boot from a host directory</h1>
 
-      <p>0.11.0 is out, five days after 0.10.0. The most visible change: host
-         directories now mount - and boot - as native AmigaDOS volumes. Underneath
-         it is a fidelity-and-performance release: the blitter's BLTPRI bus fence
-         and the 68000's microcode write ordering are modelled much more closely,
-         sprite serialization was fixed against cross-emulator and real-hardware
-         references, worst-case frame times on slower hosts dropped by a factor of
+      <p>0.11.0 is out, five days after 0.10.0. The most visible change is that
+         host directories now mount, and boot, as native AmigaDOS volumes. The
+         rest is fidelity and performance work. The blitter's BLTPRI bus fence and
+         the 68000's microcode write ordering are modelled more closely. Sprite
+         serialization was fixed against cross-emulator and real-hardware
+         references. Worst-case frame times on slower hosts dropped by a factor of
          six, and a golden-render probe suite now guards chipset timing in CI.</p>
 
-      <p>The display regressions listed as known issues in
-         <a href="copperline-0-10-0.html">0.10.0</a> are fixed in this release.
-         And as always: when something doesn't run, the fix models the underlying
-         Amiga subsystem rather than special-casing the title.</p>
+      <p>This release fixes the display regressions listed as known issues in
+         <a href="copperline-0-10-0.html">0.10.0</a>. As always, when something
+         doesn't run, the fix models the underlying Amiga subsystem rather than
+         special-casing the title.</p>
 
       <h2>Host directories as AmigaDOS volumes</h2>
 
       <p>A new <code>[[filesys]]</code> config section mounts a host directory as
          an AmigaDOS volume, served live through an autoconfig services board and
-         a resident guest handler. No disk image is built - the guest always sees
-         the current host contents. Protection bits, comments and datestamps come
-         from host permissions and UAE-style <code>.uaem</code> sidecars, the
-         volumes survive a warm reboot, and a <code>bootpri</code> above the
-         floppy's puts them ahead in the boot-device vote - so a Workbench
-         directory on the host can boot the machine directly.</p>
+         a resident guest handler. No disk image is built, so the guest always
+         sees the current host contents. Protection bits, comments and datestamps
+         come from host permissions and UAE-style <code>.uaem</code> sidecars. The
+         volumes survive a warm reboot. A <code>bootpri</code> above the floppy's
+         puts them ahead in the boot-device vote, so a Workbench directory on the
+         host can boot the machine directly.</p>
 
-      <p>The volumes are read-only for now: writes fail the same way a
-         write-protected disk does. The older IDE / SCSI directory route is still
-         there when the guest needs to write, but that one stays session-only.</p>
+      <p>The volumes are read-only for now, and writes fail as they would on a
+         write-protected disk. When the guest needs to write, the older IDE /
+         SCSI directory route is still available, but it remains
+         session-only.</p>
 
-      <p>The filesystem - services board, guest handler, typed DOS ABI layer and
-         boot support - was contributed by Bernie Innocenti
-         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>),
-         who also added a serial PTY sink (<code>[serial] mode = "pty"</code>) and
-         unified the SCSI configuration (see the config note below).</p>
+      <p>Bernie Innocenti
+         (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>)
+         contributed the filesystem: the services board, guest handler, typed DOS
+         ABI layer and boot support. Bernie also added a serial PTY sink
+         (<code>[serial] mode = "pty"</code>) and unified the SCSI configuration
+         (see the config note below).</p>
 
       <h2>The blitter fence</h2>
 
-      <p>BLTPRI - the "blitter nasty" bit - now asserts BLS against the CPU the
-         way Agnus does: the CPU is fenced off the chip bus during a blit's
+      <p>BLTPRI, the "blitter nasty" bit, now asserts BLS against the CPU the
+         way Agnus does. The CPU is fenced off the chip bus during a blit's
          warm-up window, the fence pressure follows the blitter's per-slot
-         micro-cycle, and a blit with no channels enabled asserts no fence at all.
-         This matters for MFM-decoding trackloaders that rely on exact CPU /
-         blitter interleaving; the regression example was a Jim Power boot
-         crash.</p>
+         micro-cycle, and a blit with no channels enabled asserts no fence. This
+         matters for MFM-decoding trackloaders that rely on exact CPU / blitter
+         interleaving. The regression example was a Jim Power boot crash.</p>
 
       <h2>68000 microcode write ordering</h2>
 
-      <p>A long series ordering register writes, ALU and address-calculation tails
-         and internal clocks against prefetch and bus sync the way the microcode
-         does: EOR / EXG / the BCD ops / Scc / MOVEM / ADDX / SUBX, MOVE USP,
-         MOVEA, MOVE from SR, delayed SR writes, 68010 SR read ordering and long
-         shift timing, CHK trap timing, multiply and divide internal clocks, the
-         quick and bit ops, and 68020 Bcc long-displacement gating. The external
-         <code>RESET</code> instruction is now modelled as a true warm reset.</p>
+      <p>A long series of changes orders register writes, ALU and
+         address-calculation tails, and internal clocks against prefetch and bus
+         sync the way the microcode does. It covers EOR, EXG, the BCD ops, Scc,
+         MOVEM, ADDX, SUBX, MOVE USP, MOVEA, MOVE from SR, delayed SR writes, 68010
+         SR read ordering and long shift timing, CHK trap timing, multiply and
+         divide internal clocks, the quick and bit ops, and 68020 Bcc
+         long-displacement gating. The external <code>RESET</code> instruction is
+         now modelled as a true warm reset.</p>
 
       <h2>Sprites, measured with a ruler</h2>
 
-      <p>Two sprite serialization fixes, measured rather than guessed. Denise
-         emits a sprite's first pixel one lo-res pixel <em>after</em> the
-         horizontal comparator match - measured against FS-UAE and vAmiga with new
-         ruler probes - and a DATA-armed sprite keeps serializing on every line,
-         across frames, until SPRxCTL disarms it. Together they improve 180 of the
-         186 vAmigaTS sprite cases and fix long-standing demo sprite placement
-         bugs.</p>
+      <p>Two sprite serialization fixes. Denise now emits a sprite's first pixel
+         one lo-res pixel <em>after</em> the horizontal comparator match, measured
+         against FS-UAE and vAmiga with new ruler probes. And a DATA-armed sprite
+         keeps serializing on every line, across frames, until SPRxCTL disarms it.
+         Together they improve 180 of the 186 vAmigaTS sprite cases and fix
+         long-standing demo sprite placement bugs.</p>
 
       <h2>Hunting frame spikes</h2>
 
@@ -135,38 +136,38 @@
          hot spots: per-colour-clock table copies in the bus hot path, per-pixel
          palette copies in the renderer, and a quadratic sprite-multiplexer scan.
          All three are gone, and <code>--benchmark-until</code> now reports
-         p50 / p90 / p99 / max frame times so it stays measurable. On the profiled
-         workload, worst-case core frame time dropped from 100.8 ms to 16.1 ms,
-         and the underruns disappeared.</p>
+         p50 / p90 / p99 / max frame times so spikes stay measurable. On the
+         profiled workload, worst-case core frame time dropped from 100.8 ms to
+         16.1 ms, and the underruns disappeared.</p>
 
       <h2>Golden renders in CI</h2>
 
       <p>Every <code>cargo test --release</code> run now boots the committed
          <code>timing-test/</code> probe binaries on the bundled AROS ROM and
-         compares their rendered output pixel-for-pixel against blessed
-         references: CPU and chip-bus timing rows plus DDF / DIW, sprite-position,
-         blitter-pace, collision and audio-enable probes. An intentional
+         compares their output pixel for pixel against blessed reference renders.
+         The probes cover CPU and chip-bus timing rows plus DDF / DIW,
+         sprite-position, blitter-pace, collision and audio-enable. An intentional
          timing-model change has to re-bless the renders, so every chipset timing
-         diff gets reviewed as an image diff.</p>
+         change is reviewed as an image diff.</p>
 
       <h2>The smaller fixes</h2>
 
       <ul>
         <li>A post-WAIT Copper wake-up lands on a colour clock free of fixed DMA,
-            and the closed-DIW border repaint follows per-pixel COLOR00 writes -
-            fixing raced copper-chunky effects.</li>
+            and the closed-DIW border repaint follows per-pixel COLOR00 writes.
+            Together these fix raced copper-chunky effects.</li>
         <li>DSKLEN arming no longer waits for drive-ready: a spinning-up drive
             arms disk DMA normally, as on real hardware. This fixes trackloader
-            disk swaps that double-write DSKLEN right after motor-on - Shadow of
+            disk swaps that double-write DSKLEN right after motor-on. Shadow of
             the Beast disk 2 was the example.</li>
         <li>The renderer no longer synthesizes a picture for a line whose fetch
-            never ran (phantom lines in overscan scrollers), and the TV aperture
-            is black-padded past the framebuffer edge instead of repeating the
-            last column.</li>
-        <li>Mid-blit save states serialize deterministically - two saves of the
-            same paused machine are byte-identical - backed by a regression test
-            that resumes a mid-blit save under live Copper and interrupt load and
-            compares the continued timeline byte for byte.</li>
+            never ran (phantom lines in overscan scrollers). The TV aperture is
+            black-padded past the framebuffer edge instead of repeating the last
+            column.</li>
+        <li>Mid-blit save states serialize deterministically: two saves of the
+            same paused machine are byte-identical. A regression test resumes a
+            mid-blit save under live Copper and interrupt load and compares the
+            continued timeline byte for byte.</li>
         <li>Plus bitplane scroll-in from empty line state, the hi-res flush at the
             2H-196 window edge, AGA border sprites suppressed during border blank,
             and more in the
@@ -176,11 +177,11 @@
       <h2>Config changes</h2>
 
       <p>One breaking change: the experimental <code>[a4091]</code> section from
-         0.10.0 is gone. Both SCSI boards now live under <code>[scsi]</code> with
-         a <code>controller</code> key - <code>"a2091"</code> (the default) or
-         <code>"a4091"</code>. An existing A2091 setup keeps working unchanged.
-         Save states are compatible with 0.10.0 in both directions; the format
-         version did not change.</p>
+         0.10.0 is gone. Both SCSI boards now live under <code>[scsi]</code>,
+         selected with a <code>controller</code> key: <code>"a2091"</code> (the
+         default) or <code>"a4091"</code>. An existing A2091 setup keeps working
+         unchanged. Save states are compatible with 0.10.0 in both directions,
+         because the format version did not change.</p>
 
       <h2>Get it</h2>
 
@@ -200,7 +201,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.

@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Copperline 0.16.0: one-command WHDLoad, a game library, and a new Amiga game built on Copperline - Copperline News</title>
-<meta name="description" content="Copperline 0.16.0 boots a WHDLoad-installed game straight from its archive, grows a browsable game library with OpenRetro cover art, warp-boots freshly built Amiga executables for developers, adds a lide.device-compatible IDE board with ATAPI CD-ROM, OFS directory mounts that boot Kickstart 1.3, a Create Image workshop and configurable output paths with a portable mode - and ships hardware fixes found by a studio building a new commercial Amiga game on Copperline.">
+<meta name="description" content="Launch WHDLoad archives directly, browse a game library, and run freshly built Amiga programs from the command line.">
 <meta name="theme-color" content="#0a0d16">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Copperline 0.16.0: one-command WHDLoad, a game library, and a new Amiga game built on Copperline">
-<meta property="og:description" content="A WHDLoad-installed game boots straight from its archive, the launcher grows a game library with OpenRetro cover art, --run warp-boots freshly built Amiga executables, storage gains a lide.device IDE board with ATAPI CD-ROM and OFS mounts that boot Kickstart 1.3 - and a studio building a new commercial Amiga game on Copperline drove fixes from Agnus pointer semantics to floating-bus reads.">
+<meta property="og:description" content="Launch WHDLoad archives directly, browse a game library, and run freshly built Amiga programs from the command line.">
 <meta property="og:url" content="https://copperline.dev/news/copperline-0-16-0.html">
 <meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
 
@@ -64,166 +64,154 @@
       <span class="post__date">15 August 2026 &middot; release</span>
       <h1>Copperline 0.16.0: one-command WHDLoad, a game library, and a new Amiga game built on Copperline</h1>
 
-      <p>This is the release where the machine meets the people who make and
-         play its software. A WHDLoad-installed game now boots straight from
-         its archive - <code>copperline --whdload Turrican.lha</code> and
-         nothing else - and the launcher grows a proper game library around
-         that, with details and cover art fetched from OpenRetro. On the
-         other side of the same coin, <code>--run</code> warp-boots a freshly
-         built Amiga executable from the host filesystem for people writing
-         new Amiga software - and several of this cycle's accuracy fixes came
-         out of exactly that use, because a studio is building a new
-         commercial Amiga game with Copperline on the desk beside real AGA
-         hardware.</p>
+      <p>A WHDLoad-installed game now boots straight from its archive with
+         one command, <code>copperline --whdload Turrican.lha</code>, and
+         the launcher grows a game library around it, with details and
+         cover art from OpenRetro. For people writing new Amiga software,
+         <code>--run</code> warp-boots a freshly built executable from the
+         host filesystem. Several of this cycle's accuracy fixes came from
+         that kind of use: a studio is building a new commercial Amiga game
+         with Copperline running beside real AGA hardware.</p>
 
-      <p>Storage grows a built-in lide.device-compatible IDE board with
+      <p>Storage gains a built-in lide.device-compatible IDE board with
          ATAPI CD-ROM support, OFS directory mounts that boot Kickstart 1.3,
-         a Create Image workshop for fresh ADFs and HDFs, and
-         gzip-compressed hardfiles. Around the machine: configurable output
-         paths with an opt-in portable mode, Kickstart ROM identification by
-         checksum, an on-screen keyboard and picture centring on the
-         desktop, bezel sticker decals, and IPF images in the browser build.
-         As always it is a hardware-behaviour release: compatibility fixes
-         model the underlying Amiga subsystems rather than individual
-         titles.</p>
+         a Create Image workshop for new ADFs and HDFs, and gzip-compressed
+         hardfiles. Elsewhere: configurable output paths with an opt-in
+         portable mode, Kickstart ROM identification by checksum, an
+         on-screen keyboard and picture centring on the desktop, bezel
+         sticker decals, and IPF images in the browser build. As always,
+         compatibility fixes model the underlying Amiga subsystems rather
+         than individual titles.</p>
 
       <h2>A new Amiga game is being built on Copperline</h2>
 
       <p>Brazen Gameplay are developing
          <a href="https://www.kickstarter.com/projects/tonywarriner/urbx-warriors-the-lost-city-16-bit-edition/" target="_blank" rel="noopener">Urb-X Warriors: The Lost City</a>,
-         a brand-new commercial 16-bit Amiga game, and they are using
-         Copperline as part of their development workflow - running
-         work-in-progress builds in the emulator right beside real AGA
-         hardware. That is exactly the kind of use an emulator dreams of: a
-         game studio pushes the machine in ways thirty-year-old software
-         never will, and they notice everything.</p>
+         a new commercial 16-bit Amiga platformer. Copperline is part of
+         their development workflow: they run work-in-progress builds in
+         the emulator beside real AGA hardware. A studio writing new code
+         pushes the machine in ways thirty-year-old software does not.</p>
 
       <p>My favourite find of the cycle came from them. Their code read back
          a write-only chip register and OR-ed the result into palette
          writes. On real AGA hardware the chip data bus floats, so the read
-         returns whatever residue the last driven bus cycle left behind -
-         and the palette went dark. Copperline, like other emulators,
-         returned a clean zero, so the bug hid. As of 0.16.0 Copperline
-         models the floating bus, and the same code misbehaves in the
-         emulator exactly as it does on the real silicon. An emulator being
-         right sometimes means faithfully reproducing your bugs - that is
-         what makes it a development tool you can trust.</p>
+         returns whatever residue the last driven bus cycle left behind, and
+         the palette went dark. Copperline, like other emulators, returned a
+         clean zero, so the bug hid. As of 0.16.0 Copperline models the
+         floating bus, and the same code misbehaves in the emulator as it
+         does on the real silicon. For a development tool, being right
+         sometimes means reproducing your bugs faithfully.</p>
 
-      <p>The same collaboration drove the fix that makes Agnus bitplane
-         pointers one live counter, the fix that places AGA's first 64-pixel
-         wide-fetch gulp on the absolute grid, and a guarantee that pausing
-         a session to inspect the machine never changes what the machine
-         goes on to do. If a new commercial Amiga platformer sounds like
-         your kind of thing, their Kickstarter page is the place to follow
-         it.</p>
+      <p>The same collaboration led to the bitplane-pointer and wide-fetch
+         fixes below, and to a guarantee that pausing a session to inspect
+         the machine never changes what it goes on to do. Their Kickstarter
+         page is the place to follow the game.</p>
 
       <h2>Direct WHDLoad boot</h2>
 
       <p><code>copperline --whdload game.lha</code> boots a WHDLoad-installed
-         game package directly - no Workbench disk, no hand-built hard
-         drive. The package is extracted once into a per-game library so
-         savegames persist on the host, a boot volume is regenerated around
-         the real WHDLoad program on every launch, and the machine is
-         derived from the slave header - the canonical A1200 with 8 MB of
-         fast RAM unless your config says otherwise.</p>
+         game package directly, with no Workbench disk or hand-built hard
+         drive. The package is extracted once into a per-game library, so
+         savegames persist on the host. A boot volume is regenerated around
+         the real WHDLoad program on every launch. The machine is derived
+         from the slave header: the canonical A1200 with 8 MiB of fast RAM,
+         unless your config says otherwise.</p>
 
-      <p>Kickstart images are identified by content using the same CRC
-         WHDLoad itself uses, so byte-swapped dumps, doubled images and
-         Cloanto-encrypted ROMs are all recognised, and a slave demanding a
-         missing image fails naming the exact file it wants. The WHDLoad and
-         skick support archives are fetched with pinned checksums at
-         packaging time; the Kickstart ROMs remain yours to supply, as
-         ever.</p>
+      <p>Kickstart images are identified by content, using the same CRC
+         WHDLoad uses, so byte-swapped dumps, doubled images and
+         Cloanto-encrypted ROMs are all recognized. A slave that needs a
+         missing image fails with the name of the exact file it wants. The
+         WHDLoad and skick support archives are fetched with pinned
+         checksums at packaging time. You still supply the Kickstart ROMs
+         yourself.</p>
 
       <h2>A game library</h2>
 
-      <p>The launcher's WHDLoad page grows into a browsable collection:
-         point it at a folder of games as <code>.lha</code>,
-         <code>.zip</code> or plain directories, and it lists them with
-         details and cover art from OpenRetro, A-Z shortcuts to jump the
-         list, and drag-and-drop of a package onto a running machine to
-         reboot into it. Contributed by Lee Hobson
+      <p>The launcher's WHDLoad page becomes a browsable collection. Point
+         it at a folder of games as <code>.lha</code>, <code>.zip</code> or
+         plain directories and it lists them with details and cover art
+         from OpenRetro, plus A-Z shortcuts to jump through the list.
+         Dropping a package onto a running machine reboots into it.
+         Contributed by Lee Hobson
          (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>).</p>
 
       <h2>--run: a developer warp launch</h2>
 
       <p><code>copperline --run build/hello</code> stages a minimal boot
          volume, mounts the executable's directory live, and warp-boots
-         until the guest OS loads the program - about one wall-clock second
-         to reach your code on the bundled AROS ROM, in the spirit of the
+         until the guest OS loads the program. On the bundled AROS ROM that
+         takes about one wall-clock second, in the spirit of the
          vscode-amiga-debug workflow. With <code>--gdb</code> the session
          stops at the program's first instruction, and the control protocol
          gains a <code>loadseg</code> breakpoint kind for scripted sessions.
-         It composes with every headless flag, so a CI run can build an
-         Amiga binary and screenshot it running. If you have ever wanted to
-         write Amiga software with a modern edit-compile-run loop, this
-         release is for you.</p>
+         It works with every headless flag, so a CI run can build an Amiga
+         binary and screenshot it running.</p>
 
       <h2>A lide.device IDE board, and ATAPI everywhere</h2>
 
       <p>A new built-in Zorro II IDE board is compatible with LIV2's
          open-source <code>lide.device</code> (RIPPLE, RIDE and AT-Bus 2008
-         personalities). On top of it, ATAPI CD-ROM support arrives across
-         all three IDE surfaces - Gayle, the A4000's motherboard port and
-         the new board - so a <code>.cue</code> / <code>.iso</code> /
-         <code>.chd</code> path on any IDE drive slot attaches a real IDE
-         CD-ROM drive, and <code>[[host_disk]]</code> can hand a real host
-         disk to a lide channel. Contributed by Simon Dick
+         personalities). ATAPI CD-ROM support also arrives on all three IDE
+         interfaces: Gayle, the A4000's motherboard port and the new board.
+         A <code>.cue</code>, <code>.iso</code> or <code>.chd</code> path on
+         any IDE drive slot attaches a real IDE CD-ROM drive, and
+         <code>[[host_disk]]</code> can hand a real host disk to a lide
+         channel. Contributed by Simon Dick
          (<a href="https://github.com/sidick" target="_blank" rel="noopener">@sidick</a>).</p>
 
       <h2>OFS mounts that boot Kickstart 1.3</h2>
 
       <p>A hard-drive slot pointing at a host directory can now build its
-         volume as OFS (<code>filesystem = "ofs"</code>) - the filesystem
-         every Kickstart ROM since 1.2 carries - so a directory mount boots
-         a genuine 1.3 machine to Workbench with no FFS handler installed
-         anywhere. Contributed by Simon Dick.</p>
+         volume as OFS (<code>filesystem = "ofs"</code>), the filesystem
+         every Kickstart ROM since 1.2 carries. A directory mount can
+         therefore boot a stock Kickstart 1.3 machine to Workbench with no
+         FFS handler installed anywhere. Contributed by Simon Dick.</p>
 
       <h2>A Create Image workshop</h2>
 
-      <p>Storage &gt; Create Image... makes fresh disk images from inside
-         the launcher: DD or HD floppies, standard or extended ADF, any of
-         the eight DOS types, boot code and a volume name; hard-disk images
-         up to 9999 MB or GB with or without an RDB, custom geometry, boot
-         priority and sparse allocation. Contributed by Lee Hobson.</p>
+      <p><strong>Storage &rarr; Create Image...</strong> makes new disk
+         images from inside the launcher. Floppies can be DD or HD, standard
+         or extended ADF, with any of the eight DOS types, boot code and a
+         volume name. Hard-disk images go up to 9999 MB or GB, with or
+         without an RDB, and support custom geometry, boot priority and
+         sparse allocation. Contributed by Lee Hobson.</p>
 
       <h2>Configurable paths, portable mode and a default config</h2>
 
-      <p>Everything Copperline produces - screenshots, save states, video
-         and input recordings, NVRAM, traces, waveform captures - now lands
-         in named folders under the host-data directory instead of the
-         process working directory, and a new <code>[paths]</code> section,
-         with its own launcher page, names where each kind of output goes
-         (plus where empty file dialogs open). Relative entries follow a
-         movable base, and a <code>portable.txt</code> next to the
-         executable makes the whole installation self-contained, saves and
-         all - an emulator on a USB stick. The launcher's Save button now
-         offers Save As / Save default / Reset default, and a saved default
-         is what Copperline starts with when nothing else names a config.
+      <p>Everything Copperline produces (screenshots, save states, video
+         and input recordings, NVRAM, traces and waveform captures) now
+         lands in named folders under the host-data directory instead of
+         the process working directory. A new <code>[paths]</code> section,
+         with its own launcher page, sets where each kind of output goes and
+         where empty file dialogs open. Relative entries follow a movable
+         base. A <code>portable.txt</code> next to the executable makes the
+         whole installation self-contained, saves included, so it can run
+         from a USB stick. The launcher's Save button now offers Save As,
+         Save default and Reset default, and a saved default is what
+         Copperline starts with when nothing else names a config.
          Contributed by Lee Hobson.</p>
 
       <h2>Kickstart ROMs, identified by checksum</h2>
 
-      <p>A ROM file's name is whatever its dumper called it; Copperline now
-         says which Kickstart it actually is - 67 known images from 1.0 to
-         3.2.3, betas, prototypes and the CD32 / CDTV extended ROMs
-         included - in the startup banner, the About panel, the ROM-load
-         OSD and the launcher's ROM tab.</p>
+      <p>A ROM file's name is whatever its dumper called it. Copperline now
+         identifies which Kickstart it is from 67 known images, 1.0 to
+         3.2.3, including betas, prototypes and the CD32 and CDTV extended
+         ROMs. The result appears in the startup banner, the About panel,
+         the ROM-load OSD and the launcher's ROM tab.</p>
 
       <h2>The desktop, the bezels and the browser</h2>
 
       <p>The A600 keyboard strip from the browser build arrives in the
-         desktop window with a status-bar toggle, and new H / V-centre
-         controls nudge the TV picture the way a monitor's front-panel
-         knobs did. The 1084 front is rebuilt against fresh reference
-         photography - much closer to the real thing, contributed by Lee
-         Hobson - the tube now shows the whole captured raster, and a bezel
-         stickers folder puts your own decals on the case, the same on
-         desktop and web alike.</p>
+         desktop window with a status-bar toggle. New H / V-centre controls
+         nudge the TV picture the way a monitor's front-panel knobs did. The
+         1084 front is rebuilt from new reference photography and is much
+         closer to the real monitor (contributed by Lee Hobson). The tube
+         now shows the whole captured raster, and a bezel stickers folder
+         puts your own decals on the case, on desktop and web alike.</p>
 
       <p><a href="../try/">copperline.dev/try</a> now reads IPF images,
-         offers both monitor fronts, and untangles Esc from fullscreen with
-         the Keyboard Lock API - tap Esc to release the mouse, hold it to
+         offers both monitor fronts, and separates Esc from fullscreen with
+         the Keyboard Lock API: tap Esc to release the mouse, hold it to
          leave fullscreen.</p>
 
       <h2>Storage and capture odds</h2>
@@ -244,27 +232,27 @@
       <h2>Hardware accuracy fixes</h2>
 
       <ul>
-        <li>Agnus bitplane pointers are one live counter: never reloaded at
-            vertical blank, and a CPU half-write merges into the
-            DMA-advanced live value - the behaviour a display that rewrites
-            its pointers mid-frame depends on.</li>
+        <li>Agnus bitplane pointers are one live counter. They are never
+            reloaded at vertical blank, and a CPU half-write merges into
+            the DMA-advanced live value. A display that rewrites its
+            pointers mid-frame depends on this.</li>
         <li>An AGA display fetching 64 pixels per gulp is placed from the
             absolute wide-fetch grid, so the first gulp sits left of the
             display window instead of leaking a seam onto it.</li>
         <li>Reading a write-only custom register returns the residue of the
-            last driven chip-bus cycle, not a clean zero - the floating-bus
-            behaviour reported from real AGA hardware by Brazen
-            Gameplay.</li>
+            last driven chip-bus cycle, not a clean zero. Brazen Gameplay
+            reported this floating-bus behaviour from real AGA
+            hardware.</li>
         <li>CPU palette writes resolve against the live BPLCON3 bank, and
             an out-of-range playfield priority blanks the playfield on
-            Denise only, matching photographed real-chip behaviour - the
+            Denise only, matching photographed real-chip behaviour in the
             Bubble and Squeak and Alfred Chicken in-game graphics.</li>
         <li>Each ATA device keeps its own cylinder registers, as on real
             hardware where the signature a driver probes belongs to the
             selected device.</li>
-        <li>Cold-boot RAM contents are configurable - zero, seeded random
-            or a fixed 16-bit pattern - for software whose behaviour
-            depends on what a real machine's DRAM woke up holding.</li>
+        <li>Cold-boot RAM contents are configurable (zero, seeded random
+            or a fixed 16-bit pattern) for software whose behaviour depends
+            on what a real machine's DRAM woke up holding.</li>
         <li>Host volume names are converted to the Amiga's own Latin-1
             character set, so an accented label survives the trip into
             AmigaDOS (Volker Schwaberow).</li>
@@ -276,14 +264,14 @@
         <li>Stopping a session at an exact time through the control
             protocol no longer perturbs the timeline: a single
             <code>run_until</code> and the same span sampled in ten stops
-            now end on the identical cycle, so an investigation can add
+            now end on the same cycle, so an investigation can add
             observation points without changing what it observes.</li>
         <li>Opening the debugger or another tool window leaves main-window
             Amiga input alive.</li>
         <li>A trapping WASM plugin board is isolated permanently instead of
-            re-trapping every frame, and its DMA commits transactionally;
-            a two-level case-insensitive path cache speeds up
-            directory-mounted volumes (both Volker Schwaberow).</li>
+            re-trapping every frame, and its DMA commits transactionally.
+            A two-level case-insensitive path cache speeds up
+            directory-mounted volumes. (Both by Volker Schwaberow.)</li>
         <li>Debugger fixes: the memory-scan address is masked to the bus
             width, and copper-list disassembly aligns to the list start
             (Volker Schwaberow).</li>
@@ -303,16 +291,16 @@
 
       <p>Copperline welcomes a new contributor this cycle: Volker Schwaberow
          (<a href="https://github.com/vschwaberow" target="_blank" rel="noopener">@vschwaberow</a>),
-         who arrived with five merged PRs - WasmBoard fault isolation and
-         transactional DMA, the host-filesystem path cache, two debugger
-         fixes, Latin-1 volume labels and a disassembler cleanup. Welcome
-         aboard.</p>
+         who arrived with five merged PRs. They cover WasmBoard fault
+         isolation and transactional DMA, the host-filesystem path cache,
+         two debugger fixes, Latin-1 volume labels and a disassembler
+         cleanup. Welcome aboard.</p>
 
       <p>Lee Hobson
          (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>)
-         again wrote more code this cycle than I did - 24,000 lines to my
-         16,000; I have made my peace with it. His cycle: the WHDLoad game
-         library with OpenRetro details and cover art plus its A-Z
+         again wrote more code this cycle than I did: 24,000 lines to my
+         16,000. I have made my peace with it. His work this cycle was the
+         WHDLoad game library with OpenRetro details, cover art and A-Z
          navigation, the Create Image workshop, the configurable-paths
          system with portable mode and the saved default config, and the
          rebuilt 1084 bezel.</p>
@@ -324,10 +312,10 @@
          launcher's directory picker, and the full-length bsdsocket LVO
          table.</p>
 
-      <p>And Brazen Gameplay fed back findings from running their
-         work-in-progress game on Copperline beside real AGA hardware - the
+      <p>Brazen Gameplay fed back findings from running their
+         work-in-progress game on Copperline beside real AGA hardware. The
          floating-bus model, the bitplane-pointer fix, the wide-fetch origin
-         fix and the deterministic control stepping all trace to that
+         fix and the deterministic control stepping all came from that
          collaboration. Four people shipped 201 commits in seven days. This
          project has become a team, and it is wonderful to watch.</p>
 
@@ -343,9 +331,9 @@
          captures now land in named folders under the host-data directory,
          or wherever <code>[paths]</code> points. Explicit CLI paths
          (<code>--screenshot-after</code> and friends) are still used
-         exactly as written, and legacy <code>battmem.nvram</code> /
-         <code>cd32-nvram.bin</code> files in the working directory keep
-         being used from there - real game saves are never silently
+         exactly as written. Legacy <code>battmem.nvram</code> and
+         <code>cd32-nvram.bin</code> files in the working directory are
+         still used from there, so real game saves are never silently
          relocated.</p>
 
       <p><strong>A saved default configuration now auto-loads.</strong> A
@@ -381,7 +369,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.

@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Copperline 0.10.0: the 68060, the MMUs and a much bigger debugger - Copperline News</title>
-<meta name="description" content="Copperline 0.10.0 brings the 68060, real 68030/68040 MMU and cache behaviour, a debugger console plus Video, Audio and IO Map tabs, the A4091 SCSI board, MIDI and TCP serial bridges, and zipped floppy images.">
+<meta name="description" content="68060 support, 68030/040 MMU and cache modelling, and new debugger inspectors, plus A4091 SCSI and MIDI and TCP serial bridges.">
 <meta name="theme-color" content="#0a0d16">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Copperline 0.10.0: the 68060, the MMUs and a much bigger debugger">
-<meta property="og:description" content="The 68060, real 68030/68040 MMU and cache behaviour, a debugger console plus Video, Audio and IO Map tabs, the A4091 SCSI board, MIDI and TCP serial bridges, and zipped floppy images.">
+<meta property="og:description" content="68060 support, 68030/040 MMU and cache modelling, and new debugger inspectors, plus A4091 SCSI and MIDI and TCP serial bridges.">
 <meta property="og:url" content="https://copperline.dev/news/copperline-0-10-0.html">
 <meta property="og:image" content="https://copperline.dev/assets/shot-audio.png">
 
@@ -64,29 +64,27 @@
       <span class="post__date">7 July 2026 &middot; release</span>
       <h1>Copperline 0.10.0: the 68060, the MMUs and a much bigger debugger</h1>
 
-      <p>0.10.0 is the largest Copperline release so far. The headline is CPU work -
-         a 68060 model joins the family, and the 68030 and 68040 get real MMU and
-         cache behaviour - and around it: a debugger that gained a command console
-         and three new tabs, the A4091 Zorro III SCSI board, host MIDI and TCP
-         bridges for Paula's serial port, selectable audio output, zipped floppy
-         images, and another broad pass over CPU, Copper, Agnus, Denise, Paula, CIA,
-         blitter, floppy and display timing.</p>
+      <p>0.10.0 is the largest Copperline release so far. The headline is CPU
+         work: a 68060 model joins the family, and the 68030 and 68040 get MMU and
+         cache behaviour. Around that are a debugger with a command console and
+         three new tabs, the A4091 Zorro III SCSI board, host MIDI and TCP bridges
+         for Paula's serial port, selectable audio output and zipped floppy
+         images. There is also another broad pass over CPU, Copper, Agnus, Denise,
+         Paula, CIA, blitter, floppy and display timing.</p>
 
-      <p>(A confession: this write-up is five days late, and
-         <a href="copperline-0-11-0.html">0.11.0</a> shipped in the meantime.
-         Consider this the missing chapter.)</p>
+      <p>(This write-up is five days late, and
+         <a href="copperline-0-11-0.html">0.11.0</a> shipped in the meantime.)</p>
 
-      <p>As always, this is a hardware-behaviour release: when something doesn't
-         run, the fix models the underlying Amiga subsystem more faithfully rather
-         than special-casing the title.</p>
+      <p>As always, when something doesn't run, the fix models the underlying
+         Amiga subsystem more faithfully rather than special-casing the title.</p>
 
       <h2>The 68060</h2>
 
-      <p>Copperline now goes all the way up the 68k line. The 68060 profile models
-         superscalar dual-issue pairing, the branch cache, <code>LPSTOP</code>, the
-         060's reduced FPU surface with unimplemented-instruction traps, 060
-         exception frames and its MMU specifics - selectable from the launcher and
-         the config file like every other CPU.</p>
+      <p>Copperline now covers the 68k line up to the 68060. The 68060 profile
+         models superscalar dual-issue pairing, the branch cache,
+         <code>LPSTOP</code>, the reduced FPU with unimplemented-instruction traps,
+         and the 060's exception frames and MMU specifics. Like every other CPU,
+         it is selectable from the launcher and the config file.</p>
 
       <!-- TODO(Andrew): a sentence on what pushed the 060 up the list - a piece of
            software, a request, curiosity - and anything that fought back. -->
@@ -95,77 +93,78 @@
 
       <p>The 68030 and 68040 gained the paged MMU: translation, the transparent
          translation registers, the ATC, access-error frames, write-protect and
-         permission faults, and MOVE16 alignment behaviour, plus the 68040's
-         instruction and data caches - all backed by expanded CPU fixture tests.</p>
+         permission faults, and MOVE16 alignment behaviour. The 68040 also gained
+         its instruction and data caches. All of it is backed by expanded CPU
+         fixture tests.</p>
 
-      <p>One default changed alongside this: CPUs with on-chip caches now enable
-         them out of the box, which is how shipped 68020+ machines actually ran.
-         If you need the old cache-off behaviour for a local setup, set
-         <code>[cpu] icache = false</code> and/or <code>dcache = false</code>.</p>
+      <p>One default changed alongside this. CPUs with on-chip caches now enable
+         them by default, as shipped 68020+ machines did. For the old cache-off
+         behaviour, set <code>[cpu] icache = false</code> and/or
+         <code>dcache = false</code>.</p>
 
       <h2>The debugger: a console and three new tabs</h2>
 
-      <p>The in-window debugger got its biggest single upgrade since it appeared.
-         <kbd>Cmd</kbd>+<kbd>K</kbd> opens a GDB-flavoured command console in its
-         own tool window: inspect and mutate memory and registers, <code>HUNT</code>
-         for byte patterns, <code>TRACE START</code> / <code>STOP</code>, set
-         catchpoints, walk a heuristic call stack, list the tasks and segments of a
-         running AmigaOS, and hand the reverse runner explicit targets. It takes
-         clipboard paste, and a multi-line paste executes line by line - so a saved
-         command script replays with one paste.</p>
+      <p><kbd>Cmd</kbd>+<kbd>K</kbd> opens a GDB-flavoured command console in its
+         own tool window. From it you can inspect and modify memory and registers,
+         <code>HUNT</code> for byte patterns, <code>TRACE START</code> /
+         <code>STOP</code>, set catchpoints, walk a heuristic call stack, list the
+         tasks and segments of a running AmigaOS, and give the reverse runner
+         explicit targets. The console accepts clipboard paste, and a multi-line
+         paste executes line by line, so a saved command script replays with one
+         paste.</p>
 
       <p>Three new tabs joined CPU, Chipset, Copper, Memory and Break:</p>
 
       <ul>
-        <li><strong>Video</strong> shows the display pipeline visually, with layer
-            isolation: hide individual bitplanes and sprites in the presented
-            picture to answer "which layer is drawing <em>that</em>" by
-            elimination. It is an output-only filter - collisions and priority
-            still use the true data, so it can never perturb the emulation.</li>
-        <li><strong>Audio</strong> decodes Paula's four channels: the DMA state
-            machine each channel is in, its latches, pointer and live output, with
-            a mute button and an oscilloscope per channel - and a fifth row for
-            CD-DA on CDTV / CD32.</li>
+        <li><strong>Video</strong> shows the display pipeline with layer
+            isolation. Hide individual bitplanes and sprites in the presented
+            picture to work out which layer is drawing <em>that</em> by
+            elimination. It is an output-only filter: collisions and priority
+            still use the true data, so it cannot affect the emulation.</li>
+        <li><strong>Audio</strong> decodes Paula's four channels: each channel's
+            DMA state machine, latches, pointer and live output, with a mute
+            button and an oscilloscope per channel. A fifth row shows CD-DA on
+            CDTV / CD32.</li>
         <li><strong>IO Map</strong> is a browsable map of the whole custom bank,
-            every register with its live value and the selected one's bits decoded
-            by name.</li>
+            showing every register's live value with the selected register's bits
+            decoded by name.</li>
       </ul>
 
       <figure class="shot">
         <img src="../assets/shot-audio.png" alt="The Copperline debugger on the Audio tab, showing Paula's four audio channels with decoded DMA state, latches and pointers, per-channel mute buttons and oscilloscopes, and a CD-DA row" loading="lazy">
         <figcaption><strong>The Audio tab.</strong> AUD0-AUD3 with their DMA state
-           machines decoded - Running, StartPending, Off, Manual - plus per-channel
+           machines decoded (Running, StartPending, Off, Manual), per-channel
            mutes, live scopes, and the CD-DA row at the bottom.</figcaption>
       </figure>
 
-      <p>The Copper tab picked up breakpoints and single-stepping - stop when the
-         Copper's PC arrives at an address, or retire one Copper instruction at a
-         time - watchpoints report more about the write that fired them, and the
-         frame analyzer's beam scrubbing got smoother.</p>
+      <p>The Copper tab gained breakpoints and single-stepping: stop when the
+         Copper's PC reaches an address, or retire one Copper instruction at a
+         time. Watchpoints report more about the write that triggered them, and
+         beam scrubbing in the Frame Analyzer is smoother.</p>
 
       <h2>A4091 SCSI</h2>
 
       <p>Bernie Innocenti (<a href="https://github.com/codewiz" target="_blank" rel="noopener">@codewiz</a>)
-         contributed an A4091, the Zorro III SCSI board: nibble-wide autoboot ROM
-         exposure, the DMA and SCSI FIFOs, the NCR SCRIPTS processor's register and
-         memory moves, interrupts, looped SCSI pins, bus reset, and drive scan and
-         mount - with diagnostics under <code>COPPERLINE_DIAG_A4091</code> if you
-         want to watch it work.</p>
+         contributed an A4091, the Zorro III SCSI board. The model covers
+         nibble-wide autoboot ROM exposure, the DMA and SCSI FIFOs, the NCR SCRIPTS
+         processor's register and memory moves, interrupts, looped SCSI pins, bus
+         reset, and drive scan and mount. Diagnostics are available under
+         <code>COPPERLINE_DIAG_A4091</code>.</p>
 
       <h2>Host I/O: MIDI, TCP serial, audio outputs, zipped floppies</h2>
 
-      <p>Paula's serial port can now bridge to host MIDI - contributed by Lee
-         Hobson (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>) -
-         or to a bidirectional TCP sink (Bernie again). Lee also added host
+      <p>Paula's serial port can now bridge to host MIDI, contributed by Lee
+         Hobson (<a href="https://github.com/hobbo91" target="_blank" rel="noopener">@hobbo91</a>),
+         or to a bidirectional TCP sink, contributed by Bernie. Lee also added host
          audio-device selection with mono / stereo shaping, and
          <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd> to cycle audio outputs while
-         running. And jbl007
+         running. jbl007
          (<a href="https://github.com/sonnenscheinchen" target="_blank" rel="noopener">@sonnenscheinchen</a>)
          added ZIP-wrapped floppy images, so a zipped ADF loads directly.</p>
 
       <h2>The hardware pass</h2>
 
-      <p>And the usual long tail of timing fixes, each one owed to some real
+      <p>The usual long tail of timing fixes, each prompted by a real
          program:</p>
 
       <ul>
@@ -182,30 +181,29 @@
         <li>Normal and line-mode blits follow a per-slot micro-cycle protocol,
             including BLTPRI / CPU starvation interactions and completion / IRQ
             prediction under active Copper DMA.</li>
-        <li>Paula audio moved to the HRM channel state machine with AUDxEN disable
-            deferred to the word boundary, CIA accesses synchronize to the E clock,
-            and floppy step pulses observe a mechanism floor.</li>
+        <li>Paula audio moved to the HRM channel state machine, with AUDxEN
+            disable deferred to the word boundary. CIA accesses synchronize to the
+            E clock, and floppy step pulses observe a mechanism floor.</li>
       </ul>
 
       <h2>Config and save states</h2>
 
-      <p>No config changes are required from 0.9.0 - everything new is optional -
-         apart from the cache default noted above. Save states bump their format
-         version to carry the new CPU / MMU / cache and board state; older files
-         are refused with a version error rather than misread.</p>
+      <p>Apart from the cache default noted above, no config changes are required
+         from 0.9.0. Everything new is optional. Save states bump their format
+         version to carry the new CPU, MMU, cache and board state. Older files are
+         refused with a version error rather than misread.</p>
 
       <h2>The known issue</h2>
 
       <p>0.10.0 shipped with known visual regressions in some display paths.
-         They are fixed in <a href="copperline-0-11-0.html">0.11.0</a>, which is
-         already out.</p>
+         They are fixed in <a href="copperline-0-11-0.html">0.11.0</a>.</p>
 
       <h2>Get it</h2>
 
       <p>Builds for macOS, Linux and Windows are on the
-         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.10.0" target="_blank" rel="noopener">release page</a> -
-         though with <a href="copperline-0-11-0.html">0.11.0</a> out, you probably
-         want that instead.</p>
+         <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.10.0" target="_blank" rel="noopener">release page</a>.
+         With <a href="copperline-0-11-0.html">0.11.0</a> already out, you
+         probably want that instead.</p>
 
       <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
          <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
@@ -219,7 +217,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.

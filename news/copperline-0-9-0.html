@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Copperline 0.9.0: the FPU deep-dive - Copperline News</title>
-<meta name="description" content="Copperline 0.9.0 brings an 80-bit 68881/68882 FPU accuracy pass, explicit joystick input selection, no-ROM save-state restore, and a round of hardware-behaviour fixes.">
+<meta name="description" content="An 80-bit FPU accuracy pass, explicit joystick input selection, and save states that restore without the original ROM file.">
 <meta name="theme-color" content="#0a0d16">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Copperline 0.9.0: the FPU deep-dive">
-<meta property="og:description" content="An 80-bit 68881/68882 FPU accuracy pass, explicit joystick input selection, no-ROM save-state restore, and a round of hardware-behaviour fixes.">
+<meta property="og:description" content="An 80-bit FPU accuracy pass, explicit joystick input selection, and save states that restore without the original ROM file.">
 <meta property="og:url" content="https://copperline.dev/news/copperline-0-9-0.html">
 <meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
 
@@ -64,25 +64,25 @@
       <span class="post__date">29 June 2026 &middot; release</span>
       <h1>Copperline 0.9.0: the FPU deep-dive</h1>
 
-      <p>0.9.0 is out. The headline this time is a long 68881/68882 FPU accuracy
-         pass, alongside explicit joystick input selection, save states that restore
-         without the original ROM, hard-disk volume names, and the usual round of CIA,
-         Paula, keyboard, Denise, sprite, bitplane, RTC and display-timing fixes.</p>
+      <p>0.9.0 is out. The headline is a long 68881/68882 FPU accuracy pass.
+         Alongside it come explicit joystick input selection, save states that
+         restore without the original ROM, hard-disk volume names, and fixes to CIA,
+         Paula, keyboard, Denise, sprite, bitplane, RTC and display timing.</p>
 
-      <p>As with every release so far, this is a hardware-behaviour release: when
-         something doesn't run, the fix models the underlying Amiga subsystem more
-         faithfully rather than special-casing the title. That approach is slower, but
-         each fix tends to repair a whole class of software instead of one program.</p>
+      <p>As with every release so far, when something doesn't run, the fix models
+         the underlying Amiga subsystem more faithfully rather than special-casing
+         the title. That approach is slower, but each fix tends to repair a whole
+         class of software instead of one program.</p>
 
       <h2>The FPU pass</h2>
 
-      <p>Until now the FPU computed in the host's f64 double precision - close, but not
-         what the silicon does. A real 68881 works in 80-bit extended precision, and
-         software can tell the difference. The m68k core now has:</p>
+      <p>Until now the FPU computed in the host's f64 double precision. That is
+         close, but a real 68881 works in 80-bit extended precision, and software
+         can tell the difference. The m68k core now has:</p>
 
       <ul>
-        <li>an 80-bit extended register file, with pure-Rust softfloat arithmetic
-            behind it - no host FPU involved,</li>
+        <li>an 80-bit extended register file backed by pure-Rust softfloat
+            arithmetic, with no host FPU involved,</li>
         <li>extended-precision kernels for exp, log, trig, inverse trig and the
             hyperbolics,</li>
         <li>exact <code>FMOVECR</code> constants, matching the ROM tables in the real
@@ -103,32 +103,30 @@
 
       <h2>The machine no longer guesses your joystick</h2>
 
-      <p>Keyboard joystick emulation and a physical gamepad used to be implicit.
-         Now there is a status-bar toggle, a menu entry, a launcher control and an
-         <code>[input] joystick = "gamepad" | "keyboard"</code> config setting, so the
-         input mode is something you choose rather than something that happens
-         to you.</p>
+      <p>The choice between keyboard joystick emulation and a physical gamepad
+         used to be implicit. Now there is a status-bar toggle, a menu entry, a
+         launcher control and an
+         <code>[input] joystick = "gamepad" | "keyboard"</code> config setting, so
+         you choose the input mode explicitly.</p>
 
       <h2>Save states without the ROM</h2>
 
       <p><code>--load-state</code> can now restore a snapshot without opening the
-         original Kickstart file first - the save state carries the whole machine, so
-         Copperline only needs a placeholder for as long as it takes the state to
-         replace it. Useful when a bug report comes with a state attached and you
-         don't have the reporter's exact ROM at hand.</p>
+         original Kickstart file first. The save state carries the whole machine, so
+         Copperline only needs a placeholder until the state replaces it. This helps
+         when a bug report comes with a state attached and you don't have the
+         reporter's exact ROM.</p>
 
       <h2>The small hardware fixes</h2>
 
-      <p>The section nobody reads but everybody benefits from:</p>
-
       <ul>
         <li>CIA one-shot timers keep the START bit visible through the auto-started
-            interval - some software polls the running state to time the one-shot.</li>
+            interval, because some software polls the running state to time the
+            one-shot.</li>
         <li>Floppy motor spin-up and spin-down state now flows through the same
-            controller path that disk DMA and status reads actually use.</li>
-        <li>The keyboard MCU accepts short-but-real KDAT handshake pulses from the
-            Amiga side, instead of insisting on the nominal pulse width from the
-            Hardware Reference Manual.</li>
+            controller path that disk DMA and status reads use.</li>
+        <li>The keyboard MCU accepts KDAT handshake pulses from the Amiga side that
+            are shorter than the nominal width in the Hardware Reference Manual.</li>
         <li>POTGO-driven high pins hold their POTxDAT counters at zero, which is how
             software reads fully charged paddle and button lines.</li>
         <li>Early hi-res DDFSTRT output is word-aligned, late-DDF first words sample
@@ -136,24 +134,24 @@
             CLXDAT observation.</li>
       </ul>
 
-      <p>Every one of those exists because some real program cared.</p>
+      <p>Each of these was prompted by a real program.</p>
 
       <h2>Housekeeping</h2>
 
       <p>The vendored m68k fork moved from <code>vendor/m68k</code> to
          <code>crates/m68k</code> and is packaged as <code>copperline-m68k</code>,
          making the dependency boundary explicit. The battery-backed RTC now reports
-         host local time (with <code>COPPERLINE_RTC_FIXED_SECS</code> still there when
-         a replay needs determinism). Directory and generated hard disks can carry
-         configured AmigaDOS volume names. Menu popups size themselves to their widest
-         label.</p>
+         host local time, and <code>COPPERLINE_RTC_FIXED_SECS</code> is still there
+         when a replay needs determinism. Directory and generated hard disks can
+         carry configured AmigaDOS volume names. Menu popups size themselves to their
+         widest label.</p>
 
       <h2>Get it</h2>
 
       <p>Builds for macOS, Linux and Windows are on the
          <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v0.9.0" target="_blank" rel="noopener">release page</a>,
-         and the Homebrew tap is updated. No config changes are required from 0.8.0;
-         the new settings are optional and default to the old behaviour.</p>
+         and the Homebrew tap is updated. No config changes are required from 0.8.0.
+         The new settings are optional and default to the old behaviour.</p>
 
       <p class="post__sig">- Andrew Hutchings (LinuxJedi) &middot;
          <a href="https://linuxjedi.co.uk" target="_blank" rel="noopener">linuxjedi.co.uk</a></p>
@@ -167,7 +165,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.

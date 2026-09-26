@@ -12,28 +12,28 @@
     <link>https://copperline.dev/news/copperline-0-21-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-21-0.html</guid>
     <pubDate>Sat, 19 Sep 2026 05:50:05 +0000</pubDate>
-    <description>Invite up to eight spectators to Netplay, use four local controllers on desktop and in RetroArch, and get display and file-picker fixes. Clipboard sharing and the CD32 FMV cartridge are now opt-in.</description>
+    <description>Invite up to eight spectators to a netplay game, use four local controllers on the desktop and in RetroArch, and pick up display and file-picker fixes. Clipboard sharing and the CD32 FMV cartridge are now opt-in.</description>
   </item>
   <item>
     <title>Copperline 0.20.0: Netplay, a new debugging workspace, and RetroArch</title>
     <link>https://copperline.dev/news/copperline-0-20-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-20-0.html</guid>
     <pubDate>Sat, 12 Sep 2026 06:09:51 +0000</pubDate>
-    <description>Two-player Amiga Netplay on desktop and in the browser, a rebuilt debugging workspace, and a RetroArch core. Plus save-state thumbnails, GIF clips, new hardware and cleaner Paula audio.</description>
+    <description>Two-player netplay, a shared debugging workspace and a RetroArch core, plus save-state thumbnails, GIF clips and Paula audio improvements.</description>
   </item>
   <item>
     <title>Copperline 0.19.0: Amiga debugging from VS Code, Bartman's profiler on Copperline, and two open ROMs</title>
     <link>https://copperline.dev/news/copperline-0-19-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-19-0.html</guid>
     <pubDate>Sun, 06 Sep 2026 09:00:00 +0000</pubDate>
-    <description>The developer release: source-level debugging of Amiga programs from Visual Studio Code through a Debug Adapter Protocol server, with breakpoints, Step Back, variables and every custom register; Bartman's Amiga C/C++ extension running on Copperline with its visual profiler fed by per-colour-clock bus captures; an MCP server, a WinUAE-compatible uaelib trap, an HRTMon freezer cartridge, open-source CD32 FMV and A2091 ROMs, copperhf.device, uncapped integer scaling with autocrop, and floppy, Akiko and 68030/68040 timing fixes measured against real hardware.</description>
+    <description>Source-level debugging in VS Code, support for Bartman's visual profiler, and open-source CD32 FMV and A2091 ROMs, plus timing fixes checked against real hardware.</description>
   </item>
   <item>
     <title>Copperline 0.18.0: The CD32 FMV module, calibrated drive timing, a modem on Paula, and import-uae</title>
     <link>https://copperline.dev/news/copperline-0-18-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-18-0.html</guid>
     <pubDate>Sat, 29 Aug 2026 10:23:00 +0000</pubDate>
-    <description>Commodore's CD32 Full Motion Video MPEG cartridge is emulated end to end, the CD32 drive model is calibrated against real PAL hardware with a probe disc and filmed cold boots, CDXL video streams from cooked ISOs, a Hayes AT modem with WiModem232 compatibility answers on the serial port, copperline-import-uae converts configurations with zero guesswork, run-ahead cuts input latency, and AGA sprite and palette fidelity reaches 0.000% error against vAmigaTS.</description>
+    <description>CD32 FMV emulation, CD drive timing measured on real hardware, and a Hayes-compatible serial modem. copperline-import-uae converts configurations from other emulators.</description>
   </item>
 
   <item>
@@ -41,7 +41,7 @@
     <link>https://copperline.dev/news/copperline-0-17-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-17-0.html</guid>
     <pubDate>Sat, 22 Aug 2026 05:46:55 +0000</pubDate>
-    <description>Coppersynth puts a General MIDI sound module with an SC-55-style front panel and MT-32 translation on the Amiga's MIDI cable with no ROMs, a MacroSystem Toccata and an MHI MPEG decoder board join the Zorro bus, every audio source gets its own stem and debugger row - and CD32 discs cold-boot on the bundled AROS ROM, a publisher kit builds single-game players, and gamepads work out of the box and drive the whole UI.</description>
+    <description>Coppersynth General MIDI, the Toccata and MHI sound boards, and CD32 discs that boot on AROS. Gamepads can now drive the whole interface.</description>
   </item>
 
   <item>
@@ -49,7 +49,7 @@
     <link>https://copperline.dev/news/copperline-0-16-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-16-0.html</guid>
     <pubDate>Sat, 15 Aug 2026 05:50:42 +0000</pubDate>
-    <description>A WHDLoad-installed game boots straight from its archive, the launcher grows a browsable game library with OpenRetro cover art, --run warp-boots freshly built Amiga executables for developers, storage gains a lide.device-compatible IDE board with ATAPI CD-ROM, OFS directory mounts that boot Kickstart 1.3 and a Create Image workshop - and a studio building a new commercial Amiga game on Copperline drove fixes from Agnus pointer semantics to floating-bus reads.</description>
+    <description>Launch WHDLoad archives directly, browse a game library, and run freshly built Amiga programs from the command line.</description>
   </item>
 
   <item>
@@ -57,7 +57,7 @@
     <link>https://copperline.dev/news/copperline-0-15-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-15-0.html</guid>
     <pubDate>Sat, 08 Aug 2026 05:15:27 +0000</pubDate>
-    <description>An emulated Roland MT-32 - front panel and all - on the MIDI port, the host's real hard disks handed to the machine RDB and all, a HostSocket board giving guest applications BSD sockets with no TCP/IP stack to install, the physical floppy path rebuilt pure-Rust on FluxBridge, native IPF and CHD images, a redesigned menu tree, an authentic 1084 bezel, integer scaling and a performance overlay, and a browser build with a screen keyboard and real headroom on phones.</description>
+    <description>Roland MT-32 emulation, access to the host's physical hard disks, and guest sockets without a TCP/IP stack. Physical floppy support moves to FluxBridge.</description>
   </item>
 
   <item>
@@ -65,7 +65,7 @@
     <link>https://copperline.dev/news/copperline-0-14-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-14-0.html</guid>
     <pubDate>Sat, 01 Aug 2026 08:06:49 +0000</pubDate>
-    <description>Real 3.5" floppy drives on the emulated bus through DrawBridge, Greaseweazle and SupercardPro, the A2065 bridged onto the real LAN, Picasso II / II+ RTG for the 24-bit machines, CRT shaders, screen tints and a 1084-style bezel, rewind and quick-save slots, autofire and input remapping, an experimental JIT CPU mode, and a WinUAE-inspired debugging suite.</description>
+    <description>Physical floppy drives, bridged Ethernet and Picasso II RTG graphics, plus CRT shaders, rewind, input remapping and an experimental JIT.</description>
   </item>
 
   <item>
@@ -73,15 +73,15 @@
     <link>https://copperline.dev/news/copperline-0-13-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-13-0.html</guid>
     <pubDate>Sat, 25 Jul 2026 06:39:45 +0000</pubDate>
-    <description>RTG graphics through the Z3660 Zorro III board, Ramsey motherboard and CPU-slot accelerator RAM for the big boxes, an Ethernet backend that needs no privileges or setup, a telnet BBS dialled over emulated serial, configurable floppy speed, and enough 68040 MMU and 31 kHz display work to boot Debian Linux/m68k to a login prompt.</description>
+    <description>Z3660 RTG graphics and user-mode NAT networking, plus the MMU and display work needed to boot Linux/m68k.</description>
   </item>
 
   <item>
-    <title>Copperline moves to its own GitHub organisation</title>
+    <title>Copperline moves to its own GitHub organization</title>
     <link>https://copperline.dev/news/copperline-github-org.html</link>
     <guid>https://copperline.dev/news/copperline-github-org.html</guid>
     <pubDate>Fri, 24 Jul 2026 09:12:41 +0000</pubDate>
-    <description>The repositories have moved from my personal LinuxJedi account to a new GitHub organisation, CopperlineHQ, because Copperline is becoming a community bigger than just me. Repository names are unchanged, the old URLs keep redirecting for the foreseeable future, and a Discord server for development discussion is on the way.</description>
+    <description>The repositories move from LinuxJedi to CopperlineHQ as the project's community grows. Existing repository links keep redirecting.</description>
   </item>
 
   <item>
@@ -89,7 +89,7 @@
     <link>https://copperline.dev/news/copperline-0-12-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-12-0.html</guid>
     <pubDate>Sat, 18 Jul 2026 06:11:02 +0000</pubDate>
-    <description>The whole emulator compiled to WebAssembly and running client-side at copperline.dev/try, A3000 / A4000 profiles booting from their onboard SCSI and IDE, host-directory mounts gone writable, a JSON-RPC control protocol for scripted live sessions, SCSI CD-ROM drives with CD audio, and any controller in either game port.</description>
+    <description>Copperline comes to the browser. On the desktop, A3000 and A4000 profiles, writable host directories and a JSON-RPC control protocol arrive.</description>
   </item>
 
   <item>
@@ -97,7 +97,7 @@
     <link>https://copperline.dev/news/copperline-0-11-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-11-0.html</guid>
     <pubDate>Sun, 12 Jul 2026 17:59:52 +0000</pubDate>
-    <description>Host directories mounted - and booted - as live AmigaDOS volumes, the blitter's BLTPRI bus fence, a 68000 microcode write-ordering pass, sprite serialization measured against other emulators and real hardware, and a 6x cut in worst-case frame times on slower hosts.</description>
+    <description>Boot from a host directory, with blitter, CPU and sprite timing fixes and lower frame times on slower hosts.</description>
   </item>
 
   <item>
@@ -105,7 +105,7 @@
     <link>https://copperline.dev/news/copperline-0-10-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-10-0.html</guid>
     <pubDate>Tue, 07 Jul 2026 10:53:03 +0000</pubDate>
-    <description>The 68060 joins the CPU line-up, the 68030/68040 gain real MMU and cache behaviour, the debugger grows a command console plus Video, Audio and IO Map tabs, and the A4091 SCSI board, MIDI and TCP serial bridges and zipped floppies arrive.</description>
+    <description>68060 support, 68030/040 MMU and cache modelling, and new debugger inspectors, plus A4091 SCSI and MIDI and TCP serial bridges.</description>
   </item>
 
   <item>
@@ -113,7 +113,7 @@
     <link>https://copperline.dev/news/copperline-0-9-0.html</link>
     <guid>https://copperline.dev/news/copperline-0-9-0.html</guid>
     <pubDate>Mon, 29 Jun 2026 06:45:57 +0000</pubDate>
-    <description>An 80-bit 68881/68882 accuracy pass with pure-Rust softfloat, explicit joystick input selection, save states that restore without the original ROM, and the usual round of CIA, Paula, keyboard and display-timing fixes.</description>
+    <description>An 80-bit FPU accuracy pass, explicit joystick input selection, and save states that restore without the original ROM file.</description>
   </item>
 
   <item>

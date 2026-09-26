@@ -60,7 +60,7 @@
 <main id="main">
   <section class="section">
     <article class="post">
-      <span class="post__date">Last updated 16 September 2026</span>
+      <span class="post__date">Last updated 26 September 2026</span>
       <h1>Privacy Policy</h1>
 
       <p>This policy covers the Copperline emulator, however you obtained it,
@@ -71,8 +71,7 @@
          There is no account, no telemetry, no analytics, no advertising, no
          update check, and no Copperline server that your copy reports to. The
          emulator opens no network connection at all unless you use one of the
-         handful of features described below, each of which you have to ask
-         for.</p>
+         few features described below, each of which you have to ask for.</p>
 
       <p>Copperline is free software under the GPL v3, so none of this has to
          be taken on trust. Every claim on this page can be checked against the
@@ -80,10 +79,12 @@
 
       <h2>What Copperline stores on your computer</h2>
 
-      <p>Copperline keeps its own settings and data in a folder in your
-         documents - <code>Documents\Copperline</code> on Windows,
-         <code>~/Documents/Copperline</code> on macOS and Linux - or beside the
-         program itself in portable mode. That folder holds things like:</p>
+      <p>Copperline keeps its settings and data in a folder in your documents:
+         <code>Documents\Copperline</code> on Windows and
+         <code>~/Documents/Copperline</code> on macOS and Linux. In portable
+         mode, turned on by an empty <code>portable.txt</code> file beside the
+         program, it keeps them beside the program instead. The folder holds
+         things like:</p>
 
       <ul>
         <li>machine configurations, key mappings and gamepad calibration;</li>
@@ -94,11 +95,12 @@
             you emulate.</li>
       </ul>
 
-      <p>If Copperline crashes it writes a <code>copperline-crash.txt</code>
+      <p>If Copperline crashes, it writes a <code>copperline-crash.txt</code>
          report next to the program, in the working directory, or in your
-         temporary folder. It contains the error and a backtrace. It is never
-         sent anywhere - if you want me to see it, you attach it to a bug
-         report yourself.</p>
+         temporary folder. It contains the error, a backtrace, the Copperline
+         version, your operating system and CPU architecture, and the time of
+         the crash. It is never sent anywhere; if you want me to see it, you
+         attach it to a bug report yourself.</p>
 
       <p>All of this is ordinary files on your own disk. Nothing in it is
          transmitted, and you can delete any of it at any time.</p>
@@ -125,9 +127,10 @@
          <a href="https://openretro.org" target="_blank" rel="noopener">openretro.org</a>,
          which is an independent third-party service with its own privacy
          policy. If you choose to sign in, your OpenRetro username and password
-         are sent to openretro.org over HTTPS, always encrypted and never over
-         plain HTTP. The password is exchanged immediately for a session token
-         and is never written to disk; the token lasts for that session only.
+         are sent to openretro.org over HTTPS, never over plain HTTP. The
+         password is exchanged straight away for a session token and is never
+         written to disk. The token is kept only in memory, and signing out
+         revokes it.
          Copperline identifies itself with the fixed device name
          <code>copperline</code>, so you can see and revoke the session in your
          OpenRetro account. Game descriptions and cover art come back and are
@@ -152,12 +155,19 @@
          fresh key is generated for each session and kept only in memory. As
          with any peer-to-peer connection, the peers you connect to can see
          your IP address on a direct route, and the relay can see it otherwise.
-         Only controller input and session setup travel between players. A
-         host that admits spectators hands out a separate spectator invitation
-         with its own key; each spectator connects the same way, receives the
-         host's game files and setup as a joining player would, and then
-         follows the two players' controller input without ever sending any of
-         its own. None of it reaches me.</p>
+         The host sends the other player its machine settings and game files
+         (ROMs and disk images), and after that only controller input travels
+         between the players. A host that admits spectators hands out a
+         separate spectator invitation with its own secret. Each spectator
+         connects the same way, receives the host's game files and setup as a
+         joining player would, and then follows the players' controller input
+         without sending any of its own. None of it reaches me.</p>
+
+      <p><strong>Direct netplay.</strong> Desktop netplay can also connect
+         straight to an IP address and UDP port that you enter. That mode is
+         not encrypted: controller input and the host's game files cross the
+         network in the clear, and the session ID only tells games apart. Use
+         it on a network you trust, or inside a VPN.</p>
 
       <p><strong>Networking inside the emulated Amiga.</strong> If you fit an
          emulated network card, use the HostSocket board, or connect Paula's
@@ -168,31 +178,42 @@
 
       <p><strong>Debugging and automation interfaces.</strong> The control
          protocol, the GDB stub, the Debug Adapter Protocol adapter and the MCP
-         server are all off unless you enable them, and all listen on the
-         loopback interface of your own machine.</p>
+         server are all off unless you start them from the command line. Given
+         just a port number, the network servers listen only on your own
+         machine's loopback interface; they listen more widely only if you give
+         them another address. The MCP server and the default DAP adapter talk
+         over standard input and output and open no network socket at all.</p>
 
       <h2>The browser version</h2>
 
       <p>The browser build at <a href="../try/">copperline.dev/try</a> runs
          entirely inside your browser. ROMs, disks and save states that you
-         load stay on your device in browser storage; they are never uploaded,
-         and I never see them.</p>
+         load stay on your device in browser storage. They are never uploaded
+         to a server, and I never see them. In a netplay game, the host's
+         browser sends its ROMs and disks directly to the other browsers in
+         the game, as described below.</p>
 
       <p>Browser netplay needs a small signalling service, which runs on
          Cloudflare Workers for Copperline. It exchanges the players'
-         connection details and nothing else: one invitation is held for at
+         connection details and nothing else: an invitation is held for at
          most fifteen minutes and then discarded. Hosting a browser game also
          opens a second, separately keyed room for spectators on the same
-         service. That room
-         holds each spectator's connection details for at most ten minutes,
-         stays open while the host's page is playing, and is discarded when the
-         host disconnects or fifteen minutes after its page stops checking for
-         spectators. Gameplay runs over encrypted WebRTC between the browsers,
-         directly or through a TURN relay when a direct route is impossible;
-         spectators receive the host's files and follow the players' controller
-         input over the same kind of connection. ROMs, disks and snapshots
-         never pass through that service. Cloudflare handles this traffic as
-         the infrastructure provider under its own privacy policy.</p>
+         service. That room holds each spectator's connection details only
+         until the connection is set up, plus a short grace period, and never
+         for more than fifteen minutes. The room stays open while the host's
+         page is playing, and is discarded when the host disconnects or
+         fifteen minutes after its page stops checking for spectators.</p>
+
+      <p>Gameplay runs over encrypted WebRTC between the browsers, directly
+         or through a Cloudflare TURN relay when a direct route is impossible.
+         Spectators receive the host's files and follow the players'
+         controller input over the same kind of connection. ROMs, disks and
+         snapshots never pass through the signalling service. Cloudflare
+         handles this traffic as the infrastructure provider, under its own
+         privacy policy. If you use the manual connection codes instead of an
+         invitation, the page asks a public STUN server for your public
+         address; the default is Google's (<code>stun.l.google.com</code>),
+         and you can change it or leave it blank.</p>
 
       <h2>This website</h2>
 
@@ -210,11 +231,11 @@
 
       <h2>Where you downloaded Copperline</h2>
 
-      <p>Copperline is distributed through GitHub Releases, Flathub and
-         Homebrew. Each of those runs its own service under its own privacy
-         policy, and each gives me aggregate figures such as download and
-         install counts. None of it identifies an individual person to me, and
-         none of it comes from the emulator itself.</p>
+      <p>Copperline is distributed through GitHub Releases and a Homebrew tap
+         hosted on GitHub. GitHub runs those services under its own privacy
+         policy. What it shows me is aggregate, such as download counts: none
+         of it identifies an individual person, and none of it comes from the
+         emulator itself.</p>
 
       <h2>Children</h2>
 
@@ -225,8 +246,8 @@
       <h2>Your data and your rights</h2>
 
       <p>Because I collect and hold no personal data about users, there is no
-         personal data of yours for me to look up, correct, export, sell or
-         delete - and it is never sold or shared, because it does not exist.
+         personal data of yours for me to look up, correct, export or delete,
+         and nothing to sell or share.
          The data Copperline creates is on your own computer and entirely under
          your control. Where a feature sends something to a third party, such
          as an OpenRetro sign-in, your rights in that data sit with that
@@ -256,7 +277,7 @@
     <div class="footer__cols">
       <p class="footer__lic">
         Copperline is free software under the
-        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3</a>.
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
       </p>
       <p class="footer__colophon">
         Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
