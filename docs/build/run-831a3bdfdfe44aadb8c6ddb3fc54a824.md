@@ -1,0 +1,202 @@
+# Direct executable launching (`--run`)
+
+The `--run` flag boots Copperline straight into an Amiga executable on the
+host filesystem, with no disk image or Workbench installation to prepare. This
+suits development with an Amiga cross-compiler toolchain:
+
+```sh
+copperline --run build/hello
+copperline --run build/hello --run-args "-level 2"
+copperline --run build/hello --run-stack 32768 --run-detach
+```
+
+To turn an already linked hunk executable into a standard 880 KiB floppy, use
+`copperline-ctl exe2adf PROG --boot [--out FILE]` (by default the output is
+`PROG` with its extension changed to `.adf`). It writes the executable and an
+`S/Startup-Sequence` that runs it, using the same OFS directory-tree writer as
+Copperline's virtual filesystems; `--boot` installs the AmigaDOS boot
+block. Omit `--boot` for a mountable data disk. The executable's filename must
+be 1-30 Latin-1 characters and cannot contain `:` or `/`; the generated script
+uses the same single-byte name stored in the disk directory.
+
+## How it works
+
+When `--run` is used, Copperline mounts two host directories as live AmigaDOS
+volumes:
+
+1. **`RunBoot:`** (boot priority 6) -- A generated boot volume containing an
+   `S/Startup-Sequence` that sets the current directory, launches the
+   executable, and writes a completion marker holding the program's AmigaDOS
+   return code when it exits. Copperline stages it in `run/boot-<pid>/` under
+   the Copperline host data folder and regenerates it on every launch.
+   Bundled `C:FailAt`, `C:CD`, `C:Stack`, `C:Echo`, and `C:Done` executables
+   supply the commands missing from a bare Kickstart 1.3 ROM (`Done` writes
+   the return code the CLI keeps in `cli_ReturnCode`); `C:Execute` supplies
+   the detached script handoff on later ROMs. No Workbench command files are
+   needed.
+2. **`RunProg:`** (read/write) -- The host directory containing the executable.
+   The guest loads the binary directly from this volume, and any files the
+   program writes land in the same host directory.
+
+`--run-args STRING` appends arguments to the program's command line.
+`--run-stack BYTES` accepts 2048 through 2147483644 bytes and issues an
+AmigaDOS `Stack` command before the executable; invalid sizes are rejected
+before booting. `--run-detach` launches the program through
+`Run >NIL: <NIL:` and closes the boot CLI (Kickstart 2.0+ or AROS).
+
+Unlike [WHDLoad](whdload.md), `--run` derives nothing: the machine is whatever
+the configuration and CLI flags describe, which by default is an A500 with the
+bundled AROS Kickstart replacement. Choose another machine as usual:
+
+```sh
+copperline --model A1200 --fast 8M KICK31.ROM --run build/demo
+```
+
+(exit-on-return)=
+## Guest exit status (`--exit-on-return`)
+
+With `--exit-on-return` (which requires `--run`), the session ends the
+moment the program's return code lands in the completion marker, and
+Copperline's own exit status is that code (clamped to 0-255). Like
+`--coverage`, the flag on its own makes a headless run: no window,
+unthrottled, and no capture flag needed to end it. Only with
+`--control-gui` or `--gdb-gui` does the session stay windowed, and the
+window then closes when the program returns. `--gdb` and `--control`, which
+own the run loop themselves, refuse the flag.
+
+```sh
+copperline --run build/tests --exit-on-return --noaudio; echo $?
+```
+
+If the run ends for another reason before the program returns (the last
+`--screenshot-after` fired, or the window was closed), the status is 4. A
+program that never returns therefore needs a bounding flag such as
+`--screenshot-after 60 /tmp/end.png` to turn into a 4 rather than an
+endless run. The generated script sets `FailAt 2147483647` so no return code
+aborts it before the marker is written. A non-zero code takes precedence
+over a failed `--expect-screenshot` (status 3); a zero one does not hide it.
+The full status table is in [Headless](headless.md#exit-statuses).
+`guest/run-tools/retcode` returns the number given as its argument, for
+checking the plumbing end to end.
+
+## Fast-forward boot (Warp mode)
+
+In interactive windowed sessions, `--run` automatically enables warp mode during boot.
+(For configurations booting from media rather than `--run`, warp boot is also available via
+`--warp-boot` / `--warp-until`; see [Configuration](configuration.md).)
+The emulator runs unthrottled with audio muted until the guest OS loads the
+executable (detected at its `LoadSeg`, before its first instruction runs).
+Emulation and audio then return to real time.
+
+Additional operational notes:
+
+- **Early termination:** A program that runs to completion before the
+  per-frame check sees it load still ends warp mode, through the completion
+  marker the `Startup-Sequence` writes.
+- **Boot timeouts:** If the program has not loaded within 60 emulated seconds (for
+  example, because the OS crashed during initialization), warp mode disengages so the
+  system state can be inspected.
+- **File naming:** Executable names must use printable ASCII characters without quotes (`"`),
+  colons (`:`), or slashes (`/`). Spaces in executable names are supported and quoted automatically.
+- **Manual override:** Pressing the warp toggle shortcut (`Cmd+W` / `Alt+W`) cancels
+  the automatic warp phase and every programmatic warp hold at once, returning
+  to real-time execution.
+- **Programmatic warp:** A control-protocol client (`warp.set {"on": true}`, see
+  [Control Protocol](../debugger/control.md)), a GDB client (`monitor warp on`,
+  see [GDB](../debugger/gdb.md)), and the guest program itself (`warpmode(1)` /
+  `warpmode(0)` through the [uaelib trap](#uaelib-trap) below, e.g. during heavy
+  computation or asset loading) each hold warp independently. All mute live
+  audio while engaged; `warp.set {"on": false}`, `monitor warp off`, or
+  `warpmode(0)` release only that holder, real time returns when the last hold
+  goes, and the shortcut returns to real time regardless.
+- **Physical floppy drives:** With a [physical floppy drive](fluxbridge.md)
+  attached, the machine stays paced to the real drive, so there is no warp.
+- **Headless mode:** Headless capture runs (`--screenshot-after`, `--dump-frames`) run
+  unthrottled anyway and work with `--run`.
+
+## Debugging
+
+When launched with `--gdb`, Copperline halts execution at the entry point of the loaded
+program before the first instruction runs:
+
+```sh
+copperline --run build/hello --gdb :2345
+m68k-amiga-elf-gdb hello.elf -ex "target remote :2345" -ex continue
+```
+
+When halted, the GDB stub reports the base address of the first hunk for symbol loading
+via `add-symbol-file`. The GDB monitor command `monitor segments` lists all hunk addresses;
+`monitor return-to-program` runs out of the Kickstart ROM window after an OS call.
+
+The [control protocol](../debugger/control.md) gets the same break-at-entry: with
+`--run`, `--control` and `--control-gui` arm a one-shot `loadseg` stop for the
+program, and `segments.list` reports its hunk addresses at that stop. Scripts can
+also arm their own `loadseg` breakpoint to catch every load.
+
+For an IDE, the [Debug Adapter Protocol](../debugger/dap.md) server does all of
+this by itself: a VS Code (or nvim-dap) launch configuration naming the program
+starts Copperline, stops at the entry point, and debugs by source line from the
+executable's own debug information.
+
+`--coverage FILE` turns the same load-to-exit window into lcov line and
+function coverage of the program, written when it exits or the run ends; see
+[Guest code coverage](../debugger/profiling.md#guest-coverage).
+
+(uaelib-trap)=
+### WinUAE-compatible `uaelib` trap
+
+WinUAE's boot ROM provides guest programs with a lightweight service interface,
+the "uaelib" trap at `$F0FF60`. Cross-compiler toolchains and templates (such
+as `vscode-amiga-debug`) use this trap for helpers like `warpmode()`, `KPrintF()`,
+and `debug_register_*()`. Copperline implements the same ABI at the same address,
+so code written for that template works unmodified.
+
+Guest code checks the instruction word at `$F0FF60` (`0x4EB9` for a `JSR`, or
+WinUAE's A-line `0xA00E`) and invokes the address as a C function, passing the
+function index as the first stack parameter and receiving the return value in D0:
+
+```c
+long (*UaeConf)(long fn, int index, const char *param, int len, char *out, int outlen)
+    = (long (*)(long, int, const char *, int, char *, int))0xf0ff60;
+if (*(UWORD *)UaeConf == 0x4eb9 || *(UWORD *)UaeConf == 0xa00e) {
+    char out;
+    UaeConf(82, -1, "warp true", 0, &out, 1);   /* warpmode(1) */
+}
+```
+
+| Function | WinUAE meaning | Copperline |
+|---|---|---|
+| 13 | `ExitEmu`: quit the emulator | Ends the session cleanly at the next frame boundary: the window closes, a headless run stops, and the process exits with status 0 (or 3 if a screenshot expectation had failed). No arguments; returns 1. `guest/uaelib-test/exitemu` calls it. |
+| 82 | `uae-configuration`-style `"key value"` line | `warp true` / `warp false` (also `yes` / `no`) toggles warp mode. Parameters like `cpu_speed` and `*_cycle_exact` are accepted as no-ops. Returns 0. |
+| 86 | Debug log string | Printed to the host console as `DBG: <text>` (shared with serial output), streamed to control-protocol `debug` subscribers as `event.debug`, and mirrored into the debugger console. Returns 1. |
+| 88 | `debug_cmd` multiplexer | `debug_register_bitmap` / `_palette` / `_copperlist` and `debug_unregister` register guest assets, viewable in the Frame Analyzer (Resources and Memory tabs), exportable as PNG there or with `debug.resource.export`, searchable via `palette.dump` / `copper.list`, and listed with the console `DBGRES` command; `debug_start_idle` / `debug_stop_idle` report guest idle time in `debug.idle` and `event.frame.guest_idle_cck`. Overlay drawing (`debug_clear` / `debug_rect` / `debug_filled_rect` / `debug_text` on a 768x576 virtual canvas) renders on screen in the window (excluded from captures and recordings). `debug_load` / `debug_save` are disabled by default; see below. |
+| others | version, disks, RTG, ... | Return 0 with no side effects. |
+
+- Enabled by default; set `[emulation] uaelib = false` to leave `$F0FF60` unmapped.
+- Set `[emulation] uaelib_files = true` to let `debug_load(address, name)` and
+  `debug_save(address, size, name)` access the host. Paths are confined below
+  the `--run` program directory: absolute paths, `..`, symlink escapes, invalid
+  UTF-8, unmapped guest-memory ranges, and transfers over 16 MiB are rejected.
+  `debug_load` returns the byte count, or 0 when disabled or rejected. This is
+  an explicit trust decision for the launched guest and has no effect without
+  a `--run` program directory.
+- A CDTV extended ROM occupies `$F00000` and covers this address space.
+- Without the trap, `KPrintF` falls back to Exec `RawPutChar` and emits over the serial port.
+- Guest-initiated warp mutes live audio; `warpmode(0)` releases the guest's hold, and `Cmd+W` / `Alt+W` ends every hold.
+- The return latch is shared: uaelib calls from interrupt handlers between a main-thread doorbell write and result read may overwrite D0.
+
+## Kickstart compatibility
+
+Normal `--run` launches support bare Kickstart 1.3, later ROMs, and bundled
+AROS. The generated boot volume supplies small GPL-licensed 68000 versions of
+`FailAt`, `CD`, `Stack`, `Echo`, and `Done` for the 1.x CLI. Working-directory
+changes, arguments, `--run-stack`, and the completion marker with its return
+code work without Workbench.
+The program itself must also use APIs available on the selected ROM.
+
+`--run-detach` still requires Kickstart 2.0+ or AROS: the bundle does not
+replace the `Run` and `EndCLI` commands used by detached launches. The bundled
+`Execute` handles the generated child script without parameter substitution
+or nested scripts.
+Kickstart 1.2 lacks filesystem autoconfig support and cannot boot the
+host-directory volumes, even though the bundled commands use 1.x APIs.
