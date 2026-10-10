@@ -619,11 +619,11 @@ export class WebEmu {
      * dh, columns, lines]` -- the buffer sub-rect to show (the autocrop
      * envelope, or the whole buffer), where to draw it (the viewport
      * outside it is black), and the whole-number factors of an integer
-     * draw as device pixels per buffer column and per scan line (0, 0
+     * draw as device pixels per native pixel and per scan line (0, 0
      * for a smooth fit). Empty until a frame has been presented.
      *
-     * The buffer's pixel shape is the 4:3 glass's, read off the buffer
-     * itself (the page shows the whole buffer in a 4:3 element): drawn
+     * The buffer's pixel shape is the 4:3 glass's, retained from the
+     * scan aperture when Smart autocrop uses the complete raster: drawn
      * smooth, the whole buffer fills such a viewport exactly as the
      * page's stretch does, and a crop keeps that shape in a letterbox;
      * drawn integer, a standard scan takes a whole number per axis
@@ -830,9 +830,9 @@ export class WebEmu {
      * smoothed across frames exactly as the desktop smooths its crop --
      * instead of the fixed TV aperture, so a 200-line game fills far
      * more of a 16:9 screen, and under integer scaling earns the larger
-     * whole multiple the cropped picture fits. A layout setting alone:
-     * the buffer, screenshots and `present_content_rect` are unchanged,
-     * so the page redraws its held picture rather than re-presenting.
+     * whole multiple the cropped picture fits. Smart framing also rebuilds
+     * the source from the complete raster, before the fixed TV aperture
+     * clips it. Other framing modes change only the layout.
      * @param {boolean} autocrop
      */
     set_autocrop(autocrop) {
@@ -969,7 +969,8 @@ export class WebEmu {
      * "tv" (the default) masks the deep horizontal overscan margins like a
      * CRT bezel and presents standard screens as the captured TV
      * aperture; "full" presents the whole overscan field the renderer
-     * produces. Unknown names are ignored, like `set_port_device`. The
+     * produces; "smart" uses bounded automatic centring and lets autocrop
+     * select from the complete raster. Unknown names are ignored. The
      * last completed frame is re-presented under the new aperture, so a
      * paused page repaints without stepping the machine.
      * @param {string} mode
