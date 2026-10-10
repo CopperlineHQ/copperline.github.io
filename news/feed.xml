@@ -8,6 +8,13 @@
   <atom:link href="https://copperline.dev/news/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
+    <title>Copperline 1.0.0: the first stable release</title>
+    <link>https://copperline.dev/news/copperline-1-0-0.html</link>
+    <guid>https://copperline.dev/news/copperline-1-0-0.html</guid>
+    <pubDate>Sat, 10 Oct 2026 06:47:11 +0000</pubDate>
+    <description>Copperline 1.0 is the first stable release. Since the release candidate it adds Smart framing, native 1:1 screenshots, VHD hard disks, window and monitor options, and a fix for AGA sprites in scan-doubling mode.</description>
+  </item>
+  <item>
     <title>Copperline 1.0.0-rc.1: the first release candidate for 1.0</title>
     <link>https://copperline.dev/news/copperline-1-0-0-rc-1.html</link>
     <guid>https://copperline.dev/news/copperline-1-0-0-rc-1.html</guid>

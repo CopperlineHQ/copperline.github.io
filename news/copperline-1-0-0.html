@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 1.0.0: the first stable release - Copperline News</title>
+<meta name="description" content="Copperline 1.0 is the first stable release. Since the release candidate it adds Smart framing, native 1:1 screenshots, VHD hard disks, window and monitor options, and a fix for AGA sprites in scan-doubling mode.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 1.0.0: the first stable release">
+<meta property="og:description" content="Copperline 1.0 is the first stable release. Since the release candidate it adds Smart framing, native 1:1 screenshots, VHD hard disks, window and monitor options, and a fix for AGA sprites in scan-doubling mode.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-1-0-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section class="section"><article class="post">
+<a class="post__back" href="./">&lt; all news</a>
+<span class="post__date">10 October 2026 &middot; release</span>
+<h1>Copperline 1.0.0: the first stable release</h1>
+<p>Copperline 1.0.0 is out. It is the first stable release, after two weeks of testing the release candidate, and the 23rd release since the source went public on 14 June.</p>
+<p>Testing the candidate turned up a crash on Macs older than macOS 14.2, a corrupted background in Castlevania AGA on the CD32, an A2091 ROM that always put its bounce buffers in Chip RAM, and VHD hard disks that could not be opened. All four are fixed. Thank you to everyone who tried it and reported problems.</p>
+<h2>Copperline 1.0 at a glance</h2>
+<ul>
+<li><strong>Machines:</strong> A1000, A500, A500+, A600, A1200, A3000, A4000, CDTV and CD32, with OCS, ECS and AGA chipsets and 68000 to 68060 CPUs, FPUs and MMUs.</li>
+<li><strong>Accuracy:</strong> the CPU and custom chips run on one colour-clock timeline, with the chip bus shared out cycle by cycle. Timing is checked against a real A1200, A4000 and CD32, and 45 test programs are compared pixel for pixel on every change.</li>
+<li><strong>Ready to run:</strong> the open AROS ROM is bundled, so you can start without a Kickstart. WHDLoad packages and Amiga programs boot directly.</li>
+<li><strong>Media and expansion:</strong> floppy images including IPF and SCP, real drives through a Greaseweazle, IDE and SCSI hard disks, CDs, host folders, RTG graphics cards, Ethernet and built-in MIDI synthesizers.</li>
+<li><strong>Playing:</strong> save states, rewind, run-ahead, CRT shaders and a 1084 monitor front, gamepads, and rollback netplay for up to four players with up to eight spectators.</li>
+<li><strong>Developing:</strong> a debugger beside the live display with reverse stepping, a frame analyzer, GDB, VS Code source debugging, profiling, a control protocol and an MCP server.</li>
+<li><strong>Everywhere:</strong> macOS, Windows and Linux builds, the <a href="../try/">browser version</a> and a RetroArch core.</li>
+</ul>
+<h2>Smart framing</h2>
+<p>The TV overscan setting crops the picture to roughly what a television showed, so software that placed its picture a little off-centre lost part of it. The CD32 boot logo is one example. The new <strong>Smart</strong> framing keeps the TV crop and moves it sideways to follow the display the program sets up: by at most eight lo-res pixels, only once the position has held for 25 frames, and not at all on blank frames.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-0-0/framing-tv-vs-smart.png"><img src="../assets/news/1-0-0/framing-tv-vs-smart.png" width="1448" height="584" alt="The CD32 boot logo with TV framing, where the leading A of AMIGA is cut off, and with Smart framing, where the whole word is visible" loading="lazy"></a>
+<figcaption>TV framing cuts the leading A of the CD32 logo; Smart framing brings it into view.</figcaption>
+</figure>
+<p>With autocrop and integer scaling as well, Smart fits the whole detected display at the largest whole-pixel scale, and odd multiples are now possible: with the status bar hidden, a 320x200 PAL picture fits at 5x on a 1920x1080 screen. <strong>Video Settings &rarr; Framing</strong> switches between TV, Smart and Full overscan while a program runs. TV remains the default, and the browser version has Smart too. See the <a href="../docs/configuration/">display settings</a>.</p>
+<h2>Native screenshots, window placement and the title bar</h2>
+<p><strong>Recording &rarr; Save Native Screenshot (1:1)</strong> saves the Amiga's own pixels, cropped to the display window, before any scaling, aspect correction or shaders: a 320x256 screen saves as 320x256. An option makes the camera button do the same, and <code>--native-screenshots</code> and the control protocol can ask for it.</p>
+<p>New settings choose the monitor the window opens and goes fullscreen on (<code>--monitor</code>, with <code>--list-monitors</code> to see the choices), the window's position (<code>--window-position</code>), its starting size (<code>--window-scale</code>) and whether it opens maximized (<code>--maximized</code>). Each has a <code>[display]</code> key, and the launcher has <strong>Host monitor</strong> and <strong>Window position</strong> rows. The title bar now shows the machine and the boot ROM, and <code>[display] title</code> sets your own format.</p>
+<h2>Hard disks</h2>
+<p>Fixed and dynamic VHD images, the format WinUAE creates, attach read/write on every hard-disk controller. Before, a fixed VHD's footer appeared to the Amiga as an extra sector and a dynamic VHD read as garbage. The bundled A2091 ROM now puts its bounce buffers in Fast RAM the controller can reach rather than always in Chip RAM, overlaps reads with copying, and no longer wraps transfers that run past a SCSI command's block-number limit.</p>
+<h2>AGA sprite scan-doubling</h2>
+<p>With SSCAN2 set, Lisa ignores the top bit of a sprite's horizontal start, so it matches twice on each line, 256 lo-res pixels apart. A sprite appears at each match that comes after its DMA data has arrived. Copperline showed every such sprite once, at the first match. It now models both, using FMODE and the sprite's state at each beam position, which repairs the first-stage background in Castlevania AGA on the CD32.</p>
+<h2>Other changes</h2>
+<ul>
+<li>The About panel has a <strong>Check for updates</strong> button. It asks GitHub for the latest release only when you press it; the <a href="../privacy/">privacy policy</a> describes it.</li>
+<li>Guest programs can print debug messages through WinUAE-style ports at <code>$BFFF00</code> and <code>$BFFF04</code>, and the debugger console keeps messages from before it was opened. See <a href="../docs/run/#winuae-debug-port">memory-mapped debug output</a>.</li>
+<li>The bundled AROS ROM is refreshed from upstream, with about 35 KB more free memory for programs.</li>
+<li>Clicking the status bar's speaker mutes and unmutes, and loading a save state no longer changes your volume.</li>
+<li>The middle mouse button can optionally release a captured mouse.</li>
+</ul>
+<h2>Before upgrading</h2>
+<ul>
+<li><strong>macOS 14.2 or newer is required, and the app now says so.</strong> Copperline has needed it since 0.16.0, but older systems used to crash at launch instead of refusing to open it.</li>
+<li><strong>Every netplay peer needs 1.0.0.</strong></li>
+<li><strong>Recreate RetroArch save states after updating the core.</strong> Desktop save states from 0.20.0, 0.21.0 and 1.0.0-rc.1 still load.</li>
+<li><strong>The window title has changed</strong>, which matters if a window-manager rule matches it.</li>
+<li><strong>Coming from 0.21.0 or earlier?</strong> Also read the <a href="copperline-1-0-0-rc-1.html">release candidate notes</a>: the netplay protocol changed and high-density floppy images are refused.</li>
+</ul>
+<p>Thanks to the patrons who pay for the hardware used to check the emulation, to everyone who reported problems with the release candidate, and to everyone who has contributed code on the way to 1.0.</p>
+<p><a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.0.0">Download Copperline 1.0.0</a> <a class="btn btn--ghost" href="../try/">Try in your browser</a></p>
+<p>Downloads cover macOS, Linux x86-64, Windows x64/ARM64 and three RetroArch platforms. Homebrew users can run <code>brew update</code> followed by <code>brew upgrade copperline</code>. The release includes a PDF manual and checksums. Read the <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.0.0">full release notes</a> or <a href="https://github.com/CopperlineHQ/Copperline/compare/v1.0.0-rc.1...v1.0.0">changelog</a>.</p>
+
+</article></section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

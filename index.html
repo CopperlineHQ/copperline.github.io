@@ -83,8 +83,8 @@
   </section>
 
   <aside class="release-strip" aria-label="Latest release">
-    <p><strong>New in 1.0.0-rc.1</strong> The first release candidate for 1.0: four-player netplay, device-register watches and a CD32 drive trace.</p>
-    <a href="news/copperline-1-0-0-rc-1.html">Read the release notes</a>
+    <p><strong>New in 1.0.0</strong> The first stable release: Smart framing, native 1:1 screenshots, VHD hard disks and window placement options.</p>
+    <a href="news/copperline-1-0-0.html">Read the release notes</a>
   </aside>
 
   <section id="download" class="section">
@@ -103,8 +103,8 @@
           <button class="tab" id="tab-windows" role="tab" aria-selected="false" aria-controls="panel-windows" data-os="windows" tabindex="-1">Windows</button>
         </div>
         <div class="tab-panel install-panel" id="panel-macos" role="tabpanel" aria-labelledby="tab-macos">
-          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-macos-universal.dmg">Download for macOS</a>
-          <p>For Apple Silicon and Intel Macs. Open the DMG and copy <strong>Copperline.app</strong> to Applications.</p>
+          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0/Copperline-1.0.0-macos-universal.dmg">Download for macOS</a>
+          <p>For Apple Silicon and Intel Macs with macOS 14.2 or newer. Open the DMG and copy <strong>Copperline.app</strong> to Applications.</p>
           <p class="install-note">The app is ad-hoc signed rather than notarized, so macOS may block the first launch. Allow it in <strong>System Settings &rarr; Privacy &amp; Security &rarr; Open Anyway</strong>.</p>
           <details class="install-more">
             <summary>Install with Homebrew</summary>
@@ -113,16 +113,16 @@ brew install copperline</code></pre>
           </details>
         </div>
         <div class="tab-panel install-panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux" hidden>
-          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-x86_64.AppImage">Download for Linux</a>
+          <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0/Copperline-1.0.0-x86_64.AppImage">Download for Linux</a>
           <p>AppImage for x86-64. Make it executable, then launch it:</p>
-          <pre><code>chmod +x Copperline-1.0.0-rc.1-x86_64.AppImage
-./Copperline-1.0.0-rc.1-x86_64.AppImage</code></pre>
+          <pre><code>chmod +x Copperline-1.0.0-x86_64.AppImage
+./Copperline-1.0.0-x86_64.AppImage</code></pre>
           <p class="install-note">A Vulkan driver is required. See the <a href="docs/getting-started/">Linux setup guide</a>.</p>
         </div>
         <div class="tab-panel install-panel" id="panel-windows" role="tabpanel" aria-labelledby="tab-windows" hidden>
           <div class="install-actions">
-            <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-win-x64.zip">Download for Windows x64</a>
-            <a href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0-rc.1/Copperline-1.0.0-rc.1-win-arm64.zip">Windows ARM64</a>
+            <a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0/Copperline-1.0.0-win-x64.zip">Download for Windows x64</a>
+            <a href="https://github.com/CopperlineHQ/Copperline/releases/download/v1.0.0/Copperline-1.0.0-win-arm64.zip">Windows ARM64</a>
           </div>
           <p>Extract the whole ZIP, then open <strong>copperline.exe</strong>. Keep the folders beside it: they hold the bundled ROMs and WHDLoad support files.</p>
         </div>
@@ -133,7 +133,7 @@ brew install copperline</code></pre>
         <li><h3>Load your software</h3><p>On the desktop, drag a disk image onto the window or insert one from the status bar. <a href="docs/whdload/">WHDLoad archives</a> can be launched directly.</p></li>
       </ol>
     </div>
-    <p class="upgrade-note"><strong>Upgrading from 0.21?</strong> Every netplay peer needs the same release, RetroArch save states need recreating after updating the core, and high-density floppy images are now refused. <a href="news/copperline-1-0-0-rc-1.html">Read the upgrade notes</a>.</p>
+    <p class="upgrade-note"><strong>Upgrading?</strong> macOS 14.2 or newer is required, every netplay peer needs the same release, and RetroArch save states need recreating after updating the core. <a href="news/copperline-1-0-0.html">Read the upgrade notes</a>.</p>
     <div class="download-links">
       <a href="https://github.com/CopperlineHQ/Copperline/releases/latest">All release downloads</a>
       <a href="docs/libretro/">Install the RetroArch core</a>
@@ -244,7 +244,7 @@ cargo build --release
 
   <hr class="copperline">
   <section id="status" class="section">
-    <div class="section__head"><span class="kicker">// compatibility &middot; 1.0.0-rc.1</span><h2>Compatibility and limitations</h2><p>Games, demos and Workbench run on OCS, ECS and AGA machines, but not everything works yet. Compatibility depends on the software and the configuration, and accuracy improves with each release.</p></div>
+    <div class="section__head"><span class="kicker">// compatibility &middot; 1.0.0</span><h2>Compatibility and limitations</h2><p>Games, demos and Workbench run on OCS, ECS and AGA machines, but not everything works yet. Compatibility depends on the software and the configuration, and accuracy improves with each release.</p></div>
     <dl class="compatibility">
       <div><dt>ROMs and software</dt><dd>AROS is included, so you can start straight away. Some games and Workbench installations need an original Kickstart ROM. <a href="docs/getting-started/">ROM and setup guide</a>.</dd></div>
       <div><dt>Netplay</dt><dd>Two to four desktops, or two browsers, running the same Copperline build can play together, with up to eight spectators of the same kind. Players three and four need the four-player adapter. A desktop cannot connect to a browser, and mixing operating systems or browser engines has not been verified yet. <a href="docs/netplay/">Netplay requirements</a>.</dd></div>
