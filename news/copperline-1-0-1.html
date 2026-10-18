@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 1.0.1: the first maintenance release - Copperline News</title>
+<meta name="description" content="Copperline 1.0.1 is the first maintenance release for 1.0. It fixes an AGA bitplane fetch error, a blitter race on fast CPUs, A3000 and A4000 warm reboots, the 68060 FPU at reset, the copperhf hard-disk driver and a Windows resize hang, and menu settings are now remembered.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 1.0.1: the first maintenance release">
+<meta property="og:description" content="Copperline 1.0.1 is the first maintenance release for 1.0. It fixes an AGA bitplane fetch error, a blitter race on fast CPUs, A3000 and A4000 warm reboots, the 68060 FPU at reset, the copperhf hard-disk driver and a Windows resize hang, and menu settings are now remembered.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-1-0-1.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section class="section"><article class="post">
+<a class="post__back" href="./">&lt; all news</a>
+<span class="post__date">18 October 2026 &middot; release</span>
+<h1>Copperline 1.0.1: the first maintenance release</h1>
+<p>Copperline 1.0.1 is out, eight days after 1.0.0. It is the first release from the new 1.x maintenance branch: fixes for 1.0 now ship as 1.0.x releases, while larger changes wait for the next major version.</p>
+<p>Most of it fixes problems reported against 1.0.0 on Discord and GitHub. Thank you to everyone who tried it and reported them.</p>
+<h2>AGA bitplane fetch stop</h2>
+<p>AGA's Alice keeps the hardwired <code>$D8</code> bitplane fetch stop, as ECS Agnus does, and lifts it only while BEAMCON0 selects HARDDIS or VARBEAMEN, or BPLCON0 selects super-hires or ultra-hires. Copperline treated every AGA machine as if HARDDIS were set, so a program that sets DDFSTOP past <code>$D8</code> fetched an extra word on every line, and each line started one word further along than the last. Pacmania under WHDLoad on an A1200 is one example. A new test program checks the stop and each control that lifts it.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-0-1/pacmania-a1200-1.0.0-vs-1.0.1.png"><img src="../assets/news/1-0-1/pacmania-a1200-1.0.0-vs-1.0.1.png" width="1444" height="540" alt="Pacmania's attract mode on an A1200: in Copperline 1.0.0 the picture is smeared into horizontal stripes, and in 1.0.1 the maze is drawn correctly" loading="lazy"></a>
+<figcaption>Pacmania on an A1200 after 60 seconds, in 1.0.0 (left) and 1.0.1 (right).</figcaption>
+</figure>
+<h2>Blitter, warm reboots and the 68060</h2>
+<ul>
+<li><strong>Blitter on 68020 and faster CPUs.</strong> BBUSY drops two colour clocks before the blitter writes its final word. A fast CPU could write BLTCON0 for the next blit inside that gap and cancel the write, and the end-of-blit write-back could overwrite registers already set for the next blit. Both are fixed, which restores bitplanes missing from small <code>graphics.library</code> copies on an A4000. A 68000 is too slow to reach the gap.</li>
+<li><strong>Warm reboots on the A3000 and A4000.</strong> Fat Gary's COLDBOOT flag is set at power-on only. Copperline set it again on every reset, so Kickstart treated each warm reboot as a cold start: the Kickstart 3.2 boot menu's device choice was ignored, and <code>RAD:</code> and resident modules were lost.</li>
+<li><strong>68060 FPU.</strong> Kickstart builds a 68881/68882/68040-style empty FPU frame into each new task, which an enabled 68060 FPU reads at a different size, so AmigaVision's SetPatch crashed and Kickstart 3.1 showed a black screen. Like real 68060 boards, Copperline now disables the FPU at every reset and leaves <code>68060.library</code> to enable it. LC060 and EC060 configurations now really have no FPU.</li>
+</ul>
+<h2>Hard disks, input and Windows</h2>
+<ul>
+<li>Three fixes to the bundled <code>copperhf.device</code>: HDToolBox 3.1 finds its drives, HDToolBox 3.2 no longer crashes the machine under the JIT, and a partition with a four-character name mounts from 32-bit motherboard RAM.</li>
+<li>A fast high-resolution mouse no longer moves the pointer backwards when the Amiga's 8-bit mouse counters would wrap.</li>
+<li>Holding a key or mouse button in warp mode runs at normal speed, so keys no longer repeat and double-clicks work.</li>
+<li>Resizing the window no longer hangs Copperline on Windows.</li>
+<li>Dropping a zipped ADF onto the window inserts it as a floppy instead of trying to start it with WHDLoad.</li>
+</ul>
+<h2>Settings and screenshots</h2>
+<p>Settings changed from the menu, a hotkey or the status bar are now saved to your default configuration, which is created if you do not have one, so they are still set at the next launch. Sessions started from your own configuration file or with <code>--factory</code> leave their files alone. The launcher no longer drops settings it has no rows for when it saves. See <a href="../docs/ui/#settings-the-menu-remembers">settings the menu remembers</a>.</p>
+<p>The camera button and <code>Cmd+S</code> / <code>Alt+S</code> now save the picture as it is displayed, with the current scaling, shader, bezel and tint. Native 1:1 screenshots moved to <code>Cmd+Option+S</code> / <code>Ctrl+Alt+S</code>, and interlaced screens now save at full height. See <a href="../docs/ui/#saving-screenshots">saving screenshots</a>.</p>
+<h2>Other changes</h2>
+<ul>
+<li><code>[display] track_display = "cylinder"</code> makes the status bar's drive counter show cylinder and side, so track 81 reads <code>40.1</code>.</li>
+<li><code>[audio] floppy_sounds_set</code> plays a WinUAE or FS-UAE floppy sound sample set instead of the synthesized drive sounds. No sets are included.</li>
+<li>The A2065 Ethernet board honours its station address, multicast filter and promiscuous mode, and VS Code source debugging works with programs built by AmigaPorts amiga-gcc. Thanks to Tinic Uro for both.</li>
+<li>WHDLoad 20.1 is accepted: its new download had stopped 1.0.0's game library installing WHDLoad support.</li>
+<li>Security updates to <code>ruzstd</code>, <code>rustls</code> and <code>wasmtime</code>, and the <code>m68k</code> CPU core is updated to 0.14.6.</li>
+</ul>
+<h2>Before upgrading</h2>
+<ul>
+<li><strong>Every netplay peer needs 1.0.1.</strong></li>
+<li><strong>Recreate RetroArch save states after updating the core.</strong> Desktop save states still load.</li>
+<li><strong>Menu settings are now saved</strong> to your default configuration, as described above.</li>
+<li><strong>With a 68060, install <code>68060.library</code></strong> as on a real board, or the system runs without an FPU.</li>
+<li><strong>Scripts using <code>--mouse-to-after</code> or <code>--pen-after</code></strong> now aim at <code>--screenshot-after</code> pixels, as documented. 1.0.0 used different coordinates.</li>
+</ul>
+<p>Thanks to the patrons who pay for the hardware used to check the emulation, to Tinic Uro for code, and to everyone who reported problems with 1.0.0.</p>
+<p><a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.0.1">Download Copperline 1.0.1</a> <a class="btn btn--ghost" href="../try/">Try in your browser</a></p>
+<p>Downloads cover macOS, Linux x86-64, Windows x64/ARM64 and three RetroArch platforms. Homebrew users can run <code>brew update</code> followed by <code>brew upgrade copperline</code>. The release includes a PDF manual and checksums. Read the <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.0.1">full release notes</a> or <a href="https://github.com/CopperlineHQ/Copperline/compare/v1.0.0...v1.0.1">changelog</a>.</p>
+
+</article></section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
