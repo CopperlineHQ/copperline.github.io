@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 1.1.0: period hard drives, EC CPUs and a faster JIT - Copperline News</title>
+<meta name="description" content="Copperline 1.1.0 is the first feature release of the 1.x series: period hard-drive timing, the 68EC030, 68EC040 and 68EC060, a faster JIT with a new fastest speed, and A500 CIA and interrupt timing corrected against a real A500.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 1.1.0: period hard drives, EC CPUs and a faster JIT">
+<meta property="og:description" content="Copperline 1.1.0 is the first feature release of the 1.x series: period hard-drive timing, the 68EC030, 68EC040 and 68EC060, a faster JIT with a new fastest speed, and A500 CIA and interrupt timing corrected against a real A500.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-1-1-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section class="section"><article class="post">
+<a class="post__back" href="./">&lt; all news</a>
+<span class="post__date">31 October 2026 &middot; release</span>
+<h1>Copperline 1.1.0: period hard drives, EC CPUs and a faster JIT</h1>
+<p>Copperline 1.1.0 is the first feature release of the 1.x series. Since 1.0, new features have collected on the development branch while fixes shipped as 1.0.x releases. Everything that built up there works with existing configurations and save states, so it ships now as 1.1 and brings every 1.x fix since 1.0.1 with it.</p>
+<h2>Period hard-drive timing</h2>
+<p>Until now every hard-disk transfer finished within the access that started it. <code>timing = "period"</code> on <code>[ide]</code>, <code>[scsi]</code> or <code>[lide]</code>, or <strong>Hard drive timing</strong> on the configuration screen's Emulation page, times each drive like the one its machine shipped with: a Conner CP2064 in the A1200, a Seagate ST3144A in the A4000, a Quantum LPS 52S in the A3000, and so on. Copperline models the seek curve, rotational latency, zoned media rates, read-ahead, write caching, spin-up, standby and head parking, and each controller reports "not ready" the way its hardware does. There are 22 built-in drives from the manufacturers' manuals, <code>[[drive_profile]]</code> tables add your own, and the default stays <code>instant</code>. See <a href="../docs/configuration/#drive-timing">drive timing</a>.</p>
+<h2>68EC030, 68EC040 and 68EC060</h2>
+<p>The three MMU-less EC parts can be chosen as the CPU. Each answers the MMU instructions as its silicon does, the 68EC040 and 68EC060 have no FPU, and <code>copperline-import-uae</code> imports them from WinUAE, Amiberry and FS-UAE configurations, with three older CPU-mapping bugs fixed.</p>
+<h2>A faster JIT</h2>
+<ul>
+<li><strong>A "fastest" CPU speed.</strong> <code>[cpu] speed = "fastest"</code> lets the JIT's clock rise while the host has time to spare, keeping the chipset in real time, like WinUAE's "Fastest possible". It is not reproducible; the default, <code>fixed</code>, is unchanged.</li>
+<li><strong>Fast RAM and ROM code.</strong> The JIT's direct memory window now works with the cache models on, follows the bank the code runs from and covers every RAM and ROM region, and code there runs in batches up to the next hardware event.</li>
+<li><strong>Heavy disk I/O.</strong> <code>copperhf.device</code> and the SCSI disk commands move each request in one host read or write. One Kickstart 3.2 test went from 154 seconds to 20 for 40 emulated seconds of large reads.</li>
+</ul>
+<p>Thanks to dlundqvist for the report and for testing each change.</p>
+<h2>A500 timing from real hardware</h2>
+<p>Seppo Tomperi measured a PAL A500 with test ROMs on OneROM and a logic analyzer, and corrected CIA timer start, reload and readback, the serial port and port B timer outputs, interrupt latching, how the CPU samples interrupts and counts clocks in STOP, when CPU writes to chip RAM land against DMA, and playfield collisions. New test programs check each one on every build.</p>
+<h2>Setup, display and input</h2>
+<ul>
+<li>A <code>copperline.toml</code> beside the executable boots straight into its machine, so an installation can carry its own default.</li>
+<li>Relative ROM, disk and CD paths not in the working directory are looked for in the <code>[paths]</code> media folders.</li>
+<li>The launcher's Save dialog has a <strong>Save</strong> button for the file you last loaded or saved, and file dialogs remember their folders.</li>
+<li>RTG screens scale to whole multiples of the display, and menus and overlays draw over them without dropping the resolution.</li>
+<li>The captured mouse moves the pointer the same distance at any window size, and keys replayed when the window gains the focus no longer stick on X11 and Windows.</li>
+<li>Windows now has per-user installers for x64 and ARM64, alongside the portable ZIPs.</li>
+</ul>
+<h2>Fixes and other changes</h2>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-1-0/skeleton-krew-1.0.1-vs-1.1.0.png"><img src="../assets/news/1-1-0/skeleton-krew-1.0.1-vs-1.1.0.png" width="1444" height="540" alt="Skeleton Krew on the CD32 while scrolling: in Copperline 1.0.1 the scenery has jumped left and leaves a black band at the right edge, and in 1.1.0 it scrolls correctly" loading="lazy"></a>
+<figcaption>Skeleton Krew on the CD32 while scrolling, in 1.0.1 (left) and 1.1.0 (right).</figcaption>
+</figure>
+<ul>
+<li>Skeleton Krew's scenery no longer jumps while scrolling on the CD32: on ECS and AGA a DDFSTRT below <code>$18</code> only arms the fetch, which starts at <code>$18</code>. Thanks to Nicolas Ramz for the report.</li>
+<li>HOSTFS volumes and the shared clipboard are no longer offered as boot devices on Kickstart 3.x.</li>
+<li>Old-format Nero <code>.nrg</code> CD images mount.</li>
+<li>The A2065's LANCE decodes its RAM by address line 15 and applies the CSR3 byte-swap bit, as on a real A3000. Thanks to Tinic Uro.</li>
+<li><code>--eject-disk-after</code> ejects a floppy on schedule in headless runs (thanks to Nicolas Ramz), and the control protocol's <code>disk.fault.*</code> methods inject deterministic drive faults (thanks to Simon Dick).</li>
+<li>The bundled AROS ROM is refreshed, the <code>m68k</code> CPU core moves to 0.15.0, and <code>wasmtime</code>, <code>rustls-webpki</code>, <code>ctutils</code> and <code>zstd</code> take security updates.</li>
+</ul>
+<h2>Before upgrading</h2>
+<ul>
+<li><strong>Every netplay peer needs 1.1.0.</strong></li>
+<li><strong>Recreate RetroArch save states after updating the core.</strong> Desktop save states from 1.0.x still load, though they continue under the corrected timing; 1.1.0 states do not load in 1.0.x.</li>
+<li><strong>Emulated timing has moved a little on every machine,</strong> so headless scripts tuned to an exact frame may need new timestamps.</li>
+<li><strong>A <code>copperline.toml</code> beside the executable</strong> now takes over from the saved default. <code>--factory</code> skips it.</li>
+<li><strong>1.0.x refuses configuration files</strong> that use the new settings.</li>
+</ul>
+<p>Thanks to the patrons who pay for the hardware used to check the emulation, to Seppo Tomperi, Simon Dick, Nicolas Ramz and Tinic Uro for code, and to dlundqvist and everyone who reported problems.</p>
+<p><a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.1.0">Download Copperline 1.1.0</a> <a class="btn btn--ghost" href="../try/">Try in your browser</a></p>
+<p>Downloads cover macOS, Linux x86-64, Windows x64/ARM64 installers and ZIPs, and three RetroArch platforms. Homebrew users can run <code>brew update</code> followed by <code>brew upgrade copperline</code>. The release includes a PDF manual and checksums. Read the <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.1.0">full release notes</a> or <a href="https://github.com/CopperlineHQ/Copperline/compare/v1.0.1...v1.1.0">changelog</a>.</p>
+
+</article></section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
