@@ -109,7 +109,9 @@
           <details class="install-more">
             <summary>Install with Homebrew</summary>
             <pre><code>brew tap CopperlineHQ/copperline https://github.com/CopperlineHQ/Copperline
+brew trust copperlinehq/copperline
 brew install copperline</code></pre>
+            <p>Homebrew 7 and later load formulae only from taps you have trusted; on an older Homebrew, leave out the <code>brew trust</code> line.</p>
           </details>
         </div>
         <div class="tab-panel install-panel" id="panel-linux" role="tabpanel" aria-labelledby="tab-linux" hidden>
