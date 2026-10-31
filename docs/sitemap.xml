@@ -98,6 +98,9 @@
     <loc>http://localhost:3000/control</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/disk-fault</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/workflows</loc>
   </url>
   <url>
@@ -117,6 +120,9 @@
   </url>
   <url>
     <loc>http://localhost:3000/cpu</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/jit-performance</loc>
   </url>
   <url>
     <loc>http://localhost:3000/peripherals</loc>
