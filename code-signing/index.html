@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Signing Policy - Copperline</title>
+<meta name="description" content="Which Copperline downloads are code-signed, how a release is signed, and who approves it.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Copperline Code Signing Policy">
+<meta property="og:description" content="Which Copperline downloads are code-signed, how a release is signed, and who approves it.">
+<meta property="og:url" content="https://copperline.dev/code-signing/">
+<meta property="og:image" content="https://copperline.dev/assets/shot-aga.png">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section">
+    <article class="post">
+      <span class="post__date">Last updated 2 November 2026</span>
+      <h1>Code signing policy</h1>
+
+      <p>Copperline's Windows downloads are code-signed. Free code signing
+         provided by <a href="https://about.signpath.io/" target="_blank" rel="noopener">SignPath.io</a>,
+         certificate by <a href="https://signpath.org/" target="_blank" rel="noopener">SignPath Foundation</a>.
+         Windows therefore names <strong>SignPath Foundation</strong> as the
+         publisher of the installer and of the programs it installs.</p>
+
+      <h2>What is signed</h2>
+
+      <p>For both x64 and ARM64, each release signs:</p>
+
+      <ul>
+        <li>the installer, <code>Copperline-X.Y.Z-win-x64-setup.exe</code> or
+            <code>Copperline-X.Y.Z-win-arm64-setup.exe</code>;</li>
+        <li>the three programs in the installer and in the portable ZIP:
+            <code>copperline.exe</code>, <code>copperline-ctl.exe</code> and
+            <code>copperline-import-uae.exe</code>.</li>
+      </ul>
+
+      <p>Only programs built from Copperline's own source are signed. The
+         other files in the downloads, such as Amiga ROM images, WHDLoad
+         support archives and documentation, are not Windows programs and are
+         not signed; those from other projects are shipped unmodified, each
+         with its licence beside it. The uninstaller that Inno Setup writes
+         into the install folder is not signed either.</p>
+
+      <h2>How a release is signed</h2>
+
+      <p>Signed files are built by
+         <a href="https://github.com/CopperlineHQ/Copperline/blob/v1/.github/workflows/windows.yml" target="_blank" rel="noopener">GitHub Actions</a>
+         on GitHub-hosted runners, from the public
+         <a href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener">CopperlineHQ/Copperline</a>
+         repository. The build scripts and SignPath configuration are part of
+         that repository and are reviewed like any other code. SignPath checks
+         that each file it signs came from that build, and signs a release only
+         after an approver has approved it by hand.</p>
+
+      <h2>Team roles</h2>
+
+      <ul>
+        <li><strong>Committers and reviewers:</strong>
+            <a href="https://github.com/LinuxJedi" target="_blank" rel="noopener">Andrew Hutchings</a>.
+            Contributions from anyone else arrive as pull requests and are
+            reviewed before they are merged.</li>
+        <li><strong>Approvers:</strong>
+            <a href="https://github.com/LinuxJedi" target="_blank" rel="noopener">Andrew Hutchings</a>.</li>
+      </ul>
+
+      <h2>Privacy</h2>
+
+      <p>This program will not transfer any information to other networked
+         systems unless specifically requested by the user or the person
+         installing or operating it. The
+         <a href="../privacy/">privacy policy</a> lists every feature that can
+         reach the network, each of which you have to ask for.</p>
+
+      <h2>Checking a signature</h2>
+
+      <p>Right-click a downloaded file in Explorer, choose
+         <strong>Properties</strong>, and open the <strong>Digital
+         Signatures</strong> tab. The signer is SignPath Foundation. In
+         PowerShell, <code>Get-AuthenticodeSignature</code> reports the same.</p>
+
+      <p>If you find a file signed with Copperline's certificate that did not
+         come from a Copperline release, or have any other concern about a
+         signed file, please report it on the
+         <a href="https://github.com/CopperlineHQ/Copperline/issues" target="_blank" rel="noopener">issue tracker</a>,
+         or privately through
+         <a href="https://github.com/CopperlineHQ/Copperline/security" target="_blank" rel="noopener">GitHub's vulnerability reporting</a>.</p>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="../code-signing/" aria-current="page">Code signing policy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
