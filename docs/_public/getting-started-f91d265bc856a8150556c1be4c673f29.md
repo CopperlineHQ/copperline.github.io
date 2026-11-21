@@ -1,0 +1,398 @@
+# Getting started
+
+Copperline can be run as a native desktop application or in the browser
+at [copperline.dev/try](https://copperline.dev/try/). This chapter covers
+system requirements, installation, building from source, and initial setup.
+
+## System requirements
+
+- **Rust (source builds only):** 1.95 or newer; CI uses the stable toolchain.
+- **Supported operating systems:** macOS 14.2 (Sonoma) or newer, Linux, and
+  Windows. The macOS floor applies to source builds as well as the pre-built
+  application: the audio backend uses Core Audio APIs introduced in 14.2.
+- **Graphics backend:** Metal on macOS, Direct3D 12 or Vulkan on Windows, and
+  Vulkan on Linux (see [](#vulkan-is-required-on-linux)).
+- **Linux build dependencies:** `sudo dnf install alsa-lib-devel systemd-devel gcc`
+  on Fedora, or `sudo apt install libasound2-dev libudev-dev pkg-config gcc` on
+  Debian/Ubuntu.
+- **Windows ARM64 source builds:** LLVM `clang` on `PATH` for Internet netplay's
+  crypto backend (or disable `netplay-internet`).
+- **Boot ROM:** Copperline includes the open-source [AROS](http://www.aros.org/)
+  Kickstart replacement and boots it by default. It also runs real Kickstart
+  ROMs (1.x through 3.2, plus the CDTV and CD32 extended ROMs) and
+  [DiagROM](https://www.diagrom.com/). Use a single-file 512 KiB image or
+  a 256 KiB Kickstart 1.x image; Copperline mirrors the latter across its
+  512 KiB ROM window. See [ROM formats](configuration.md#top-level).
+
+## Installing on macOS (Homebrew)
+
+The repository doubles as a Homebrew tap:
+
+```sh
+brew tap copperlinehq/copperline https://github.com/CopperlineHQ/Copperline
+brew trust copperlinehq/copperline
+brew install copperline
+```
+
+Homebrew 7 and later load formulae only from taps you have trusted, which is
+what `brew trust` records; on an older Homebrew, leave that line out.
+
+To build directly from the latest development commit:
+
+```sh
+brew install --HEAD copperline
+```
+
+Pre-built macOS application bundles (`Copperline-X.Y.Z-macos-universal.dmg`) are
+also available on the [releases page](https://github.com/CopperlineHQ/Copperline/releases).
+Mount the disk image and copy `Copperline.app` to `/Applications`. If macOS
+quarantine blocks the first launch, right-click the app and choose **Open**, or run:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Copperline.app
+```
+
+## Installing on Linux
+
+### AppImage
+
+Standalone AppImage binaries are provided on the
+[releases page](https://github.com/CopperlineHQ/Copperline/releases):
+
+```sh
+chmod +x Copperline-*.AppImage
+./Copperline-*.AppImage
+```
+
+(vulkan-is-required-on-linux)=
+### Vulkan is required on Linux
+
+On Linux, presentation uses the Vulkan backend via `wgpu`. If no Vulkan adapter
+is found, the application exits at launch.
+
+Modern GPUs generally provide hardware Vulkan support through Mesa drivers.
+For virtual machines or older hardware, install the software Vulkan driver (lavapipe):
+
+- **Arch Linux:** `sudo pacman -S vulkan-swrast`
+- **Debian / Ubuntu:** `sudo apt install mesa-vulkan-drivers`
+- **Fedora:** `sudo dnf install mesa-vulkan-drivers`
+
+## Installing on Windows
+
+Download `Copperline-X.Y.Z-win-x64-setup.exe` or
+`Copperline-X.Y.Z-win-arm64-setup.exe`
+from the [releases page](https://github.com/CopperlineHQ/Copperline/releases),
+matching your Windows architecture. The installer first asks who Copperline
+is for:
+
+- **Install for me only** (recommended) needs no administrator rights and
+  puts Copperline, its command-line tools and bundled ROMs in
+  `%LOCALAPPDATA%\Programs\Copperline`.
+- **Install for all users** asks for administrator rights and installs into
+  `C:\Program Files\Copperline`, with shortcuts for every account on the PC.
+
+Either way it creates a Start menu shortcut and offers an optional desktop
+shortcut. Start Copperline from either shortcut. Each user's settings and
+saves stay in their own Documents folder, whichever you choose. For an
+unattended install, pass `/CURRENTUSER` or `/ALLUSERS` to the setup program
+to answer the question in advance.
+
+Run a newer installer to update the same installation; it remembers the
+earlier choice and does not ask again. To switch between a per-user and an
+all-users installation, uninstall the existing one first. Remove it through
+**Settings -> Apps** (**Installed apps** on Windows 11, **Apps & features**
+on Windows 10); uninstalling removes the shipped program files and shortcuts
+while preserving your settings, saves and any media you added. By default,
+user data is in
+`%USERPROFILE%\Documents\Copperline`; see [portable data](ui.md#where-files-go).
+
+Windows releases are to be code-signed with **SignPath Foundation** as their
+publisher: free code signing provided by
+[SignPath.io](https://signpath.io/), certificate by
+[SignPath Foundation](https://signpath.org/). See the
+[code signing policy](https://copperline.dev/code-signing/). Until that
+certificate is issued, the installer and executables are unsigned, and
+SmartScreen shows **Windows protected your PC** when Setup or
+`copperline.exe` first runs; choose **More info**, then **Run anyway**. Once
+releases are signed, SmartScreen still weighs how widely a download has been
+seen, so shortly after a release it may show the same warning with SignPath
+Foundation named as the publisher.
+
+For a portable installation, download `Copperline-X.Y.Z-win-x64.zip` or
+`Copperline-X.Y.Z-win-arm64.zip`. Extract the whole archive and run
+`copperline.exe`; keep the bundled ROMs and other assets alongside it. Neither
+package requires the Visual C++ Redistributable.
+
+### The console window
+
+`copperline.exe` is a console program. Run from a command prompt, it behaves
+like any other command-line tool: the shell waits for it, and `--help`, the
+log and the output of every [headless flag](headless.md) go to that terminal.
+
+Started from Explorer or the Start menu, it has no prompt to write to, so
+Copperline closes the console window Windows opens for it and leaves only the
+emulator window. The console may still flash briefly, because Windows shows it
+before Copperline starts running.
+
+(command-line-tools)=
+## Command-line tools
+
+Every package also carries two companion programs: `copperline-ctl`, the
+[control protocol](../debugger/control.md) client whose `--mcp` and `--dap`
+modes serve coding agents and the [VS Code extension](../debugger/vscode.md),
+and `copperline-import-uae`, the [WinUAE/Amiberry/FS-UAE config
+converter](import-uae.md). Where they land depends on the package:
+
+| Package | Location |
+|---|---|
+| Homebrew | On PATH, next to `copperline`. |
+| macOS dmg | Inside the bundle, `Copperline.app/Contents/MacOS/`. Add that directory to PATH or name the files in the VS Code settings. |
+| Windows installer or ZIP | Next to `copperline.exe`: `%LOCALAPPDATA%\Programs\Copperline` for a per-user install, `C:\Program Files\Copperline` for an all-users install, or the extracted ZIP folder. Add that folder to PATH or name the `.exe` files in the VS Code settings. |
+| AppImage | The separate `Copperline-X.Y.Z-<arch>-tools.tar.gz` release asset. Unpack it anywhere; set `COPPERLINE_BIN` to the AppImage path so `copperline-ctl` can launch the emulator. |
+
+`copperline-ctl` launches the `copperline` beside it when one is there; the
+[DAP chapter](../debugger/dap.md) lists the full lookup order. Source and
+Homebrew builds also install `flyerclip` and `flyer-convert` (for
+`[video_slot]` Video Flyer clips) and `copperline-net-helper` (for bridged
+networking on Linux).
+
+## Building from source
+
+```sh
+cargo build --release
+```
+
+```{warning}
+Use the binary in `target/release/` for emulation. `--release` is a Cargo
+build option, not a Copperline command-line flag. Unoptimized debug builds
+are too slow for real-time emulation.
+```
+
+(cargo-features)=
+### Cargo features
+
+A default build includes everything below except the last three features.
+To leave something out, build with `--no-default-features` and list the
+features to keep; the [FluxBridge](fluxbridge.md), [MT-32](mt32.md), and
+[Coppersynth](coppersynth.md) chapters show complete examples.
+
+| Feature | Default | What it adds |
+|---|---|---|
+| `frontend` | yes | The desktop window, launcher, inspectors, host audio, gamepads, and file dialogs. The `copperline` binary requires it. |
+| `midi` | yes | Host MIDI for `[serial] mode = "midi"` (CoreMIDI, the ALSA sequencer, or WinMM). |
+| `mt32` | yes | The built-in [MT-32](mt32.md). |
+| `coppersynth` | yes | The built-in [Coppersynth](coppersynth.md) General MIDI synthesizer. |
+| `host-serial` | yes | A real host serial port on Paula's UART (`[serial] mode = "device"`). |
+| `fluxbridge` | yes | [Physical floppy drives](fluxbridge.md) through a Greaseweazle. |
+| `net-nat` | yes | User-mode NAT networking for the emulated network boards. |
+| `net-bridge` | yes | Bridged networking to a host Ethernet adapter, and the `copperline-net-helper` binary. |
+| `netplay-internet` | yes | Internet [netplay](netplay.md) with NAT traversal and relay fallback. |
+| `wasm-boards` | yes | WebAssembly [Zorro board plugins](../zorro.md). |
+| `cpu-jit` | yes | Native code generation for `[cpu] jit`. |
+| `control` | yes | The [control protocol](../debugger/control.md) server (`--control`, `--control-gui`). |
+| `ctl-bin` | yes | The `copperline-ctl` binary (with its MCP and DAP modes) and the `flyerclip` Video Flyer clip tool. |
+| `converter-bin` | yes | The standalone `flyer-convert` Video Flyer clip converter window. |
+| `gdb` | yes | The [GDB remote stub](../debugger/gdb.md). |
+| `dap` | yes | The [Debug Adapter Protocol](../debugger/dap.md) adapter and the guest debug-information reader. |
+| `import-uae-bin` | yes | The [`copperline-import-uae`](import-uae.md) converter. |
+| `game-library` | yes | The launcher's [WHDLoad](whdload.md) Library page and its OpenRetro sync. |
+| `update-check` | yes | The About panel's [Check for updates](ui.md#and-last) button, which asks GitHub for the latest release only when pressed. |
+| `mhi` | yes | The MHI MPEG audio decoder board. |
+| `cd-mp3` | yes | MP3 audio tracks in CD cue sheets. |
+| `cd32-fmv` | yes | The CD32 Full Motion Video module. |
+| `profile-stats` | yes | Detailed host-cost counters for native diagnostics. |
+| `bench-bin` | no | The headless `copperline-bench` benchmark binary (see [](browser.md)). |
+| `display-plan-trace` | no | Display-plan tracing (`COPPERLINE_TRACE_DISPLAY_PLAN`) in release builds; debug and test builds always have it. |
+| `internal-diagnostics` | no | Environment overrides that deliberately change timing or rendering (`COPPERLINE_NO_BUS_ARB` and similar), for local investigation only. |
+
+### Tests
+
+To run the test suite:
+
+```sh
+cargo test                          # Unit tests (no external assets required)
+cargo test --release -- --ignored   # Integration tests (requires local test media)
+```
+
+The ignored integration tests in `tests/` need Kickstart ROMs and disk images
+that are not part of the repository. They look for them in the directory
+named by `COPPERLINE_TEST_ASSETS`, then in `test-assets/` at the repository
+root. Selected `image_regression` tests fail when their assets are absent;
+some older asset-backed suites still pass without running, so check their
+missing-asset diagnostics.
+[`tests/README.md`](https://github.com/CopperlineHQ/Copperline/blob/main/tests/README.md)
+lists what each test needs.
+
+For the optimized native CI suite, including the deterministic golden renders,
+use `cargo test --profile ci --locked`. The `ci` profile inherits release
+settings but disables LTO and uses parallel code generation to compile test
+executables faster. Its binaries are in `target/ci/`; normal builds and
+performance benchmarks continue to use `--release`. Add `--timings` to write
+a build report to `target/cargo-timings/cargo-timing.html`.
+
+The golden renders live in `timing-test/golden/`. A hardware-model change
+that alters them on purpose is re-blessed with
+`COPPERLINE_BLESS_GOLDEN=ddfprobe cargo test --release --test probe_golden golden_ddfprobe -- --exact`
+(replace both names for the probe being updated). Only that reference is
+replaced; review the render difference as part of the change. Debug builds
+report slow optimized-only suites as ignored.
+
+## First boot
+
+Run Copperline from the terminal:
+
+```sh
+./target/release/copperline
+```
+
+An installed build is run as `copperline`; the `./target/release/` prefix
+used in this guide applies to a build from source.
+
+When started with no arguments and no `copperline.toml` in the current directory
+or beside the Copperline executable, Copperline displays the interactive
+launcher screen where you can configure machine models, memory, storage, and
+peripherals. Any machine, media, or headless option skips the launcher;
+`--factory` on its own does not.
+
+With no saved default, the launcher starts with an Amiga 500 (Rev 6A): ECS
+8372A Agnus, OCS 8362 Denise, 512 KiB chip RAM, 512 KiB slow RAM, and the
+bundled AROS Kickstart replacement. **Save default** writes your settings to
+`default.toml` in the configurations folder (see
+[Where files go](ui.md#where-files-go)) and every later run that names no
+configuration loads it. If that saved default has **Run on startup** set
+(`[emulation] auto_launch`), the launcher starts the machine straight away.
+`--factory` ignores the saved default and a `copperline.toml` beside the
+executable, and also leaves Coppersynth's and the modem's stored settings
+untouched; an explicit `--config` or a local `copperline.toml` still takes
+precedence.
+
+A machine booted on the bundled AROS ROM with no disk inserted shows the
+AROS logo on a black screen with the message "Waiting for bootable media"
+above a row of boot-media icons.
+
+A `copperline.toml` beside the Copperline executable (on macOS, beside
+`Copperline.app`) boots straight into its machine, running, from any working
+directory, so an installation can carry its own default machine (see
+[](configuration.md)).
+
+To boot directly into a specific Kickstart ROM or configuration file:
+
+```sh
+./target/release/copperline path/to/kickstart.rom
+./target/release/copperline --config path/to/copperline.toml
+```
+
+You can also specify machine parameters via command-line flags:
+
+```sh
+./target/release/copperline --model A1200 --fast 8M KICK31.ROM
+```
+
+See [](configuration#command-line-overrides) for the full list of CLI flags.
+
+```{figure} ../images/kick13-insert-disk.png
+:alt: Kickstart 1.3 insert-disk screen
+:width: 75%
+
+Kickstart 1.3 waiting for a boot floppy.
+```
+
+To mount a floppy disk image on boot:
+
+```toml
+rom = "KICK13.ROM"
+
+[floppy.df0]
+path = "Game.adf"
+```
+
+Supported floppy formats include ADF, ADZ (gzip-compressed ADF), single-file ZIP,
+DMS, extended ADF, IPF, and SCP. In interactive sessions, disk images can also
+be inserted via drag-and-drop into the emulator window.
+
+(opening-files)=
+## Opening files
+
+Copperline accepts files after its options, with the same media classification
+used for window drops:
+
+```sh
+copperline --factory disk1.adf disk2.adf
+copperline --model A1200 --fast 8M KICK31.ROM game.adf
+copperline machine.toml
+copperline game.lha
+copperline --model CD32 disc.cue
+```
+
+| File | Startup action |
+| --- | --- |
+| ADF, ADZ, DMS, IPF, SCP, `.gz` (for example `.adf.gz`), floppy ZIP | First image in DF0; further images join its swap playlist |
+| `.lha`, `.lzh`, a ZIP containing a WHDLoad slave, `.slave`/`.slav`, extracted game directory | Direct WHDLoad boot, with the same support archives and Kickstart requirements as `--whdload` |
+| `.cue`, `.iso`, `.nrg`, CD CHD | Disc in the selected CD32/CDTV machine's built-in drive |
+| `.toml` | Configuration, equivalent to `--config FILE` |
+| `.rom` or an otherwise unrecognized filename | ROM override; `.bin` and extensionless ROM paths remain supported |
+
+One ROM and one configuration may accompany floppy or CD media. CLI machine
+options override the named configuration regardless of argument order.
+Positional floppy images replace DF0's configured image playlist while retaining
+its write-protection and wiring. Positional floppy/CD media also overrides a
+remembered `[whdload] game` for this session. A missing DF0 or native CD drive is an error;
+Copperline does not infer a machine model from a disk. A CD32/CDTV profile needs
+an explicitly enabled floppy drive (for example `--floppy-drives 1`) for floppy
+media, and `[floppy.df0] enabled = false` is reported instead of starting empty. Hard-disk images need
+controller and boot settings in a configuration file. SCSI/ATAPI CD drives
+likewise remain configuration-file attachments.
+
+Multiple configurations, ROMs, WHDLoad games or CDs are errors. Positional disk
+images cannot accompany `--run`, a WHDLoad boot, `--load-state` or `--load-uss`.
+Use `--` before filenames that begin with `--`. ZIPs containing a slave select
+WHDLoad even if they also contain disk images; macOS metadata files are ignored.
+
+The Windows installer registers **Open with** choices for Amiga media and TOML
+configurations for the selected user/all-users installation. Uninstall removes
+Copperline's entries and preserves other applications' defaults. Portable ZIPs
+do not change file associations.
+
+The macOS application advertises the same file types in Finder. **Open with ->
+Copperline** uses the positional-file startup path. Opening another document
+starts a separate session, preserving an existing guest or edited launcher.
+An untouched startup window closes when it hands the initial document to its
+session. New sessions use the usual default configuration unless opening a TOML
+file. Generic archive and disc defaults are left to the user's chosen app.
+
+For a Linux AppImage, the companion tools archive includes
+`copperline-desktop-setup`. Install Python 3, `shared-mime-info`,
+`desktop-file-utils` and `xdg-utils`, then register its current location:
+
+```sh
+./copperline-desktop-setup install /absolute/path/to/Copperline.AppImage
+./copperline-desktop-setup uninstall
+```
+
+Registration is per-user in `$XDG_DATA_HOME` (normally `~/.local/share`) and adds
+menu and **Open with** entries without changing default applications. Repeat
+`install` after moving or renaming the AppImage. Adding metadata inside an
+AppImage alone does not install it into the host desktop's MIME database.
+
+## Example configuration
+
+A fully commented example configuration is available in `copperline.example.toml`
+in the root of the repository. Copy it to `copperline.toml` or pass it via `--config`:
+
+```sh
+./target/release/copperline --config copperline.example.toml
+```
+
+For configuration errors, failed boots, save-state compatibility and hardware
+limits, start with [Troubleshooting and known limits](troubleshooting.md).
+
+## Logging and crash reports
+
+The log goes to stderr at the `info` level. Set `RUST_LOG=debug` or
+`RUST_LOG=trace` in the environment for more detail.
+
+If Copperline panics, it writes the panic message and a backtrace to
+`copperline-crash.txt`: next to the executable when that folder is writable,
+otherwise in the current working directory, and failing that in the system
+temporary directory. The path it chose is printed to stderr. Please include
+this file when reporting bugs.

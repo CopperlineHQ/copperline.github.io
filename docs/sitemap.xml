@@ -1,157 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="http://localhost:3000/sitemap_style.xsl" ?>
+<?xml-stylesheet type="text/xsl" href="http://pre.render/sitemap_style.xsl" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://localhost:3000</loc>
+    <loc>http://pre.render</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/getting-started</loc>
+    <loc>http://pre.render/getting-started</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/configuration</loc>
+    <loc>http://pre.render/configuration</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/ui</loc>
+    <loc>http://pre.render/troubleshooting</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/whdload</loc>
+    <loc>http://pre.render/changelog</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/run</loc>
+    <loc>http://pre.render/ui</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/fluxbridge</loc>
+    <loc>http://pre.render/whdload</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/host-disks</loc>
+    <loc>http://pre.render/run</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/mt32</loc>
+    <loc>http://pre.render/fluxbridge</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/coppersynth</loc>
+    <loc>http://pre.render/host-disks</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/modem</loc>
+    <loc>http://pre.render/mt32</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/import-uae</loc>
+    <loc>http://pre.render/coppersynth</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/winuae-state</loc>
+    <loc>http://pre.render/modem</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/netplay</loc>
+    <loc>http://pre.render/import-uae</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/headless</loc>
+    <loc>http://pre.render/winuae-state</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/browser</loc>
+    <loc>http://pre.render/netplay</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/libretro</loc>
+    <loc>http://pre.render/headless</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/publishing</loc>
+    <loc>http://pre.render/terminal</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/zorro</loc>
+    <loc>http://pre.render/browser</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/index-1</loc>
+    <loc>http://pre.render/libretro</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/window</loc>
+    <loc>http://pre.render/publishing</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/console</loc>
+    <loc>http://pre.render/zorro</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/headless-1</loc>
+    <loc>http://pre.render/index-1</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/reverse</loc>
+    <loc>http://pre.render/window</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/waveform</loc>
+    <loc>http://pre.render/console</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/profiling</loc>
+    <loc>http://pre.render/headless-1</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/vscode</loc>
+    <loc>http://pre.render/reverse</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/vscode-bartman</loc>
+    <loc>http://pre.render/waveform</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/gdb</loc>
+    <loc>http://pre.render/profiling</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/dap</loc>
+    <loc>http://pre.render/vscode</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/diverge</loc>
+    <loc>http://pre.render/vscode-bartman</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/control</loc>
+    <loc>http://pre.render/gdb</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/disk-fault</loc>
+    <loc>http://pre.render/dap</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/workflows</loc>
+    <loc>http://pre.render/diverge</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/architecture</loc>
+    <loc>http://pre.render/control</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/timing</loc>
+    <loc>http://pre.render/disk-fault</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/chipset</loc>
+    <loc>http://pre.render/workflows</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/video</loc>
+    <loc>http://pre.render/architecture</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/audio</loc>
+    <loc>http://pre.render/timing</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/cpu</loc>
+    <loc>http://pre.render/chipset</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/jit-performance</loc>
+    <loc>http://pre.render/video</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/peripherals</loc>
+    <loc>http://pre.render/audio</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/toccata</loc>
+    <loc>http://pre.render/cpu</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/mhi</loc>
+    <loc>http://pre.render/jit-performance</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/copperhf</loc>
+    <loc>http://pre.render/peripherals</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/zz9k</loc>
+    <loc>http://pre.render/toccata</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/picasso2</loc>
+    <loc>http://pre.render/mhi</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/graffity</loc>
+    <loc>http://pre.render/copperhf</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/netplay-1</loc>
+    <loc>http://pre.render/zz9k</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/savestate</loc>
+    <loc>http://pre.render/picasso2</loc>
   </url>
   <url>
-    <loc>http://localhost:3000/reference-docs</loc>
+    <loc>http://pre.render/graffity</loc>
+  </url>
+  <url>
+    <loc>http://pre.render/netplay-1</loc>
+  </url>
+  <url>
+    <loc>http://pre.render/savestate</loc>
+  </url>
+  <url>
+    <loc>http://pre.render/reference-docs</loc>
   </url>
 </urlset>
