@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copperline 1.2.0: a Video Toaster, the A2000 and an Amiga in your terminal - Copperline News</title>
+<meta name="description" content="Copperline 1.2.0 is the second feature release of the 1.x series: an emulated NewTek Video Toaster 4000 and Video Flyer, an Amiga 2000 profile, a terminal display that works over SSH, single-file web pages for floppy titles, high-density floppies and MP4 recording.">
+<meta name="theme-color" content="#0a0d16">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Copperline 1.2.0: a Video Toaster, the A2000 and an Amiga in your terminal">
+<meta property="og:description" content="Copperline 1.2.0 is the second feature release of the 1.x series: an emulated NewTek Video Toaster 4000 and Video Flyer, an Amiga 2000 profile, a terminal display that works over SSH, single-file web pages for floppy titles, high-density floppies and MP4 recording.">
+<meta property="og:url" content="https://copperline.dev/news/copperline-1-2-0.html">
+<meta property="og:image" content="https://copperline.dev/assets/news/1-2-0/toaster-switcher-and-monitors.jpg">
+
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" title="Copperline News" href="https://copperline.dev/news/feed.xml">
+
+<link rel="preload" href="../assets/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/chakra-petch-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+
+<script src="../assets/theme.js"></script>
+<link rel="stylesheet" href="../style.css">
+<script src="../assets/nav.js" defer></script>
+<script data-goatcounter="https://linuxjedi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__brand" href="../">
+    <img src="../assets/copperline-icon.png" alt="" width="34" height="34"><span>Copperline</span>
+  </a>
+  <nav class="nav__links" id="nav-menu" aria-label="Main navigation">
+    <a href="../#features">Features</a>
+    <a href="../#download">Download</a>
+    <a href="../try/">Try</a>
+    <a href="../docs/">Docs</a>
+    <a href="../news/">News</a>
+    <a class="nav__extra" href="../#community">Community</a>
+    <a class="nav__extra" href="../projects/">Projects</a>
+    <a class="nav__extra" href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    <a class="nav__extra" href="https://discord.gg/HDTjt3tYAC">Discord</a>
+    <a class="nav__extra" href="https://www.patreon.com/cw/Copperline">Patreon</a>
+  </nav>
+  <div class="nav__social">
+    <a class="nav__icon" href="https://github.com/CopperlineHQ/Copperline" target="_blank" rel="noopener" aria-label="Copperline on GitHub" title="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light mode" hidden>Light mode</button>
+    <button class="nav__toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="Menu" title="Menu"><span class="nav__burger" aria-hidden="true"></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section class="section"><article class="post">
+<a class="post__back" href="./">&lt; all news</a>
+<span class="post__date">21 November 2026 &middot; release</span>
+<h1>Copperline 1.2.0: a Video Toaster, the A2000 and an Amiga in your terminal</h1>
+<p>Copperline 1.2.0 is the second feature release of the 1.x series. It adds a video slot to the A4000 with an emulated NewTek Video Toaster 4000 and Video Flyer, an Amiga 2000 profile, a terminal display that also works over SSH, single-file web pages for floppy titles, high-density floppies and MP4 recording. The CPU core gains a long list of conformance fixes, Copper, sprite, beam-counter and interrupt timing are corrected, and every fix made on the 1.x branch since 1.1.0 is included.</p>
+<h2>Video Toaster 4000 and Video Flyer</h2>
+<p>TronMetatron has added a video slot to the A4000 and an emulated NewTek Video Toaster 4000 to fit in it. With <code>[video_slot] card = "toaster"</code>, the NewTek switcher (Toaster 4.x) starts, passes its own card tests and runs its muxes, fader, keys, framestores, wipes and digital video effects. The card's four inputs, its recordings and the Flyer's drives are folders on the host: drop video files or stills into an input folder and they play into the switcher, with ffmpeg decoding the video. Preview and Program open in monitor windows with working front panels, and Program records to MP4 or AVI.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-2-0/toaster-switcher-and-monitors.jpg"><img src="../assets/news/1-2-0/toaster-switcher-and-monitors.jpg" width="1400" height="1181" alt="Two studio monitors labelled Preview and Program above the Video Toaster 4.2 switcher screen: Preview shows Desire's Inside the Machine demo, Program shows colour bars, and the switcher has four effect croutons loaded, with input 1 selected on Main and input 2 on Preview" loading="lazy"></a>
+<figcaption>The real Video Toaster 4.2 switcher on an emulated A4000, with its Preview and Program outputs on Copperline's studio monitors: colour bars on input 1 and Desire's Inside the Machine playing into input 2. In Copperline these are three separate windows; they are shown together here as captured at the same emulated moment.</figcaption>
+</figure>
+<p><code>flyer = true</code> fits the NewTek Video Flyer beside it, which plays clips and sequences, with their sound, into inputs 3 and 4. The <code>flyerclip</code> and <code>flyer-convert</code> tools in source and Homebrew builds convert video files to and from Flyer clips, and an MCP client can drive the Toaster software through its ARexx ports and manage Flyer clips.</p>
+<p>The card supplies genlock sync while it is fitted, and <code>[chipset] genlock = true</code> now fits an external genlock on its own: <code>BPLCON0.ERSY</code> slaves the beam to it instead of stopping the counters, and Kickstart's genlock probe finds it. The Toaster software and the Kickstart ROM are not included. See <a href="../docs/configuration/#video-slot">video slot</a>.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<video src="../assets/news/1-2-0/toaster-star-wipe.mp4" poster="../assets/news/1-2-0/toaster-star-wipe-poster.jpg" width="1608" height="600" autoplay muted loop playsinline controls style="display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-lg)"><a href="../assets/news/1-2-0/toaster-star-wipe-program.jpg"><img src="../assets/news/1-2-0/toaster-star-wipe-program.jpg" width="1200" height="892" alt="The Program monitor during a Star Wipe: a star of colour bars over Desire's Inside the Machine demo" loading="lazy"></a></video>
+<figcaption>A slow AUTO Star Wipe from colour bars to Desire's Inside the Machine, on the Preview and Program monitors. <a href="../assets/news/1-2-0/toaster-star-wipe-program.jpg">The Star Wipe held about half way on the T-bar</a>.</figcaption>
+</figure>
+<h2>Amiga 2000</h2>
+<p><code>--model A2000</code>, or the machine selector on the configuration screen, builds a B2000 Rev 6.x: the 8372A Agnus and OCS Denise, 1M of chip RAM, the battery-backed MSM6242 clock and its Zorro II slots. The Rev 4.x and late Rev 6 boards are overrides on it, and the FS-UAE and WinUAE importers map their <code>A2000</code> to it. Thanks to strongkm for the request; the Bridgeboard is still to come.</p>
+<h2>An Amiga in your terminal</h2>
+<p><code>--terminal</code> shows and drives the machine inside a terminal that speaks the Kitty graphics and keyboard protocols (kitty, Ghostty, WezTerm) instead of a window. No window server is involved, so it works the same over SSH: start Copperline on a remote build machine and drive the Amiga from your local terminal. Only changed frames are sent, and a slow link drops frames rather than slowing the machine. F12 is the host key, <code>--terminal-fps</code> caps the frame rate, and the terminal is given back however the session ends. It runs on macOS and Linux. See <a href="../docs/terminal/">terminal display</a>.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<video src="../assets/news/1-2-0/terminal-ghostty-state-of-the-art.mp4" poster="../assets/news/1-2-0/terminal-ghostty-state-of-the-art.png" width="1080" height="864" controls muted loop playsinline preload="none" style="display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-lg)"><a href="../assets/news/1-2-0/terminal-ghostty-state-of-the-art.png"><img src="../assets/news/1-2-0/terminal-ghostty-state-of-the-art.png" width="1316" height="1052" alt="A Ghostty terminal window titled copperline --terminal showing State of the Art's striped dancer over a spiral, with a Copperline status line at the bottom" loading="lazy"></a></video>
+<figcaption>Spaceballs' State of the Art in Ghostty with <code>copperline --terminal</code>, and no window at all. The clip contains rapidly flashing images. <a href="../assets/news/1-2-0/terminal-ghostty-state-of-the-art.png">Still image</a>.</figcaption>
+</figure>
+<h2>A game in one web page</h2>
+<p><code>tools/publish-web</code> packs a floppy title into one self-contained HTML file: the browser emulator, the AROS boot ROM, the disk images and the licence texts. The page requests nothing but itself, so it runs from any static host or straight from disk. It has keyboard, mouse, gamepad and touch controls, a DF0 list for multi-disk titles and disk changes kept in the visitor's browser, and it offers a quick save state when the manifest allows it. It uses the same manifest as the player kit. See <a href="../docs/publishing/#web-player-kit">publishing</a>.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-2-0/web-player-kit-in-chrome.jpg"><img src="../assets/news/1-2-0/web-player-kit-in-chrome.jpg" width="1200" height="940" alt="A Chrome window showing a single HTML page running Desire's Inside the Machine demo, with Pause, Reset, Save state, Load state, Export disk, Import disk, Screenshot, Volume, Fullscreen and About controls under the display" loading="lazy"></a>
+<figcaption>Desire's Inside the Machine packed by <code>tools/publish-web</code> into one page, running in Chrome on the bundled AROS ROM.</figcaption>
+</figure>
+<h2>High-density floppies</h2>
+<p>1.76 MB HD ADFs, HD DMS archives, extended ADFs with 22-sector tracks and HD ADFs in ZIP files now load in every drive. As on an HD mechanism, density follows the inserted disk: an HD disk turns at half speed with 22 sectors per track, and the drive answers the ID poll as an HD drive only while one is in, so DD disks run as before. The guest needs an HD-aware <code>trackdisk.device</code> (Kickstart 1.x has none), and IPF images of HD disks are still refused.</p>
+<figure class="shot" style="margin: 1.6rem 0">
+<a href="../assets/news/1-2-0/hd-floppy-workbench-info.png"><img src="../assets/news/1-2-0/hd-floppy-workbench-info.png" width="1280" height="1024" alt="Workbench 3.1 with an HD-Floppy disk icon and an AmigaShell window whose info listing shows DF0: Workbench3.1 at 879K and DF1: HD-Floppy at 1759K with 3516 blocks free" loading="lazy"></a>
+<figcaption>An HD disk formatted in Workbench 3.1 on an A1200: <code>info</code> shows DF0: at 879K and DF1: at 1759K.</figcaption>
+</figure>
+<h2>Recording and the desktop</h2>
+<ul>
+<li><strong>MP4 recordings.</strong> <code>[recording] video_format = "mp4"</code>, or <strong>Recording &rarr; Video Format</strong>, makes recordings H.264/AAC MP4 files that common players open. The recorder still captures its lossless AVI and hands it to the host's ffmpeg when recording stops, keeping the AVI if there is no ffmpeg or it lacks libx264. AVI stays the default. Thanks to Nicolas Ramz for the suggestion.</li>
+<li><strong>Open files from the desktop.</strong> Files named on the command line or opened from a file manager start what they are: floppy images boot in DF0, WHDLoad archives, game folders and slaves boot directly, CD images go in a CD32 or CDTV drive, and a <code>.toml</code> file loads as the configuration. The Windows installer registers <strong>Open with</strong> entries, the macOS app declares its document types to Finder, and the Linux tools archive adds <code>copperline-desktop-setup</code> to register them for your user.</li>
+<li>Windows installers can install for the current user (the default) or for all users, and the executables carry their product name and version in <strong>Properties &rarr; Details</strong>.</li>
+<li>Command-line options accept <code>--flag=value</code>, misspelled options suggest close matches, and fatal desktop-launch errors appear in a dialog.</li>
+<li>The manual identifies its version and source revision, and gains troubleshooting, known limits and compatibility notes, and a <a href="../docs/changelog/">changelog</a>.</li>
+</ul>
+<h2>More hardware</h2>
+<ul>
+<li><strong>CD+G:</strong> CD subcode R-W data reaches the CD32 and the CDTV from images that stored it (a CloneCD-style <code>.sub</code> file, a cue sheet <code>CDG</code> track or a CHD with raw subcode), and the CDTV drive now delivers subcode while a disc plays.</li>
+<li><strong>SCSI tape:</strong> <code>[[tape]]</code> puts a tape drive on the <code>[scsi]</code> controller (A2091, A4091 or A3000). The cartridge is a host directory with one file per tape file, or a single file, so <code>tar</code> archives work as they stand.</li>
+<li><strong>CDTV bookmarks:</strong> the bookmark RAM is kept in <code>cdtv-bookmark.bin</code>, so title saves and preferences survive between sessions.</li>
+<li><strong>Battery clocks can be set:</strong> the MSM6242 and RP5C01 take counter writes, so <code>SetClock SAVE</code> works. The host clock is never changed.</li>
+<li><strong>IDE geometry:</strong> an IDE drive reports the heads and sectors per track its Rigid Disk Block records, so a disk partitioned for another geometry keeps its last partition reachable.</li>
+</ul>
+<h2>CPU</h2>
+<ul>
+<li>The CPU core is the published m68k 0.17.1, with about thirty conformance fixes found by solskogen's bare-metal <a href="https://github.com/solskogen/amitorture">amitorture</a> suite. They cover DIVU/DIVS and CAS/CAS2 flags, trace after an exception, each model's exception frames, FPU exceptions taken through their vectors, and MMU table searches that write back the used and modified bits.</li>
+<li><code>[cpu] unimplemented = "trap"</code> now covers the 68040 as well as the 68060, so its unimplemented FPU instructions go to <code>68040.library</code> as on the real chip (see Before upgrading). amitorture's 68040 FPU failures dropped from 35 to 2.</li>
+<li>The JIT runs the <code>[copperhf]</code> driver and the <code>[[filesys]]</code> handlers from local memory, as it does Kickstart, so filesystem-heavy work on those volumes takes less than half the emulated time it did.</li>
+<li>With the MMU in use (MMULib on a 68040, for example) the JIT costs about a quarter less host CPU time. Thanks to dlundqvist for the reports and benchmarks.</li>
+</ul>
+<h2>Chipset timing</h2>
+<ul>
+<li>AGA playfields and sprites move in Lisa's 35 ns steps: BPLCON1's H1/H0 bits scroll a lo-res playfield by quarter pixels, SPRxCTL's fine bits position sprites in every mode, and collisions compare at the same pitch. SANITY's Roots 2.0 lines its sprite screen up this way.</li>
+<li>A sprite armed by the CPU or Copper with sprite DMA off is shown on every line and collides in every frame until it is disarmed, as on Denise, which has no vertical comparator.</li>
+<li>A Copper WAIT on line 255 compares all eight vertical bits, and after a CPU COPJMP strobe the Copper spends a bus-request cycle, so <code>clr.w COPJMP1</code> no longer jumps through a half-written COP1LC.</li>
+<li>VPOSR's V8 steps with VHPOSR's line byte, so loops that count frames from the beam position no longer count extra ones.</li>
+<li>On 68020 and faster machines, an interrupt unmasked for only a few colour clocks is now taken, so the CD32 Classic Lotus Trilogy no longer freezes on the Lotus 1 race screen. A chip-RAM write from those CPUs gets the blitter's yield cycle instead of waiting for the whole of a four-channel blit.</li>
+<li>An 8372A machine with 512K of chip RAM mirrors it as an OCS machine does, so a cracked Cannon Fodder no longer ends in a Guru on the default A500. External floppy drives answer the ID probe while their motor is off, so Deuteros finds its save drive; thanks to gmckeown for the report.</li>
+</ul>
+<h2>Fixes and other changes</h2>
+<ul>
+<li>On macOS, switching away with Cmd-Tab no longer leaves the Amiga holding Left Amiga, which broke mouse clicks after switching back.</li>
+<li>Covered or minimised windows no longer leak GPU memory, and with the default <code>mouse_capture = "click"</code> a fullscreen window that shows only the display takes the mouse without a click.</li>
+<li>An ADF zipped by macOS Finder's Compress loads, IPF weak bits read differently on each revolution, and cue sheets whose FILE starts at a later INDEX keep their tracks on the right sectors.</li>
+<li><code>copperhf.device</code> implements <code>AbortIO</code>, and a file created on the host in a <code>[[filesys]]</code>, <code>--run</code> or WHDLoad folder after the guest has looked for it is found, so a rebuilt <code>--run</code> program is picked up.</li>
+<li>The libretro core announces its memory map so cheat search, memory viewers and achievements see every region, and the GDB stub survives clients that reset, disconnect or send malformed packets.</li>
+<li>Debugger listeners stay on loopback unless asked, control tokens come from the operating system's random source, host folders refuse drive letters, DOS device names and writes onto <code>copperline.toml</code>, image parsers are bounded against malformed input, and rewritten user files are replaced atomically. <code>SECURITY.md</code> now states which inputs are trusted.</li>
+<li>The bundled AROS ROM is rebuilt from upstream master <code>b6dcaeeaa2</code>, with fixes for a task switch that could leave a signalled task never dispatched, DOS allocations that collided with CD32Load, and a CD32 <code>cd.device</code> interrupt storm. The <code>m68k</code> core moves from 0.15.0 to 0.17.1, and <code>wasmtime</code> takes a security update to 36.0.21.</li>
+</ul>
+<h2>Before upgrading</h2>
+<ul>
+<li><strong>Every netplay peer needs 1.2.0.</strong></li>
+<li><strong>Recreate RetroArch save states after updating the core.</strong></li>
+<li><strong>Desktop save states from 1.1.0 still load,</strong> except that one saved with a <code>[copperhf]</code> drive attached can hang after loading, because the driver has changed: boot that machine afresh and save a new state. 1.2.0 states do not load in 1.1.0.</li>
+<li><strong>A 68040 with an FPU now needs <code>68040.library</code></strong> for the FPU instructions the chip does not implement. Without it (a bare Kickstart, a <code>--run</code> program on AROS, or a WHDLoad game that uses them) it stops with a Line-F exception, Software Failure #8000000B under AmigaOS. <code>[cpu] unimplemented = "native"</code> restores the 1.1.0 behaviour.</li>
+<li><strong>Remote debugging is opt-in.</strong> <code>--gdb</code>, <code>--gdb-gui</code> and <code>copperline-ctl --dap-listen</code> accept only loopback addresses unless <code>--allow-remote-debugging</code> is given, and the control server no longer prints its token on stderr: read it from the <code>--control-info</code> file, or from the temporary file whose path it prints.</li>
+<li><strong>Files named on the command line are taken as what they are:</strong> floppy images, WHDLoad archives and folders, CD images and <code>.toml</code> files are no longer taken as the Kickstart ROM path.</li>
+<li><strong>Host-directory volumes</strong> report the disk type <code>DOS\1</code> instead of <code>CLFS</code> and are dated 1 January 1978.</li>
+<li><strong>The refreshed AROS ROM</strong> leaves about 3 KB less free memory, and HDToolBox or <code>C:Partition</code> from an older AROS m68k disk calls the wrong functions under it.</li>
+<li><strong>Emulated timing has moved,</strong> so <code>--expect-screenshot</code> references and input scripts recorded with 1.1.0 may need to be made again.</li>
+<li><strong>No configuration key or command-line option is removed or renamed.</strong></li>
+</ul>
+<p>Thanks to the patrons who pay for the hardware used to check the emulation, to TronMetatron for the Video Toaster and Video Flyer, to solskogen for amitorture, to dlundqvist, gmckeown, strongkm and Nicolas Ramz for reports, requests and testing, and to everyone who reported problems on Discord.</p>
+<p><a class="btn btn--primary" href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.2.0">Download Copperline 1.2.0</a> <a class="btn btn--ghost" href="../try/">Try in your browser</a></p>
+<p>Downloads cover macOS, Linux x86-64, Windows x64/ARM64 installers and ZIPs, and three RetroArch platforms. The Windows installers and ZIPs are not code-signed yet, because the SignPath Foundation certificate is still being issued, so SmartScreen may show <strong>Windows protected your PC</strong>: choose <strong>More info &rarr; Run anyway</strong>. See the <a href="../code-signing/">code signing policy</a>. Homebrew users can run <code>brew update</code> followed by <code>brew upgrade copperline</code>. The release includes a PDF manual and checksums. Read the <a href="https://github.com/CopperlineHQ/Copperline/releases/tag/v1.2.0">full release notes</a> or <a href="https://github.com/CopperlineHQ/Copperline/compare/v1.1.0...v1.2.0">changelog</a>.</p>
+
+</article></section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <img src="../assets/copperline-icon.png" alt="" width="40" height="40" class="footer__icon">
+    <div class="footer__cols">
+      <p class="footer__lic">
+        Copperline is free software under the
+        <a href="https://github.com/CopperlineHQ/Copperline/blob/main/LICENSE" target="_blank" rel="noopener">GNU GPL v3 or later</a>.
+      </p>
+      <p class="footer__colophon">
+        Hosted on GitHub Pages with self-hosted fonts and privacy-friendly analytics.
+      </p>
+    </div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a href="../docs/">Docs</a>
+      <a href="../news/">News</a>
+      <a href="../news/feed.xml">RSS</a>
+      <a href="../projects/">Projects</a>
+      <a href="../#community">Community</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="https://discord.gg/HDTjt3tYAC">Discord</a>
+      <a href="https://www.patreon.com/cw/Copperline">Patreon</a>
+      <a href="https://github.com/CopperlineHQ/Copperline">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

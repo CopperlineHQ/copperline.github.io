@@ -12,7 +12,7 @@
 // no version dance beyond bumping CACHE when the precache list changes
 // shape.
 
-const CACHE = 'copperline-try-v1.1.0-site-1';
+const CACHE = 'copperline-try-v1.2.0-site-1';
 
 const PRECACHE = [
   './',
@@ -28,6 +28,9 @@ const PRECACHE = [
   './netplay-qr.js',
   './netplay-qr.LICENSE',
   './render-stride.js',
+  './audio-gate.js',
+  './input-map.js',
+  './present-2d.js',
   './serial-telnet.js',
   './audio-worklet.js',
   './manifest.webmanifest',
